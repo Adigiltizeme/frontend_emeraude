@@ -28,7 +28,7 @@ const Home = () => {
     // Fetch top projects
     const fetchTopProjects = async () => {
       try {
-        const res = await fetch('http://localhost:3000/projects');
+        const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects`);
         if (res.ok) {
           const data = await res.json();
           // Trier par rentabilité locative ou montant cible et prendre les 4 premiers
@@ -80,7 +80,7 @@ const Home = () => {
               bottom: 0,
               backgroundImage: `url(${img})`,
               backgroundSize: 'cover',
-              backgroundPosition: 'center',
+              backgroundPosition: 'center 40%',
               opacity: currentImageIndex === index ? 1 : 0,
               transition: 'opacity 1.5s ease-in-out',
               zIndex: 0
@@ -189,9 +189,9 @@ const Home = () => {
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundImage: 'url(https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=2000&auto=format&fit=crop)',
+          backgroundImage: 'url(https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=2000&auto=format&fit=crop)',
           backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundPosition: 'center 40%',
           zIndex: 0
         }} />
 

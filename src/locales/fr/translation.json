@@ -102,7 +102,9 @@
     "financialTitle": "Structuration Financière",
     "impactTitle": "Proposition de Valeur & Impact",
     "timelineTitle": "Calendrier Prévisionnel",
-    "statusFunded": "Financement clôturé"
+    "statusFunded": "Financement clôturé",
+    "mapTitle": "Localisation (Zone du projet)",
+    "mapDisclaimer": "Par mesure de confidentialité, l'emplacement exact est masqué."
   },
   "finance": {
     "title": "Financer votre projet immobilier",
@@ -281,6 +283,17 @@
       "COLLECTING": "En collecte",
       "FUNDED": "Financé",
       "COMPLETED": "Terminé"
+    },
+    "manageUsers": {
+      "title": "Gestion des Utilisateurs / Investisseurs",
+      "loading": "Chargement...",
+      "colName": "Nom",
+      "colContact": "Contact",
+      "colIntention": "Intention",
+      "colRole": "Rôle",
+      "colDate": "Date d'inscription",
+      "notProvided": "Non renseigné",
+      "noUsers": "Aucun utilisateur inscrit pour le moment."
     }
   }
 }

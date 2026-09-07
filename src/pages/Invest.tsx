@@ -8,7 +8,7 @@ const Invest = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:3000/projects')
+    fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects`)
       .then(res => res.json())
       .then(data => {
         // Ne pas afficher les brouillons sur la page publique

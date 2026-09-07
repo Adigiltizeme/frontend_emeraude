@@ -4,13 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { ArrowLeft, MapPin, TrendingUp, Clock, AlertTriangle, FileText, Download } from 'lucide-react';
 import ProjectMap from '../components/ProjectMap';
 
+
 const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
   const { id } = useParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [project, setProject] = useState<any>(previewData);
   const [loading, setLoading] = useState(true);
-
+    
   useEffect(() => {
     if (isPreview && previewData) {
       setProject(previewData);
@@ -19,10 +20,12 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
     }
 
     if (id) {
-      fetch(`http://localhost:3000/projects/${id}`)
+      fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects/${id}`)
         .then(res => res.json())
         .then(data => {
           setProject(data);
+
+          
           setLoading(false);
         })
         .catch(err => {
@@ -120,7 +123,10 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
           </div>
 
           <div style={{ backgroundColor: 'var(--color-surface)', padding: '2rem', borderRadius: 'var(--radius-lg)', marginTop: '2rem' }}>
-            <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem' }}>Localisation du projet</h2>
+            <div style={{ marginBottom: '1rem' }}>
+                <h2 style={{ fontSize: '1.25rem', marginBottom: '0.25rem' }}>Localisation du projet</h2>
+                <p style={{ color: 'var(--color-neutral-600)', fontSize: '0.875rem' }}>{t('projectDetails.mapDisclaimer')}</p>
+              </div>
             <ProjectMap location={project.location} />
           </div>
         </div>
@@ -171,7 +177,9 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
           </div>
         </div>
       </div>
-    </div>
+
+          {/* Section Localisation Approximative */}
+             </div>
   );
 };
 

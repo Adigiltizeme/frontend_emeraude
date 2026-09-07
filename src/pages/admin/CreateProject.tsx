@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { ArrowLeft, Save, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import ProjectDetails from '../ProjectDetails';
 
 const CreateProject = () => {
@@ -27,7 +27,8 @@ const CreateProject = () => {
   const [rentYield, setRentYield] = useState(5.5);
   const [capitalGain, setCapitalGain] = useState(2.5);
   const [guarantee, setGuarantee] = useState('Hypothèque de 1er rang');
-  const [distribution, setDistribution] = useState('Trimestrielle');
+  
+  const distribution = 'Trimestrielle';
   const [impact, setImpact] = useState('');
 
   // Fichier image
@@ -39,7 +40,7 @@ const CreateProject = () => {
     setLoading(true);
 
     try {
-      const projectResponse = await fetch('http://localhost:3000/projects', {
+      const projectResponse = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -63,7 +64,7 @@ const CreateProject = () => {
       if (imageFile) {
         const formData = new FormData();
         formData.append('file', imageFile);
-        const imageResponse = await fetch(`http://localhost:3000/projects/${newProject.id}/image`, {
+        const imageResponse = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects/${newProject.id}/image`, {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${token}` },
           body: formData

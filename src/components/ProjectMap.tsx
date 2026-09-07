@@ -16,6 +16,8 @@ const ProjectMap: React.FC<ProjectMapProps> = ({ location }) => {
 
   const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
   const [error, setError] = useState<string | null>(null);
+  const [locationCoords, setLocationCoords] = useState<{longitude: number, latitude: number} | null>(null);
+
 
   useEffect(() => {
     if (!MAPBOX_TOKEN) {
@@ -38,6 +40,7 @@ const ProjectMap: React.FC<ProjectMapProps> = ({ location }) => {
             latitude: lat,
             zoom: 13
           });
+          setLocationCoords({ longitude: lng, latitude: lat });
           setError(null);
         } else {
           setError('Emplacement introuvable sur la carte.');
@@ -61,7 +64,8 @@ const ProjectMap: React.FC<ProjectMapProps> = ({ location }) => {
           mapboxAccessToken={MAPBOX_TOKEN}
         >
           <NavigationControl position="bottom-right" />
-          <Marker longitude={viewport.longitude} latitude={viewport.latitude} anchor="bottom">
+          {locationCoords && (
+          <Marker longitude={locationCoords.longitude} latitude={locationCoords.latitude} anchor="bottom">
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <div style={{ backgroundColor: 'var(--color-primary-600)', padding: '0.25rem 0.5rem', borderRadius: '4px', color: 'white', fontWeight: 'bold', fontSize: '0.75rem', marginBottom: '0.25rem' }}>
                 {location}
@@ -69,6 +73,7 @@ const ProjectMap: React.FC<ProjectMapProps> = ({ location }) => {
               <MapPin size={32} color="var(--color-primary-600)" fill="white" />
             </div>
           </Marker>
+          )}
         </Map>
       ) : (
         <div style={{ width: '100%', height: '100%', backgroundColor: 'var(--color-neutral-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', padding: '2rem', textAlign: 'center' }}>

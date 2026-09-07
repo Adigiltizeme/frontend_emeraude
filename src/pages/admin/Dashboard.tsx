@@ -14,7 +14,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await fetch('http://localhost:3000/projects');
+        const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects`);
         if (res.ok) {
           const data = await res.json();
           setProjects(data);
@@ -31,7 +31,7 @@ const AdminDashboard = () => {
   const handleDelete = async (id: string) => {
     if (window.confirm(t('admin.dashboard.confirmDelete'))) {
       try {
-        const res = await fetch(`http://localhost:3000/projects/${id}`, {
+        const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects/${id}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -71,7 +71,7 @@ const AdminDashboard = () => {
         <div style={{ backgroundColor: 'var(--color-white)', padding: '2rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--color-neutral-200)' }}>
           <h3 style={{ marginBottom: '1rem', color: 'var(--color-primary-800)' }}>{t('admin.dashboard.manageUsers')}</h3>
           <p style={{ color: 'var(--color-neutral-600)', marginBottom: '1.5rem' }}>{t('admin.dashboard.manageUsersDesc')}</p>
-          <button className="btn btn-outline" style={{ width: '100%' }}>{t('admin.dashboard.accessUsers')}</button>
+          <button onClick={() => navigate('/admin/users')} className="btn btn-outline" style={{ width: '100%' }}>{t('admin.dashboard.accessUsers')}</button>
         </div>
       </div>
       <div style={{ marginTop: '3rem' }}>

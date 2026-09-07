@@ -15,6 +15,9 @@ import AdminDashboard from './pages/admin/Dashboard';
 import AdminRoute from './components/AdminRoute';
 import CreateProject from './pages/admin/CreateProject';
 import EditProject from './pages/admin/EditProject';
+import ManageUsers from './pages/admin/ManageUsers';
+import EditUser from './pages/admin/EditUser';
+import Profile from './pages/admin/Profile';
 import Register from './pages/Register';
 
 function App() {
@@ -64,6 +67,9 @@ function App() {
                 <Route index element={<AdminDashboard />} />
                 <Route path="projects/new" element={<CreateProject />} />
                 <Route path="projects/edit/:id" element={<EditProject />} />
+                <Route path="users" element={<ManageUsers />} />
+                <Route path="users/edit/:id" element={<EditUser />} />
+                <Route path="profile" element={<Profile />} />
               </Route>
             </Routes>
           </main>

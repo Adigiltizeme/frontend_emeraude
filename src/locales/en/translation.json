@@ -102,7 +102,9 @@
     "financialTitle": "Financial Structuring",
     "impactTitle": "Value Proposition & Impact",
     "timelineTitle": "Project Timeline",
-    "statusFunded": "Funding closed"
+    "statusFunded": "Funding closed",
+    "mapTitle": "Location (Project Area)",
+    "mapDisclaimer": "For privacy reasons, the exact location is hidden."
   },
   "finance": {
     "title": "Fund your real estate project",
@@ -281,6 +283,17 @@
       "COLLECTING": "Collecting",
       "FUNDED": "Funded",
       "COMPLETED": "Completed"
+    },
+    "manageUsers": {
+      "title": "Users / Investors Management",
+      "loading": "Loading...",
+      "colName": "Name",
+      "colContact": "Contact",
+      "colIntention": "Intention",
+      "colRole": "Role",
+      "colDate": "Registration Date",
+      "notProvided": "Not provided",
+      "noUsers": "No registered users at the moment."
     }
   }
 }

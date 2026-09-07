@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { ArrowLeft, Save, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import ProjectDetails from '../ProjectDetails';
 
 const EditProject = () => {
@@ -28,7 +28,7 @@ const EditProject = () => {
   const [rentYield, setRentYield] = useState(5.5);
   const [capitalGain, setCapitalGain] = useState(2.5);
   const [guarantee, setGuarantee] = useState('Hypothèque de 1er rang');
-  const [distribution, setDistribution] = useState('Trimestrielle');
+  
   const [impact, setImpact] = useState('');
 
   // Fichier image
@@ -37,7 +37,7 @@ const EditProject = () => {
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/projects/${id}`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects/${id}`);
         if (res.ok) {
           const data = await res.json();
           setTitle(data.title);
@@ -70,7 +70,7 @@ const EditProject = () => {
         title, description, location, target, returnRate, duration, minTicket, riskLevel, assetType, status
       };
 
-      const res = await fetch(`http://localhost:3000/projects/${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

@@ -1,8 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { Mail, Phone, MapPin } from 'lucide-react';
+import { useSiteSettings } from '../context/SettingsContext';
 
 const Contact = () => {
   const { t } = useTranslation();
+  const { settings } = useSiteSettings();
 
   return (
     <div className="container" style={{ padding: '4rem 1rem', maxWidth: '1000px' }}>
@@ -58,7 +60,7 @@ const Contact = () => {
             </div>
             <div>
               <h3 style={{ fontSize: '1.1rem', marginBottom: '0.25rem' }}>Email</h3>
-              <p style={{ color: 'var(--color-neutral-600)' }}>contact@emeraude-africa.com</p>
+              <p style={{ color: 'var(--color-neutral-600)' }}>{settings.contactEmail}</p>
             </div>
           </div>
 
@@ -68,7 +70,7 @@ const Contact = () => {
             </div>
             <div>
               <h3 style={{ fontSize: '1.1rem', marginBottom: '0.25rem' }}>{t('contact.phoneLabel')}</h3>
-              <p style={{ color: 'var(--color-neutral-600)' }}>+221 77 000 00 00</p>
+              <p style={{ color: 'var(--color-neutral-600)' }}>{settings.contactPhone}</p>
               <p style={{ color: 'var(--color-neutral-600)', fontSize: '0.875rem', marginTop: '0.25rem' }}>{t('contact.phoneHours')}</p>
             </div>
           </div>
@@ -79,7 +81,7 @@ const Contact = () => {
             </div>
             <div>
               <h3 style={{ fontSize: '1.1rem', marginBottom: '0.25rem' }}>{t('contact.officeLabel')}</h3>
-              <p style={{ color: 'var(--color-neutral-600)' }} dangerouslySetInnerHTML={{ __html: t('contact.officeAddress') }}></p>
+              <p style={{ color: 'var(--color-neutral-600)' }} >{settings.contactAddress}</p>
             </div>
           </div>
         </div>

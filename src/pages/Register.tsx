@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Phone, Mail, MessageCircle, Info, CheckCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 const Register = () => {
@@ -20,7 +19,6 @@ const Register = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [isRegistered, setIsRegistered] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -44,12 +42,13 @@ const Register = () => {
       }
 
       const data = await response.json();
-        login(data.user, data.access_token);
-        if (data.user.role === 'ADMIN') {
-          navigate('/admin');
-        } else {
-          navigate('/mon-compte');
-        }
+      login(data.user, data.access_token);
+      
+      if (data.user.role === 'ADMIN') {
+        navigate('/admin');
+      } else {
+        navigate('/mon-compte');
+      }
     } catch (err: any) {
       setError(err.message || 'Erreur de connexion');
     } finally {
@@ -61,78 +60,15 @@ const Register = () => {
     width: '100%',
     padding: '0.75rem 1rem',
     borderRadius: 'var(--radius-md)',
-    border: '1px solid #cbd5e1', // Using distinct border color
+    border: '1px solid #cbd5e1',
     backgroundColor: '#f8fafc',
     fontSize: '1rem',
     outline: 'none',
     color: '#0f172a'
   };
 
-  if (isRegistered) {
-    return (
-      <div className="container" style={{ padding: '4rem 1rem', display: 'flex', justifyContent: 'center' }}>
-        <div style={{ maxWidth: '600px', width: '100%', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-
-          <div style={{ backgroundColor: 'var(--color-white)', padding: '3rem', borderRadius: 'var(--radius-lg)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', textAlign: 'center' }}>
-            <CheckCircle size={64} color="var(--color-primary-600)" style={{ margin: '0 auto 1.5rem' }} />
-            <h1 style={{ color: 'var(--color-primary-900)', marginBottom: '1rem', fontSize: '2rem' }}>{t('register.successTitle')}</h1>
-            <p style={{ color: 'var(--color-neutral-600)', fontSize: '1.1rem', marginBottom: '2rem' }}>
-              {t('register.successDesc', { firstName: formData.firstName })}
-            </p>
-            <button onClick={() => navigate('/')} className="btn btn-primary" style={{ padding: '1rem 2rem', fontSize: '1.1rem', fontWeight: 'bold' }}>
-              {t('register.btnHome')}</button>
-          </div>
-
-          <div style={{ backgroundColor: 'var(--color-primary-50)', padding: '2rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-primary-100)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem', justifyContent: 'center' }}>
-              <Info size={28} color="var(--color-primary-600)" />
-              <h3 style={{ color: 'var(--color-primary-900)', margin: 0, fontSize: '1.5rem' }}>{t('register.readyTitle')}</h3>
-            </div>
-            <p style={{ color: 'var(--color-neutral-700)', lineHeight: '1.6', marginBottom: '2rem', textAlign: 'center' }}>
-              {t('register.readyDesc')}
-            </p>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <a href="tel:+221770000000" style={{ display: 'flex', alignItems: 'center', gap: '1rem', textDecoration: 'none', color: 'var(--color-neutral-800)', padding: '1rem', backgroundColor: '#fff', borderRadius: 'var(--radius-md)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', transition: 'transform 0.2s' }}>
-                <div style={{ backgroundColor: 'var(--color-primary-100)', padding: '0.75rem', borderRadius: '50%' }}>
-                  <Phone size={24} color="var(--color-primary-600)" />
-                </div>
-                <div>
-                  <div style={{ fontWeight: '600' }}>{t('register.call')}</div>
-                  <div style={{ color: 'var(--color-neutral-500)', fontSize: '0.9rem' }}>+221 77 000 00 00</div>
-                </div>
-              </a>
-
-              <a href="https://wa.me/221770000000" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '1rem', textDecoration: 'none', color: 'var(--color-neutral-800)', padding: '1rem', backgroundColor: '#fff', borderRadius: 'var(--radius-md)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', transition: 'transform 0.2s' }}>
-                <div style={{ backgroundColor: '#dcf8c6', padding: '0.75rem', borderRadius: '50%' }}>
-                  <MessageCircle size={24} color="#128C7E" />
-                </div>
-                <div>
-                  <div style={{ fontWeight: '600' }}>WhatsApp</div>
-                  <div style={{ color: 'var(--color-neutral-500)', fontSize: '0.9rem' }}>{t('register.chat')}</div>
-                </div>
-              </a>
-
-              <a href="mailto:contact@emeraude-invest.com" style={{ display: 'flex', alignItems: 'center', gap: '1rem', textDecoration: 'none', color: 'var(--color-neutral-800)', padding: '1rem', backgroundColor: '#fff', borderRadius: 'var(--radius-md)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', transition: 'transform 0.2s' }}>
-                <div style={{ backgroundColor: '#f1f5f9', padding: '0.75rem', borderRadius: '50%' }}>
-                  <Mail size={24} color="#475569" />
-                </div>
-                <div>
-                  <div style={{ fontWeight: '600' }}>{t('register.email')}</div>
-                  <div style={{ color: 'var(--color-neutral-500)', fontSize: '0.9rem' }}>contact@emeraude-invest.com</div>
-                </div>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="container" style={{ padding: '4rem 1rem', display: 'flex', justifyContent: 'center' }}>
-
-      {/* Formulaire */}
       <div style={{ maxWidth: '600px', width: '100%', backgroundColor: 'var(--color-white)', padding: '3rem', borderRadius: 'var(--radius-lg)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
         <h1 style={{ color: 'var(--color-primary-900)', marginBottom: '0.5rem', fontSize: '2rem' }}>{t('register.title')}</h1>
         <p style={{ color: 'var(--color-neutral-600)', marginBottom: '2rem' }}>{t('register.subtitle')}</p>
@@ -183,13 +119,9 @@ const Register = () => {
           </button>
         </form>
 
-          <div style={{ marginTop: '2rem', textAlign: 'center', fontSize: '0.875rem', color: 'var(--color-neutral-600)' }}>
-            Déjà inscrit ? <Link to="/login" style={{ color: 'var(--color-primary-600)', fontWeight: 'bold', textDecoration: 'none' }}>Se connecter</Link>
-          </div>
-
-        <p style={{ marginTop: '2rem', textAlign: 'center', color: 'var(--color-neutral-600)' }}>
-          {t('register.hasAccount')} <Link to="/admin/login" style={{ color: 'var(--color-primary-600)', fontWeight: '600' }}>{t('register.login')}</Link>
-        </p>
+        <div style={{ marginTop: '2rem', textAlign: 'center', fontSize: '0.875rem', color: 'var(--color-neutral-600)' }}>
+          Déjà inscrit ? <Link to="/login" style={{ color: 'var(--color-primary-600)', fontWeight: 'bold', textDecoration: 'none' }}>Se connecter</Link>
+        </div>
       </div>
     </div>
   );

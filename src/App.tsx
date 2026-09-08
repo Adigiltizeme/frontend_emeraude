@@ -21,6 +21,8 @@ import AdminSettings from './pages/admin/AdminSettings';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import UserDashboard from './pages/UserDashboard';
+import UserProfile from './pages/UserProfile';
+import UserRoute from './components/UserRoute';
 import Header from './components/Header';
 import InteractiveBackground from './components/InteractiveBackground';
 
@@ -41,7 +43,12 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/inscription" element={<Register />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/mon-compte" element={<UserDashboard />} />
+              
+              <Route element={<UserRoute />}>
+                <Route path="/mon-compte" element={<UserDashboard />} />
+                <Route path="/mon-profil" element={<UserProfile />} />
+              </Route>
+
               <Route path="/investir" element={<Invest />} />
               <Route path="/projet/:id" element={<ProjectDetails />} />
               <Route path="/financer" element={<Finance />} />

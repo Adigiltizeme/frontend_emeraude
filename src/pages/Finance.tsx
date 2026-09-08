@@ -85,26 +85,39 @@ const Finance = () => {
         <p style={{ color: 'var(--color-neutral-600)', marginTop: '1rem' }}>
           {t('finance.subtitle')}
         </p>
-        {!isAuthenticated && (
-          <div style={{ padding: '1rem', backgroundColor: '#fef3c7', color: '#b45309', borderRadius: '8px', marginTop: '1.5rem', display: 'inline-block' }}>
-            ⚠️ Vous devez créer un compte "Porteur de projet" pour soumettre un dossier.
-          </div>
-        )}
+
       </div>
 
-      <div style={{ backgroundColor: 'var(--color-white)', padding: '3rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)' }}>
-        {errorMsg && (
-          <div style={{ backgroundColor: '#fee2e2', color: '#dc2626', padding: '1rem', borderRadius: '8px', marginBottom: '2rem' }}>
-            {errorMsg}
+      {isAuthenticated ? (
+        <div style={{ backgroundColor: 'var(--color-white)', padding: '3rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)' }}>
+          {errorMsg && (
+            <div style={{ backgroundColor: '#fee2e2', color: '#dc2626', padding: '1rem', borderRadius: '8px', marginBottom: '2rem' }}>
+              {errorMsg}
+            </div>
+          )}
+          
+          <ProjectForm 
+            onSubmit={handleSubmit} 
+            submitLabel="Soumettre le projet pour validation" 
+            showStatus={false}
+          />
+        </div>
+      ) : (
+        <div style={{ backgroundColor: 'var(--color-white)', padding: '4rem 2rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', textAlign: 'center' }}>
+          <h2 style={{ color: 'var(--color-primary-900)', marginBottom: '1rem' }}>Prêt à financer votre projet ?</h2>
+          <p style={{ color: 'var(--color-neutral-600)', marginBottom: '2rem', fontSize: '1.1rem', maxWidth: '500px', margin: '0 auto 2rem' }}>
+            Rejoignez notre plateforme pour soumettre votre dossier à nos analystes et lever des fonds auprès de notre communauté d'investisseurs.
+          </p>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+            <button onClick={() => navigate('/inscription')} className="btn btn-primary" style={{ padding: '0.75rem 2rem', fontSize: '1.1rem' }}>
+              Créer un compte
+            </button>
+            <button onClick={() => navigate('/login')} className="btn btn-outline" style={{ padding: '0.75rem 2rem', fontSize: '1.1rem' }}>
+              Se connecter
+            </button>
           </div>
-        )}
-        
-        <ProjectForm 
-          onSubmit={handleSubmit} 
-          submitLabel="Soumettre le projet pour validation" 
-          showStatus={false}
-        />
-      </div>
+        </div>
+      )}
     </div>
   );
 };

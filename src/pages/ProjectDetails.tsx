@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, MapPin, TrendingUp, Clock, AlertTriangle, FileText, Download } from 'lucide-react';
+import { ArrowLeft, MapPin, TrendingUp, Clock, AlertTriangle, FileText, Download, CheckCircle } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import ProjectMap from '../components/ProjectMap';
 
 
@@ -11,6 +12,12 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
   const navigate = useNavigate();
   const [project, setProject] = useState<any>(previewData);
   const [loading, setLoading] = useState(true);
+  const { isAuthenticated, token } = useAuth();
+  const [showInvestForm, setShowInvestForm] = useState(false);
+  const [investAmount, setInvestAmount] = useState<number | ''>('');
+  const [paymentMethod, setPaymentMethod] = useState('BANK_TRANSFER');
+  const [investLoading, setInvestLoading] = useState(false);
+  const [investSuccess, setInvestSuccess] = useState(false);
     
   useEffect(() => {
     if (isPreview && previewData) {
@@ -171,9 +178,115 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
               </div>
             </div>
 
-            <button onClick={() => navigate('/contact')} className="btn btn-primary" style={{ width: '100%', padding: '1rem', fontSize: '1.1rem' }} disabled={project.status === 'FUNDED' || project.status === 'COMPLETED'}>
-              {project.status === 'FUNDED' || project.status === 'COMPLETED' ? t('projectDetails.statusFunded') : t('projectDetails.investBtn')}
-            </button>
+            {!showInvestForm && !investSuccess && (
+              <button 
+                onClick={() => {
+                  if (!isAuthenticated) {
+                    navigate('/login');
+                  } else {
+                    setShowInvestForm(true);
+                  }
+                }} 
+                className="btn btn-primary" 
+                style={{ width: '100%', padding: '1rem', fontSize: '1.1rem', fontWeight: 'bold' }} 
+                disabled={project.status === 'FUNDED' || project.status === 'COMPLETED' || project.status === 'SUBMITTED' || project.status === 'DRAFT'}
+              >
+                {project.status === 'FUNDED' || project.status === 'COMPLETED' ? t('projectDetails.statusFunded') : 
+                 project.status === 'SUBMITTED' || project.status === 'DRAFT' ? 'Projet non ouvert' : 'Investir maintenant'}
+              </button>
+            )}
+
+            {showInvestForm && !investSuccess && (
+              <div style={{ marginTop: '1.5rem', padding: '1.5rem', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                <h4 style={{ margin: '0 0 1rem 0', color: 'var(--color-primary-900)' }}>Finaliser l'investissement</h4>
+                
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '500' }}>Montant (FCFA)</label>
+                  <input 
+                    type="number" 
+                    min={project.minTicket}
+                    value={investAmount} 
+                    onChange={e => setInvestAmount(Number(e.target.value))}
+                    style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '1px solid #cbd5e1' }}
+                    placeholder={`Min. ${project.minTicket.toLocaleString()} FCFA`}
+                  />
+                </div>
+
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '500' }}>Moyen de paiement</label>
+                  <select 
+                    value={paymentMethod} 
+                    onChange={e => setPaymentMethod(e.target.value)}
+                    style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '1px solid #cbd5e1', backgroundColor: 'white' }}
+                  >
+                    <option value="BANK_TRANSFER">Virement Bancaire</option>
+                    <option value="MOBILE_MONEY">Mobile Money (Orange, Wave...)</option>
+                  </select>
+                </div>
+
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <button 
+                    onClick={() => setShowInvestForm(false)} 
+                    className="btn btn-outline" 
+                    style={{ flex: 1, padding: '0.75rem' }}
+                    disabled={investLoading}
+                  >
+                    Annuler
+                  </button>
+                  <button 
+                    onClick={async () => {
+                      if (!investAmount || investAmount < project.minTicket) {
+                        alert(`Le montant minimum est de ${project.minTicket} FCFA`);
+                        return;
+                      }
+                      setInvestLoading(true);
+                      try {
+                        const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/investments`, {
+                          method: 'POST',
+                          headers: { 
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                          },
+                          body: JSON.stringify({
+                            projectId: project.id,
+                            amount: investAmount,
+                            paymentMethod
+                          })
+                        });
+                        if (res.ok) {
+                          setInvestSuccess(true);
+                        } else {
+                          const err = await res.json();
+                          alert(err.message || 'Erreur lors de la création');
+                        }
+                      } catch (error) {
+                        alert('Erreur serveur');
+                      } finally {
+                        setInvestLoading(false);
+                      }
+                    }} 
+                    className="btn btn-primary" 
+                    style={{ flex: 1, padding: '0.75rem' }}
+                    disabled={investLoading}
+                  >
+                    {investLoading ? 'Validation...' : 'Confirmer'}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {investSuccess && (
+              <div style={{ marginTop: '1rem', padding: '1.5rem', backgroundColor: '#dcfce7', borderRadius: '8px', border: '1px solid #16a34a', textAlign: 'center' }}>
+                <CheckCircle size={32} color="#16a34a" style={{ margin: '0 auto 0.5rem' }} />
+                <h4 style={{ margin: '0 0 0.5rem 0', color: '#16a34a' }}>Demande enregistrée !</h4>
+                <p style={{ fontSize: '0.9rem', color: '#15803d', marginBottom: '1rem' }}>
+                  Notre équipe va vous contacter avec les instructions de paiement.
+                </p>
+                <button onClick={() => navigate('/mon-compte')} className="btn btn-primary" style={{ width: '100%' }}>
+                  Suivre mon investissement
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

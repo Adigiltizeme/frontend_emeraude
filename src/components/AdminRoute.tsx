@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Navigate, Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, Users, Settings, User, LogOut, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Users, Settings, User, LogOut, Menu, X, Banknote } from 'lucide-react';
 
 const AdminRoute = () => {
   const { isAuthenticated, isAdmin, logout } = useAuth();
@@ -37,6 +37,7 @@ const AdminRoute = () => {
   const menuItems = [
     { path: '/admin', icon: <LayoutDashboard size={20} />, label: "Vue d'ensemble" },
     { path: '/admin/users', icon: <Users size={20} />, label: "Utilisateurs" },
+    { path: '/admin/investments', icon: <Banknote size={20} />, label: "Investissements" },
     { path: '/admin/settings', icon: <Settings size={20} />, label: "Paramètres du site" },
     { path: '/admin/profile', icon: <User size={20} />, label: "Mon Profil" },
   ];

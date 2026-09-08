@@ -1,40 +1,41 @@
 import { useState, useEffect } from 'react';
-
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Edit, Trash2, Eye, X } from 'lucide-react';
+import { Edit, Trash2, CheckCircle, XCircle, Eye, X } from 'lucide-react';
 import ProjectDetails from '../ProjectDetails';
 
 const AdminDashboard = () => {
-  
+  const { t } = useTranslation();
   const { token } = useAuth();
   const navigate = useNavigate();
   const [projects, setProjects] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  
-  // States for Preview Modal
   const [showPreview, setShowPreview] = useState(false);
   const [previewProject, setPreviewProject] = useState<any>(null);
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects`);
-        if (res.ok) {
-          const data = await res.json();
-          setProjects(data);
-        }
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
+  const fetchProjects = async () => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects`);
+      if (res.ok) {
+        const data = await res.json();
+        // Filtrer pour ne garder que les projets soumis par des utilisateurs (Porteurs de projets)
+        const userProjects = data.filter((p: any) => p.owner !== null && p.owner !== undefined);
+        setProjects(userProjects);
       }
-    };
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchProjects();
   }, []);
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('Êtes-vous sûr de vouloir supprimer ce projet ?')) {
+    if (window.confirm(t('admin.dashboard.confirmDelete', 'Êtes-vous sûr de vouloir supprimer ce projet ?'))) {
       try {
         const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects/${id}`, {
           method: 'DELETE',
@@ -46,6 +47,24 @@ const AdminDashboard = () => {
       } catch (err) {
         console.error(err);
       }
+    }
+  };
+
+  const updateStatus = async (id: string, newStatus: string) => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects/${id}`, {
+        method: 'PATCH',
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+      if (res.ok) {
+        fetchProjects(); // Rafraichir la liste
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -64,10 +83,8 @@ const AdminDashboard = () => {
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ color: 'var(--color-primary-900)', margin: 0 }}>Gestion des Projets</h1>
-        <button onClick={() => navigate('/admin/projects/new')} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Plus size={18} /> Nouveau projet
-        </button>
+        <h1 style={{ color: 'var(--color-primary-900)', margin: 0 }}>Dossiers Porteurs de Projets</h1>
+
       </div>
 
       <div style={{ backgroundColor: 'var(--color-white)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--color-neutral-200)', overflow: 'hidden' }}>
@@ -119,12 +136,24 @@ const AdminDashboard = () => {
                     <td style={{ padding: '1rem', textAlign: 'right' }}>
                       <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', alignItems: 'center' }}>
                         
-                        {/* THE EYE ICON REQUESTED BY THE USER */}
-                        <button 
-                          onClick={() => { setPreviewProject(project); setShowPreview(true); }} 
-                          style={{ background: 'none', border: 'none', color: '#16a34a', cursor: 'pointer', padding: '0.25rem' }} 
-                          title="Aperçu du projet (Modale)"
-                        >
+                        {project.status === 'SUBMITTED' && (
+                          <>
+                            <button 
+                              onClick={() => updateStatus(project.id, 'COLLECTING')}
+                              title="Valider et passer en collecte"
+                              style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', padding: '0.5rem 1rem', backgroundColor: '#16a34a', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
+                              <CheckCircle size={16} /> Valider
+                            </button>
+                            <button 
+                              onClick={() => updateStatus(project.id, 'CANCELLED')}
+                              title="Refuser le dossier"
+                              style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', padding: '0.5rem 1rem', backgroundColor: '#dc2626', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
+                              <XCircle size={16} /> Refuser
+                            </button>
+                          </>
+                        )}
+                        
+                        <button onClick={() => { setPreviewProject(project); setShowPreview(true); }} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', padding: '0.25rem' }} title="Aperçu public">
                           <Eye size={20} />
                         </button>
                         
@@ -146,8 +175,7 @@ const AdminDashboard = () => {
           </div>
         )}
       </div>
-
-      {/* MODAL PREVIEW */}
+      
       {showPreview && previewProject && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, overflowY: 'auto', padding: '2rem' }}>
           <div style={{ backgroundColor: 'white', maxWidth: '1200px', margin: '0 auto', borderRadius: '12px', position: 'relative' }}>

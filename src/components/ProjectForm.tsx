@@ -5,11 +5,12 @@ import { Upload } from 'lucide-react';
 interface ProjectFormProps {
   initialData?: any;
   onSubmit: (data: any, imageFile: File | null) => Promise<void>;
+  onPreview?: (data: any) => void;
   submitLabel: string;
   showStatus?: boolean; // Pour l'admin
 }
 
-const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSubmit, submitLabel, showStatus = false }) => {
+const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSubmit, onPreview, submitLabel, showStatus = false }) => {
   const { t } = useTranslation();
 
   const [formData, setFormData] = useState({
@@ -226,15 +227,39 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSubmit, submit
             <input type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'block', margin: '0 auto' }} />
             {imageFile && <p style={{ marginTop: '1rem', color: 'var(--color-primary-600)', fontWeight: 'bold' }}>Image sélectionnée : {imageFile.name}</p>}
             {initialData?.image && !imageFile && (
-              <p style={{ marginTop: '1rem', color: 'var(--color-neutral-600)' }}>Image actuelle : {initialData.image}</p>
+              <div style={{ marginTop: '1rem', textAlign: 'center' }}>
+                <p style={{ color: 'var(--color-neutral-600)', marginBottom: '0.5rem', wordBreak: 'break-all', fontSize: '0.9rem' }}>
+                  Image actuelle : {initialData.image.substring(0, 40)}...
+                </p>
+                {initialData.image.startsWith('http') && (
+                  <img src={initialData.image} alt="Actuelle" style={{ maxWidth: '200px', maxHeight: '150px', borderRadius: '8px', objectFit: 'cover' }} />
+                )}
+              </div>
             )}
           </div>
         </div>
       </div>
 
-      <button type="submit" disabled={loading} className="btn btn-primary" style={{ padding: '1rem', fontSize: '1.1rem', marginTop: '1rem' }}>
-        {loading ? 'Traitement...' : submitLabel}
-      </button>
+      <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+        {onPreview && (
+          <button 
+            type="button" 
+            onClick={() => onPreview(formData)} 
+            className="btn btn-outline" 
+            style={{ flex: 1, padding: '1rem', fontSize: '1.1rem' }}
+          >
+            Aperçu du projet
+          </button>
+        )}
+        <button 
+          type="submit" 
+          disabled={loading} 
+          className="btn btn-primary" 
+          style={{ flex: 2, padding: '1rem', fontSize: '1.1rem' }}
+        >
+          {loading ? 'Traitement...' : submitLabel}
+        </button>
+      </div>
     </form>
   );
 };

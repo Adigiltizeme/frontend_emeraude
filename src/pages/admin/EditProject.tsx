@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import ProjectForm from '../../components/ProjectForm';
+import ProjectDetails from '../ProjectDetails';
+import { X } from 'lucide-react';
 
 const EditProject = () => {
   const { id } = useParams();
@@ -12,6 +14,8 @@ const EditProject = () => {
   const [error, setError] = useState('');
   const [initialData, setInitialData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewData, setPreviewData] = useState<any>(null);
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects/${id}`)
@@ -82,10 +86,24 @@ const EditProject = () => {
         <ProjectForm 
           initialData={initialData}
           onSubmit={handleSubmit}
-          submitLabel={t('admin.projectForm.btnSave')}
+          onPreview={(data) => { setPreviewData(data); setShowPreview(true); }}
+          submitLabel={t('admin.projectForm.btnSave', 'Enregistrer les modifications')}
           showStatus={true}
         />
       </div>
+      
+      {showPreview && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, overflowY: 'auto', padding: '2rem' }}>
+          <div style={{ backgroundColor: 'white', maxWidth: '1200px', margin: '0 auto', borderRadius: '12px', position: 'relative' }}>
+            <button onClick={() => setShowPreview(false)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', cursor: 'pointer', zIndex: 10 }}>
+              <X size={24} />
+            </button>
+            <div style={{ pointerEvents: 'none' }}>
+              <ProjectDetails isPreview={true} previewData={{ ...initialData, ...previewData }} />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

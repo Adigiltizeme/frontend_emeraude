@@ -3,12 +3,16 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import ProjectForm from '../../components/ProjectForm';
+import ProjectDetails from '../ProjectDetails';
+import { X } from 'lucide-react';
 
 const CreateProject = () => {
   const { t } = useTranslation();
   const { token } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState('');
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewData, setPreviewData] = useState<any>(null);
 
   const handleSubmit = async (projectData: any, imageFile: File | null) => {
     setError('');
@@ -64,10 +68,24 @@ const CreateProject = () => {
       <div style={{ backgroundColor: 'var(--color-white)', padding: '3rem', borderRadius: 'var(--radius-lg)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
         <ProjectForm 
           onSubmit={handleSubmit}
-          submitLabel={t('admin.projectForm.btnSave')}
+          onPreview={(data) => { setPreviewData(data); setShowPreview(true); }}
+          submitLabel={t('admin.projectForm.btnCreate', 'Créer le projet')}
           showStatus={true}
         />
       </div>
+      
+      {showPreview && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, overflowY: 'auto', padding: '2rem' }}>
+          <div style={{ backgroundColor: 'white', maxWidth: '1200px', margin: '0 auto', borderRadius: '12px', position: 'relative' }}>
+            <button onClick={() => setShowPreview(false)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', cursor: 'pointer', zIndex: 10 }}>
+              <X size={24} />
+            </button>
+            <div style={{ pointerEvents: 'none' }}>
+              <ProjectDetails isPreview={true} previewData={previewData} />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

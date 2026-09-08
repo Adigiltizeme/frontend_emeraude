@@ -53,15 +53,16 @@ const AdminInvestments = () => {
   };
 
   return (
-    <div>
-      <h2 style={{ color: 'var(--color-primary-900)', marginBottom: '2rem' }}>Gestion des Investissements</h2>
+    <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+      <h1 style={{ color: 'var(--color-primary-900)', margin: 0, marginBottom: '2rem' }}>Gestion des Investissements</h1>
 
       {loading ? (
         <p>Chargement des données...</p>
       ) : investments.length === 0 ? (
         <p>Aucun investissement trouvé.</p>
       ) : (
-        <div style={{ backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+        <div style={{ backgroundColor: 'var(--color-white)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--color-neutral-200)', overflow: 'hidden' }}>
+          <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
             <thead>
               <tr style={{ backgroundColor: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
@@ -105,6 +106,7 @@ const AdminInvestments = () => {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
     </div>

@@ -283,7 +283,11 @@
       "DRAFT": "Brouillon",
       "COLLECTING": "En collecte",
       "FUNDED": "Financé",
-      "COMPLETED": "Terminé"
+      "COMPLETED": "Terminé",
+      "SUBMITTED": "En attente",
+      "CANCELLED": "Refusé/Annulé",
+      "PENDING": "En attente",
+      "CONFIRMED": "Validé"
     },
     "manageUsers": {
       "title": "Gestion des Utilisateurs / Investisseurs",

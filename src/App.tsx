@@ -19,6 +19,7 @@ import EditUser from './pages/admin/EditUser';
 import Profile from './pages/admin/Profile';
 import AdminSettings from './pages/admin/AdminSettings';
 import AdminInvestments from './pages/admin/AdminInvestments';
+import AdminProjects from './pages/admin/AdminProjects';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import UserDashboard from './pages/UserDashboard';
@@ -66,7 +67,7 @@ function App() {
                 <Route path="projects/new" element={<CreateProject />} />
                 <Route path="projects/edit/:id" element={<EditProject />} />
                 <Route path="users" element={<ManageUsers />} />
-                <Route path="investments" element={<AdminInvestments />} />
+                <Route path="investments" element={<AdminInvestments />} /><Route path="projects" element={<AdminProjects />} />
                 <Route path="users/edit/:id" element={<EditUser />} />
                 <Route path="profile" element={<Profile />} />
                 <Route path="settings" element={<AdminSettings />} />

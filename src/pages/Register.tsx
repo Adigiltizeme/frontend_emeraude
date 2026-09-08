@@ -19,6 +19,7 @@ const Register = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -44,11 +45,14 @@ const Register = () => {
       const data = await response.json();
       login(data.user, data.access_token);
       
-      if (data.user.role === 'ADMIN') {
-        navigate('/admin');
-      } else {
-        navigate('/mon-compte');
-      }
+      setSuccess(true);
+      setTimeout(() => {
+        if (data.user.role === 'ADMIN') {
+          navigate('/admin');
+        } else {
+          navigate('/mon-compte');
+        }
+      }, 2000); // 2 seconds transition
     } catch (err: any) {
       setError(err.message || 'Erreur de connexion');
     } finally {
@@ -114,8 +118,8 @@ const Register = () => {
             </select>
           </div>
 
-          <button type="submit" disabled={loading} className="btn btn-primary" style={{ padding: '1rem', fontSize: '1.1rem', fontWeight: 'bold', display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '1rem' }}>
-            {loading ? t('register.loading') : t('register.btnSubmit')}
+          <button type="submit" disabled={loading || success} className="btn btn-primary" style={{ padding: '1rem', fontSize: '1.1rem', fontWeight: 'bold', display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '1rem', backgroundColor: success ? '#10b981' : undefined, transition: 'all 0.3s ease' }}>
+            {success ? 'Inscription réussie ! Redirection...' : loading ? t('register.loading') : t('register.btnSubmit')}
           </button>
         </form>
 

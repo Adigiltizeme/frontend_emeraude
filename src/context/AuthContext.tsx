@@ -6,6 +6,7 @@ interface User {
   role: 'USER' | 'ADMIN';
   firstName?: string;
   lastName?: string;
+  intention?: string;
 }
 
 interface AuthContextType {

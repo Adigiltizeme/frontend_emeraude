@@ -179,6 +179,10 @@ const Register = () => {
           </button>
         </form>
 
+          <div style={{ marginTop: '2rem', textAlign: 'center', fontSize: '0.875rem', color: 'var(--color-neutral-600)' }}>
+            Déjà inscrit ? <Link to="/login" style={{ color: 'var(--color-primary-600)', fontWeight: 'bold', textDecoration: 'none' }}>Se connecter</Link>
+          </div>
+
         <p style={{ marginTop: '2rem', textAlign: 'center', color: 'var(--color-neutral-600)' }}>
           {t('register.hasAccount')} <Link to="/admin/login" style={{ color: 'var(--color-primary-600)', fontWeight: '600' }}>{t('register.login')}</Link>
         </p>

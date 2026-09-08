@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Save, Settings as SettingsIcon, Mail, Phone, MapPin } from 'lucide-react';
 
 const AdminSettings: React.FC = () => {
-  const navigate = useNavigate();
-  const { token, user } = useAuth();
+  const { token } = useAuth();
   
   const [formData, setFormData] = useState({
     contactEmail: '',
@@ -18,11 +16,6 @@ const AdminSettings: React.FC = () => {
   const [message, setMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
 
   useEffect(() => {
-    if (!token || user?.role !== 'ADMIN') {
-      navigate('/login');
-      return;
-    }
-
     const fetchSettings = async () => {
       try {
         const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/settings`);
@@ -41,7 +34,7 @@ const AdminSettings: React.FC = () => {
       }
     };
     fetchSettings();
-  }, [token, user, navigate]);
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -81,8 +74,8 @@ const AdminSettings: React.FC = () => {
   const labelStyle = { display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#475569' };
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
-      <h1 style={{ fontSize: '2rem', marginBottom: '2rem', color: 'var(--color-neutral-800)' }}>Paramètres du site</h1>
+    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <h1 style={{ fontSize: '2rem', marginBottom: '2rem', color: 'var(--color-neutral-800)', margin: '0 0 2rem 0' }}>Paramètres du site</h1>
 
       {message && (
         <div style={{ 
@@ -100,7 +93,7 @@ const AdminSettings: React.FC = () => {
       <form onSubmit={handleSubmit} style={{ backgroundColor: 'var(--color-white)', padding: '2rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '2rem', paddingBottom: '1rem', borderBottom: '1px solid var(--color-neutral-100)' }}>
           <SettingsIcon size={24} color="var(--color-primary-600)" />
-          <h2 style={{ fontSize: '1.25rem', color: 'var(--color-neutral-800)' }}>Coordonnées Publiques de l'Entreprise</h2>
+          <h2 style={{ fontSize: '1.25rem', color: 'var(--color-neutral-800)', margin: 0 }}>Coordonnées Publiques de l'Entreprise</h2>
         </div>
         <p style={{ color: 'var(--color-neutral-500)', fontSize: '0.875rem', marginBottom: '2rem' }}>
           Ces informations seront affichées publiquement sur la page de contact et dans le pied de page du site web.

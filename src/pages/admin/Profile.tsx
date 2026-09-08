@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Save, User as UserIcon, Lock } from 'lucide-react';
 
 const Profile: React.FC = () => {
-  
-  const navigate = useNavigate();
   const { token, user } = useAuth();
   
   const [formData, setFormData] = useState({
@@ -22,21 +19,14 @@ const Profile: React.FC = () => {
   const [message, setMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
 
   useEffect(() => {
-    if (!token || !user) {
-      navigate('/login');
-      return;
-    }
-
     const fetchProfile = async () => {
       try {
-        // We use the admin users list or we could just fetch the current user
-        // But since we are admin, we can fetch all users and find ourselves
         const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/auth/users`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) {
           const users = await res.json();
-          const me = users.find((u: any) => u.id === user.id);
+          const me = users.find((u: any) => u.id === user?.id);
           if (me) {
             setFormData(prev => ({
               ...prev,
@@ -53,8 +43,8 @@ const Profile: React.FC = () => {
         setLoading(false);
       }
     };
-    fetchProfile();
-  }, [token, user, navigate]);
+    if (token) fetchProfile();
+  }, [token, user]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -72,7 +62,6 @@ const Profile: React.FC = () => {
 
     setSaving(true);
     
-    // Prepare payload
     const payload: any = {
       firstName: formData.firstName,
       lastName: formData.lastName,
@@ -113,8 +102,8 @@ const Profile: React.FC = () => {
   const labelStyle = { display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#475569' };
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem 1rem' }}>
-      <h1 style={{ fontSize: '2rem', marginBottom: '2rem', color: 'var(--color-neutral-800)' }}>Mon Profil</h1>
+    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <h1 style={{ fontSize: '2rem', marginBottom: '2rem', color: 'var(--color-neutral-800)', margin: '0 0 2rem 0' }}>Mon Profil</h1>
 
       {message && (
         <div style={{ 
@@ -130,11 +119,10 @@ const Profile: React.FC = () => {
       )}
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '2rem' }}>
-        {/* Informations Personnelles */}
         <form onSubmit={handleSubmit} style={{ backgroundColor: 'var(--color-white)', padding: '2rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid var(--color-neutral-100)' }}>
             <UserIcon size={24} color="var(--color-primary-600)" />
-            <h2 style={{ fontSize: '1.25rem', color: 'var(--color-neutral-800)' }}>Informations Personnelles</h2>
+            <h2 style={{ fontSize: '1.25rem', color: 'var(--color-neutral-800)', margin: 0 }}>Informations Personnelles</h2>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
@@ -161,7 +149,7 @@ const Profile: React.FC = () => {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid var(--color-neutral-100)', marginTop: '3rem' }}>
             <Lock size={24} color="var(--color-primary-600)" />
-            <h2 style={{ fontSize: '1.25rem', color: 'var(--color-neutral-800)' }}>Sécurité</h2>
+            <h2 style={{ fontSize: '1.25rem', color: 'var(--color-neutral-800)', margin: 0 }}>Sécurité</h2>
           </div>
           <p style={{ color: 'var(--color-neutral-500)', fontSize: '0.875rem', marginBottom: '1.5rem' }}>Laissez ces champs vides si vous ne souhaitez pas modifier votre mot de passe.</p>
 

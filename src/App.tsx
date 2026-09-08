@@ -10,7 +10,6 @@ import HowItWorks from './pages/HowItWorks';
 import Contact from './pages/Contact';
 import Legal from './pages/Legal';
 import ProjectDetails from './pages/ProjectDetails';
-import AdminLogin from './pages/admin/Login';
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminRoute from './components/AdminRoute';
 import CreateProject from './pages/admin/CreateProject';
@@ -20,39 +19,29 @@ import EditUser from './pages/admin/EditUser';
 import Profile from './pages/admin/Profile';
 import AdminSettings from './pages/admin/AdminSettings';
 import Register from './pages/Register';
+import Login from './pages/Login';
+import UserDashboard from './pages/UserDashboard';
+import Header from './components/Header';
+import InteractiveBackground from './components/InteractiveBackground';
 
 function App() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
-  const toggleLanguage = () => {
-    i18n.changeLanguage(i18n.language === 'fr' ? 'en' : 'fr');
-  };
-
+  
   return (
     <AuthProvider>
       <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <div className="app-container">
-          <header className="navbar">
-            <div className="logo">
-              <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>Emeraude Africa</Link>
-            </div>
-            <nav style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <Link to="/">{t('nav.home')}</Link>
-              <Link to="/comment-ca-marche">{t('nav.howItWorks')}</Link>
-              <Link to="/investir">{t('nav.invest')}</Link>
-              <Link to="/financer">{t('nav.finance')}</Link>
-              <Link to="/inscription" style={{ fontWeight: 'bold', color: 'var(--color-primary-600)' }}>{t('nav.register')}</Link>
-              <button onClick={toggleLanguage} className="btn btn-outline" style={{ padding: '0.25rem 0.5rem', marginLeft: '1rem', fontSize: '0.875rem' }}>
-                {i18n.language.toUpperCase()}
-              </button>
-            </nav>
-          </header>
+          <InteractiveBackground />
+          <Header />
 
           <main>
             <Routes>
               {/* Public Routes */}
               <Route path="/" element={<Home />} />
               <Route path="/inscription" element={<Register />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/mon-compte" element={<UserDashboard />} />
               <Route path="/investir" element={<Invest />} />
               <Route path="/projet/:id" element={<ProjectDetails />} />
               <Route path="/financer" element={<Finance />} />
@@ -63,7 +52,7 @@ function App() {
               <Route path="/mentions-legales" element={<Legal />} />
 
               {/* Admin Routes */}
-              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin/login" element={<Login />} />
               <Route path="/admin" element={<AdminRoute />}>
                 <Route index element={<AdminDashboard />} />
                 <Route path="projects/new" element={<CreateProject />} />

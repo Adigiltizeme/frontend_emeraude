@@ -44,8 +44,12 @@ const Register = () => {
       }
 
       const data = await response.json();
-      login(data.access_token, data.user);
-      setIsRegistered(true);
+        login(data.user, data.access_token);
+        if (data.user.role === 'ADMIN') {
+          navigate('/admin');
+        } else {
+          navigate('/mon-compte');
+        }
     } catch (err: any) {
       setError(err.message || 'Erreur de connexion');
     } finally {

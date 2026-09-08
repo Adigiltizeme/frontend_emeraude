@@ -21,12 +21,11 @@ const Profile: React.FC = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/auth/users`, {
+        const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/auth/me`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) {
-          const users = await res.json();
-          const me = users.find((u: any) => u.id === user?.id);
+          const me = await res.json();
           if (me) {
             setFormData(prev => ({
               ...prev,

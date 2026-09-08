@@ -6,35 +6,36 @@ import { Building2, FileText, Settings, Lightbulb, Clock, CheckCircle, XCircle }
 const UserDashboard = () => {
   const { user, token } = useAuth();
   const navigate = useNavigate();
+  
   const [investments, setInvestments] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingInvestments, setLoadingInvestments] = useState(true);
+  const [loadingProjects, setLoadingProjects] = useState(true);
 
-  const isProjectOwner = user?.intention === 'Porteur de projet';
-  const dashboardTitle = isProjectOwner ? 'Mon Espace Porteur de Projet' : 'Mon Espace Investisseur';
+  // L'utilisateur démarre sur l'onglet correspondant à son intention initiale, mais peut basculer
+  const [activeTab, setActiveTab] = useState<'investments' | 'projects'>(
+    user?.intention === 'Porteur de projet' ? 'projects' : 'investments'
+  );
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (isProjectOwner) {
-          const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects/my-projects`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
-          if (res.ok) setProjects(await res.json());
-        } else {
-          const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/investments/my-investments`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
-          if (res.ok) setInvestments(await res.json());
-        }
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    if (token) fetchData();
-  }, [token, isProjectOwner]);
+    if (token) {
+      // Fetch Investments
+      fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/investments/my-investments`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      .then(res => res.json())
+      .then(data => { setInvestments(data); setLoadingInvestments(false); })
+      .catch(err => { console.error(err); setLoadingInvestments(false); });
+
+      // Fetch Projects
+      fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects/my-projects`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      .then(res => res.json())
+      .then(data => { setProjects(data); setLoadingProjects(false); })
+      .catch(err => { console.error(err); setLoadingProjects(false); });
+    }
+  }, [token]);
 
   if (!user) return null;
 
@@ -50,32 +51,82 @@ const UserDashboard = () => {
     }
   };
 
+  const hasInvestments = investments.length > 0;
+  const hasProjects = projects.length > 0;
+
+  // Afficher les deux onglets UNIQUEMENT si l'utilisateur a de l'activité dans les deux, 
+  // OU s'il a une intention X mais a commencé l'activité Y.
+  // Par défaut, s'il n'a rien fait, on ne lui montre que l'onglet de son intention initiale.
+  const showInvestorTab = user?.intention === 'Investissement' || hasInvestments || (!hasProjects && user?.intention === 'Demande de renseignements');
+  const showProjectTab = user?.intention === 'Porteur de projet' || hasProjects;
+  const showTabsHeader = showInvestorTab && showProjectTab;
+
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '3rem 1rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
-        <h1 style={{ color: 'var(--color-primary-900)', margin: 0 }}>{dashboardTitle}</h1>
-      </div>
-
-      <div style={{ backgroundColor: 'var(--color-white)', padding: '2rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', marginBottom: '3rem' }}>
-        <h2 style={{ color: 'var(--color-primary-800)', marginBottom: '1rem', fontSize: '1.5rem', marginTop: 0 }}>Bonjour, {user.firstName || user.email} 👋</h2>
-        <p style={{ color: 'var(--color-neutral-600)', fontSize: '1.1rem' }}>
-          Bienvenue sur votre espace personnel Emeraude Africa. 
-          Votre profil est actuellement en cours de vérification par nos équipes.
+      
+      <div style={{ backgroundColor: 'var(--color-white)', padding: '2rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', marginBottom: '2rem' }}>
+        <h2 style={{ color: 'var(--color-primary-800)', marginBottom: '0.5rem', fontSize: '1.5rem', marginTop: 0 }}>Bonjour, {user.firstName || user.email} 👋</h2>
+        <p style={{ color: 'var(--color-neutral-600)', fontSize: '1.1rem', margin: 0 }}>
+          Bienvenue sur votre espace personnel Emeraude Africa.
         </p>
       </div>
 
+      {/* TABS CONTROLLER (Uniquement si les deux sont pertinents) */}
+      {showTabsHeader && (
+        <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', borderBottom: '2px solid var(--color-neutral-200)' }}>
+          <button 
+            onClick={() => setActiveTab('investments')}
+            style={{ 
+              padding: '1rem 2rem', 
+              backgroundColor: 'transparent', 
+              border: 'none', 
+              borderBottom: activeTab === 'investments' ? '3px solid var(--color-primary-600)' : '3px solid transparent',
+              color: activeTab === 'investments' ? 'var(--color-primary-800)' : 'var(--color-neutral-500)',
+              fontWeight: activeTab === 'investments' ? 'bold' : 'normal',
+              fontSize: '1.1rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              marginBottom: '-2px'
+            }}>
+            <Building2 size={20} /> Vue Investisseur
+          </button>
+
+          <button 
+            onClick={() => setActiveTab('projects')}
+            style={{ 
+              padding: '1rem 2rem', 
+              backgroundColor: 'transparent', 
+              border: 'none', 
+              borderBottom: activeTab === 'projects' ? '3px solid var(--color-primary-600)' : '3px solid transparent',
+              color: activeTab === 'projects' ? 'var(--color-primary-800)' : 'var(--color-neutral-500)',
+              fontWeight: activeTab === 'projects' ? 'bold' : 'normal',
+              fontSize: '1.1rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              marginBottom: '-2px'
+            }}>
+            <Lightbulb size={20} /> Vue Porteur de Projet
+          </button>
+        </div>
+      )}
+
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
         
-        {/* CARTE DYNAMIQUE */}
+        {/* CARTE DYNAMIQUE (INVESTISSEMENTS OU PROJETS) */}
         <div style={{ backgroundColor: 'var(--color-white)', padding: '2rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-neutral-200)', gridColumn: '1 / -1' }}>
-          {isProjectOwner ? (
+          
+          {activeTab === 'projects' ? (
             <>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
                 <Lightbulb size={32} color="var(--color-primary-500)" />
                 <h3 style={{ color: 'var(--color-neutral-800)', margin: 0, fontSize: '1.5rem' }}>Mes Projets Soumis</h3>
               </div>
               
-              {loading ? <p>Chargement...</p> : projects.length === 0 ? (
+              {loadingProjects ? <p>Chargement...</p> : !hasProjects ? (
                 <div>
                   <p style={{ color: 'var(--color-neutral-500)' }}>Vous n'avez pas encore soumis de projet. Déposez votre dossier pour étude.</p>
                   <button onClick={() => navigate('/financer')} className="btn btn-primary" style={{ marginTop: '1rem' }}>Soumettre un projet</button>
@@ -102,7 +153,7 @@ const UserDashboard = () => {
                 <h3 style={{ color: 'var(--color-neutral-800)', margin: 0, fontSize: '1.5rem' }}>Mes Investissements</h3>
               </div>
               
-              {loading ? <p>Chargement...</p> : investments.length === 0 ? (
+              {loadingInvestments ? <p>Chargement...</p> : !hasInvestments ? (
                 <div>
                   <p style={{ color: 'var(--color-neutral-500)' }}>Vous n'avez pas encore d'investissement actif. Explorez nos projets pour commencer.</p>
                   <button onClick={() => navigate('/investir')} className="btn btn-primary" style={{ marginTop: '1rem' }}>Découvrir les projets</button>
@@ -134,7 +185,7 @@ const UserDashboard = () => {
           <FileText size={32} color="var(--color-neutral-400)" style={{ marginBottom: '1rem' }} />
           <h3 style={{ color: 'var(--color-neutral-800)', marginBottom: '0.5rem', marginTop: 0 }}>Mes Documents</h3>
           <p style={{ color: 'var(--color-neutral-500)' }}>
-            {isProjectOwner ? 'Vos contrats de financement apparaîtront ici.' : 'Vos contrats et rapports financiers apparaîtront ici.'}
+            Vos contrats de financement apparaîtront ici.
           </p>
           <button className="btn btn-outline" disabled style={{ marginTop: '1.5rem', width: '100%' }}>Bientôt disponible</button>
         </div>

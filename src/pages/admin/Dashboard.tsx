@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
-import { Plus, Edit, Trash2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Plus, Edit, Trash2, CheckCircle, XCircle } from 'lucide-react';
 
 const AdminDashboard = () => {
   const { t } = useTranslation();
@@ -11,31 +11,30 @@ const AdminDashboard = () => {
   const [projects, setProjects] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects`);
-        if (res.ok) {
-          const data = await res.json();
-          setProjects(data);
-        }
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
+  const fetchProjects = async () => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects`);
+      if (res.ok) {
+        const data = await res.json();
+        setProjects(data);
       }
-    };
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchProjects();
   }, []);
 
   const handleDelete = async (id: string) => {
-    if (window.confirm(t('admin.dashboard.confirmDelete'))) {
+    if (window.confirm(t('admin.dashboard.confirmDelete', 'Êtes-vous sûr de vouloir supprimer ce projet ?'))) {
       try {
         const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects/${id}`, {
           method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+          headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) {
           setProjects(projects.filter(p => p.id !== id));
@@ -46,57 +45,127 @@ const AdminDashboard = () => {
     }
   };
 
+  const updateStatus = async (id: string, newStatus: string) => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects/${id}`, {
+        method: 'PATCH',
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+      if (res.ok) {
+        fetchProjects(); // Rafraichir la liste
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const renderStatus = (status: string) => {
+    switch (status) {
+      case 'DRAFT': return <span style={{ padding: '4px 8px', borderRadius: '4px', backgroundColor: '#f1f5f9', color: '#64748b', fontSize: '0.85rem', fontWeight: 'bold' }}>Brouillon</span>;
+      case 'SUBMITTED': return <span style={{ padding: '4px 8px', borderRadius: '4px', backgroundColor: '#fef3c7', color: '#d97706', fontSize: '0.85rem', fontWeight: 'bold' }}>En attente</span>;
+      case 'COLLECTING': return <span style={{ padding: '4px 8px', borderRadius: '4px', backgroundColor: '#dcfce7', color: '#16a34a', fontSize: '0.85rem', fontWeight: 'bold' }}>En collecte</span>;
+      case 'FUNDED': return <span style={{ padding: '4px 8px', borderRadius: '4px', backgroundColor: '#dbeafe', color: '#2563eb', fontSize: '0.85rem', fontWeight: 'bold' }}>Financé</span>;
+      case 'COMPLETED': return <span style={{ padding: '4px 8px', borderRadius: '4px', backgroundColor: '#f3e8ff', color: '#9333ea', fontSize: '0.85rem', fontWeight: 'bold' }}>Terminé</span>;
+      case 'CANCELLED': return <span style={{ padding: '4px 8px', borderRadius: '4px', backgroundColor: '#fee2e2', color: '#dc2626', fontSize: '0.85rem', fontWeight: 'bold' }}>Refusé</span>;
+      default: return <span>{status}</span>;
+    }
+  };
+
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ color: 'var(--color-primary-900)', margin: 0 }}>Projets</h1>
+        <h1 style={{ color: 'var(--color-primary-900)', margin: 0 }}>Gestion des Projets</h1>
         <button onClick={() => navigate('/admin/projects/new')} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Plus size={18} /> {t('admin.dashboard.newProject')}
+          <Plus size={18} /> {t('admin.dashboard.newProject', 'Nouveau projet')}
         </button>
       </div>
 
       <div style={{ backgroundColor: 'var(--color-white)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--color-neutral-200)', overflow: 'hidden' }}>
         {loading ? (
-          <div style={{ padding: '2rem', textAlign: 'center' }}>{t('admin.dashboard.loading')}</div>
+          <div style={{ padding: '2rem', textAlign: 'center' }}>Chargement...</div>
         ) : projects.length === 0 ? (
-          <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-neutral-600)' }}>{t('admin.dashboard.noProjects')}</div>
+          <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-neutral-600)' }}>Aucun projet trouvé.</div>
         ) : (
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr style={{ backgroundColor: 'var(--color-neutral-100)', borderBottom: '1px solid var(--color-neutral-200)' }}>
-                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600', color: 'var(--color-neutral-700)' }}>{t('admin.dashboard.tableTitle')}</th>
-                <th style={{ padding: '1rem', textAlign: 'left', fontWeight: '600', color: 'var(--color-neutral-700)' }}>{t('admin.dashboard.tableStatus')}</th>
-                <th style={{ padding: '1rem', textAlign: 'right', fontWeight: '600', color: 'var(--color-neutral-700)' }}>{t('admin.dashboard.tableActions')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {projects.map((project) => (
-                <tr key={project.id} style={{ borderBottom: '1px solid var(--color-neutral-100)' }}>
-                  <td style={{ padding: '1rem', fontWeight: '500' }}>{project.title}</td>
-                  <td style={{ padding: '1rem' }}>
-                    <span style={{
-                      padding: '0.25rem 0.75rem',
-                      borderRadius: '999px',
-                      fontSize: '0.875rem',
-                      fontWeight: '500',
-                      backgroundColor: project.status === 'COMPLETED' ? '#dcfce7' : project.status === 'FUNDED' ? '#dbeafe' : project.status === 'COLLECTING' ? '#fef9c3' : '#f1f5f9',
-                      color: project.status === 'COMPLETED' ? '#166534' : project.status === 'FUNDED' ? '#1e40af' : project.status === 'COLLECTING' ? '#854d0e' : '#475569'
-                    }}>
-                      {t(`admin.status.${project.status}`)}
-                    </span>
-                  </td>
-                  <td style={{ padding: '1rem', textAlign: 'right' }}>
-                    <Link to={`/admin/projects/edit/${project.id}`} style={{ display: 'inline-flex', padding: '0.5rem', color: 'var(--color-primary-600)', textDecoration: 'none', marginRight: '0.5rem' }}>
-                      <Edit size={18} />
-                    </Link>
-                    <button onClick={() => handleDelete(project.id)} style={{ padding: '0.5rem', color: '#dc2626', background: 'none', border: 'none', cursor: 'pointer' }}>
-                      <Trash2 size={18} />
-                    </button>
-                  </td>
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+              <thead>
+                <tr style={{ backgroundColor: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
+                  <th style={{ padding: '1rem', color: '#475569', fontWeight: '600' }}>Porteur de projet</th>
+                  <th style={{ padding: '1rem', color: '#475569', fontWeight: '600' }}>Titre du Projet</th>
+                  <th style={{ padding: '1rem', color: '#475569', fontWeight: '600' }}>Cible (FCFA)</th>
+                  <th style={{ padding: '1rem', color: '#475569', fontWeight: '600' }}>Date</th>
+                  <th style={{ padding: '1rem', color: '#475569', fontWeight: '600' }}>Statut</th>
+                  <th style={{ padding: '1rem', color: '#475569', fontWeight: '600', textAlign: 'right' }}>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {projects.map((project) => (
+                  <tr key={project.id} style={{ borderBottom: '1px solid #e2e8f0' }}>
+                    
+                    <td style={{ padding: '1rem' }}>
+                      {project.owner ? (
+                        <>
+                          <div style={{ fontWeight: '500', color: '#0f172a' }}>{project.owner.firstName} {project.owner.lastName}</div>
+                          <div style={{ fontSize: '0.85rem', color: '#64748b' }}>{project.owner.email}</div>
+                          <div style={{ fontSize: '0.85rem', color: '#64748b' }}>{project.owner.phone}</div>
+                        </>
+                      ) : (
+                        <div style={{ color: '#94a3b8', fontStyle: 'italic' }}>Équipe Emeraude</div>
+                      )}
+                    </td>
+
+                    <td style={{ padding: '1rem', color: '#0f172a', fontWeight: '500' }}>{project.title}</td>
+                    
+                    <td style={{ padding: '1rem', fontWeight: 'bold', color: 'var(--color-primary-700)' }}>
+                      {project.target?.toLocaleString() || 0}
+                    </td>
+
+                    <td style={{ padding: '1rem', color: '#475569' }}>
+                      {new Date(project.createdAt).toLocaleDateString()}
+                    </td>
+                    
+                    <td style={{ padding: '1rem' }}>{renderStatus(project.status)}</td>
+                    
+                    <td style={{ padding: '1rem', textAlign: 'right' }}>
+                      <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', alignItems: 'center' }}>
+                        
+                        {project.status === 'SUBMITTED' && (
+                          <>
+                            <button 
+                              onClick={() => updateStatus(project.id, 'COLLECTING')}
+                              title="Valider et passer en collecte"
+                              style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', padding: '0.5rem 1rem', backgroundColor: '#16a34a', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
+                              <CheckCircle size={16} /> Valider
+                            </button>
+                            <button 
+                              onClick={() => updateStatus(project.id, 'CANCELLED')}
+                              title="Refuser le dossier"
+                              style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', padding: '0.5rem 1rem', backgroundColor: '#dc2626', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
+                              <XCircle size={16} /> Refuser
+                            </button>
+                          </>
+                        )}
+                        
+                        <button onClick={() => navigate(`/admin/projects/edit/${project.id}`)} style={{ background: 'none', border: 'none', color: 'var(--color-primary-600)', cursor: 'pointer', padding: '0.25rem' }} title="Modifier">
+                          <Edit size={20} />
+                        </button>
+                        
+                        <button onClick={() => handleDelete(project.id)} style={{ background: 'none', border: 'none', color: '#dc2626', cursor: 'pointer', padding: '0.25rem' }} title="Supprimer">
+                          <Trash2 size={20} />
+                        </button>
+                        
+                      </div>
+                    </td>
+
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

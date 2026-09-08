@@ -3,34 +3,25 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle } from 'lucide-react';
+import ProjectForm from '../components/ProjectForm';
 
 const Finance = () => {
   const { t } = useTranslation();
   const { isAuthenticated, token } = useAuth();
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    target: '',
-    location: 'Sénégal',
-  });
-  const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (projectData: any, imageFile: File | null) => {
     if (!isAuthenticated) {
       alert("Vous devez être connecté pour soumettre un projet.");
       navigate('/login');
       return;
     }
 
-    setLoading(true);
+    setErrorMsg('');
+    
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects/submit`, {
         method: 'POST',
@@ -38,18 +29,35 @@ const Finance = () => {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json' 
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(projectData)
       });
-      if (res.ok) {
-        setSuccess(true);
-      } else {
+      
+      if (!res.ok) {
         const err = await res.json();
-        alert(err.message || 'Erreur lors de la soumission');
+        throw new Error(err.message || 'Erreur lors de la création du projet');
       }
-    } catch (error) {
-      alert('Erreur de connexion au serveur');
-    } finally {
-      setLoading(false);
+      
+      const createdProject = await res.json();
+
+      if (imageFile && createdProject.id) {
+        const imageFormData = new FormData();
+        imageFormData.append('file', imageFile);
+
+        const uploadRes = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects/${createdProject.id}/image`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: imageFormData
+        });
+        
+        if (!uploadRes.ok) {
+          console.warn("Le projet a été créé mais l'image n'a pas pu être uploadée.");
+        }
+      }
+
+      setSuccess(true);
+    } catch (error: any) {
+      setErrorMsg(error.message || 'Erreur de connexion au serveur');
+      throw error;
     }
   };
 
@@ -85,60 +93,17 @@ const Finance = () => {
       </div>
 
       <div style={{ backgroundColor: 'var(--color-white)', padding: '3rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)' }}>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Titre du projet</label>
-            <input 
-              type="text" 
-              name="title"
-              required
-              value={formData.title}
-              onChange={handleChange}
-              placeholder="Ex: Construction d'une résidence écologique..." 
-              style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-neutral-400)' }} 
-            />
+        {errorMsg && (
+          <div style={{ backgroundColor: '#fee2e2', color: '#dc2626', padding: '1rem', borderRadius: '8px', marginBottom: '2rem' }}>
+            {errorMsg}
           </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>{t('finance.labelCountry')}</label>
-              <select name="location" value={formData.location} onChange={handleChange} style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-neutral-400)', backgroundColor: 'white' }}>
-                <option value="Sénégal">{t('finance.countrySenegal')}</option>
-                <option value="Côte d'Ivoire">{t('finance.countryCI')}</option>
-                <option value="Autre">{t('finance.countryOther')}</option>
-              </select>
-            </div>
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>{t('finance.labelTarget')} (FCFA)</label>
-              <input 
-                type="number" 
-                name="target"
-                required
-                value={formData.target}
-                onChange={handleChange}
-                placeholder="Ex: 50000000" 
-                style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-neutral-400)' }} 
-              />
-            </div>
-          </div>
-
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>{t('finance.labelDesc')}</label>
-            <textarea 
-              name="description"
-              required
-              value={formData.description}
-              onChange={handleChange}
-              rows={6} 
-              placeholder="Décrivez votre projet, vos objectifs, et ce que vous attendez du financement..." 
-              style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-neutral-400)' }}></textarea>
-          </div>
-
-          <button type="submit" disabled={loading} className="btn btn-primary" style={{ padding: '1rem', fontSize: '1.1rem', marginTop: '1rem' }}>
-            {loading ? 'Envoi en cours...' : t('finance.btnSubmit')}
-          </button>
-        </form>
+        )}
+        
+        <ProjectForm 
+          onSubmit={handleSubmit} 
+          submitLabel="Soumettre le projet pour validation" 
+          showStatus={false}
+        />
       </div>
     </div>
   );

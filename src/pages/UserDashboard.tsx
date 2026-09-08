@@ -61,9 +61,15 @@ const UserDashboard = () => {
   const showProjectTab = user?.intention === 'Porteur de projet' || hasProjects;
   const showTabsHeader = showInvestorTab && showProjectTab;
 
+  const dashboardTitle = activeTab === 'projects' ? 'Mon Espace Porteur de Projet' : 'Mon Espace Investisseur';
+
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '3rem 1rem' }}>
       
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+        <h1 style={{ color: 'var(--color-primary-900)', margin: 0 }}>{dashboardTitle}</h1>
+      </div>
+
       <div style={{ backgroundColor: 'var(--color-white)', padding: '2rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', marginBottom: '2rem' }}>
         <h2 style={{ color: 'var(--color-primary-800)', marginBottom: '0.5rem', fontSize: '1.5rem', marginTop: 0 }}>Bonjour, {user.firstName || user.email} 👋</h2>
         <p style={{ color: 'var(--color-neutral-600)', fontSize: '1.1rem', margin: 0 }}>

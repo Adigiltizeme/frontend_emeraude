@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSiteSettings } from '../context/SettingsContext';
 import { Building2, ShieldCheck, TrendingUp, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,6 +13,8 @@ const HERO_IMAGES = [
 
 const Home = () => {
   const { t } = useTranslation();
+  const { settings } = useSiteSettings();
+  const cleanPhone = settings.contactPhone.replace(/\s+/g, '');
   const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [topProjects, setTopProjects] = useState<any[]>([]);
@@ -213,10 +216,10 @@ const Home = () => {
             {t('home.contactDesc')}
           </p>
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <a href="tel:+221770000000" className="btn" style={{ backgroundColor: 'white', color: '#1e293b', fontWeight: 'bold', padding: '1rem 2rem', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <a href={`tel:${cleanPhone}`} className="btn" style={{ backgroundColor: 'white', color: '#1e293b', fontWeight: 'bold', padding: '1rem 2rem', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <span style={{ fontSize: '1.5rem' }}>📞</span> {t('home.contactCall')}
             </a>
-            <a href="https://wa.me/221770000000" target="_blank" rel="noopener noreferrer" className="btn" style={{ backgroundColor: '#25D366', color: 'white', fontWeight: 'bold', padding: '1rem 2rem', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <a href={`https://wa.me/${cleanPhone.replace('+', '')}`} target="_blank" rel="noopener noreferrer" className="btn" style={{ backgroundColor: '#25D366', color: 'white', fontWeight: 'bold', padding: '1rem 2rem', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <span style={{ fontSize: '1.5rem' }}>💬</span> {t('home.contactWa')}
             </a>
             <a href="/contact" className="btn btn-outline" style={{ color: 'white', borderColor: 'white', fontWeight: 'bold', padding: '1rem 2rem', fontSize: '1.1rem' }}>

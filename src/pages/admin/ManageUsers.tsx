@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
-import { ArrowLeft, Mail, Phone, Calendar, User as UserIcon, Edit, Trash2, Search, Filter, Download } from 'lucide-react';
+import { ArrowLeft, Mail, Phone, Calendar, User as UserIcon, Edit, Trash2, Search, Filter, Download , ShieldCheck, ShieldAlert, Check, X as XIcon, FileText } from 'lucide-react';
 
 interface UserData {
   id: string;
@@ -13,6 +13,8 @@ interface UserData {
   intention: string | null;
   role: string;
   createdAt: string;
+  kycStatus?: string;
+  idDocumentUrl?: string;
 }
 
 const ManageUsers: React.FC = () => {
@@ -49,6 +51,24 @@ const ManageUsers: React.FC = () => {
     };
     fetchUsers();
   }, [navigate, token, user]);
+
+  const handleKycStatus = async (id: string, status: string) => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/auth/users/${id}/kyc`, {
+        method: 'PATCH',
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status })
+      });
+      if (res.ok) {
+        setUsers(users.map(u => u.id === id ? { ...u, kycStatus: status } : u));
+      }
+    } catch(err) {
+      alert("Erreur réseau");
+    }
+  };
 
   const handleDelete = async (id: string, name: string) => {
     if (window.confirm(`Voulez-vous vraiment supprimer l'utilisateur ${name} ?`)) {
@@ -186,6 +206,7 @@ const ManageUsers: React.FC = () => {
                 <th style={{ padding: '1rem', color: 'var(--color-neutral-600)', fontWeight: '600', minWidth: '180px' }}>{t('admin.manageUsers.colIntention')}</th>
                 <th style={{ padding: '1rem', color: 'var(--color-neutral-600)', fontWeight: '600' }}>{t('admin.manageUsers.colRole')}</th>
                 <th style={{ padding: '1rem', color: 'var(--color-neutral-600)', fontWeight: '600' }}>{t('admin.manageUsers.colDate')}</th>
+                <th style={{ padding: '1rem', color: 'var(--color-neutral-600)', fontWeight: '600' }}>KYC</th>
                 <th style={{ padding: '1rem', color: 'var(--color-neutral-600)', fontWeight: '600' }}>Actions</th>
               </tr>
             </thead>
@@ -248,6 +269,24 @@ const ManageUsers: React.FC = () => {
                     </div>
                   </td>
                   <td style={{ padding: '1rem' }}>
+                    {u.kycStatus === 'VERIFIED' && <span style={{ padding: '0.25rem 0.5rem', borderRadius: '4px', backgroundColor: '#dcfce7', color: '#16a34a', fontSize: '0.8rem', fontWeight: 'bold', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}><ShieldCheck size={14} /> Vérifié</span>}
+                    {u.kycStatus === 'REJECTED' && <span style={{ padding: '0.25rem 0.5rem', borderRadius: '4px', backgroundColor: '#fee2e2', color: '#dc2626', fontSize: '0.8rem', fontWeight: 'bold', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}><ShieldAlert size={14} /> Refusé</span>}
+                    {u.kycStatus === 'UNVERIFIED' && <span style={{ padding: '0.25rem 0.5rem', borderRadius: '4px', backgroundColor: '#f1f5f9', color: '#64748b', fontSize: '0.8rem', fontWeight: 'bold' }}>Non vérifié</span>}
+                    {(!u.kycStatus || u.kycStatus === 'PENDING') && (
+                      <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                        {u.idDocumentUrl ? (
+                          <>
+                            <a href={u.idDocumentUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary-600)', display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.85rem' }}><FileText size={16} /> Doc</a>
+                            <button onClick={() => handleKycStatus(u.id, 'VERIFIED')} style={{ border: 'none', background: '#16a34a', color: 'white', borderRadius: '4px', cursor: 'pointer', padding: '0.2rem' }} title="Valider"><Check size={16} /></button>
+                            <button onClick={() => handleKycStatus(u.id, 'REJECTED')} style={{ border: 'none', background: '#dc2626', color: 'white', borderRadius: '4px', cursor: 'pointer', padding: '0.2rem' }} title="Refuser"><XIcon size={16} /></button>
+                          </>
+                        ) : (
+                          <span style={{ padding: '0.25rem 0.5rem', borderRadius: '4px', backgroundColor: '#fef3c7', color: '#d97706', fontSize: '0.8rem', fontWeight: 'bold' }}>En attente (sans doc)</span>
+                        )}
+                      </div>
+                    )}
+                  </td>
+                  <td style={{ padding: '1rem', textAlign: 'right' }}>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
                       <button onClick={() => navigate(`/admin/users/edit/${u.id}`)} className="btn btn-outline" title="Modifier" style={{ padding: '0.5rem', color: 'var(--color-primary-600)', borderColor: 'var(--color-primary-200)' }}>
                         <Edit size={16} />

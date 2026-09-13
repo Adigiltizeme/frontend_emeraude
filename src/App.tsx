@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AuthProvider } from './context/AuthContext';
+import { SettingsProvider } from './context/SettingsContext';
 import Home from './pages/Home';
 import Invest from './pages/Invest';
 import Finance from './pages/Finance';
@@ -34,7 +35,8 @@ function App() {
   
   return (
     <AuthProvider>
-      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <SettingsProvider>
+        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <div className="app-container">
           <InteractiveBackground />
           <Header />
@@ -88,6 +90,7 @@ function App() {
           </footer>
         </div>
       </BrowserRouter>
+      </SettingsProvider>
     </AuthProvider>
   );
 }

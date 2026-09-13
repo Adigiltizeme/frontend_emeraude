@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Save, User as UserIcon, Lock, ShieldCheck } from 'lucide-react';
+import { Save, User as UserIcon, Lock, ShieldCheck, Upload } from 'lucide-react';
 
 const UserProfile: React.FC = () => {
   const { token, user } = useAuth();
@@ -15,6 +15,9 @@ const UserProfile: React.FC = () => {
   });
   
   const [loading, setLoading] = useState(true);
+  const [kycData, setKycData] = useState({ status: 'UNVERIFIED', url: null });
+  const [kycFile, setKycFile] = useState<File | null>(null);
+  const [kycUploading, setKycUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
 
@@ -34,6 +37,7 @@ const UserProfile: React.FC = () => {
               phone: me.phone || '',
               email: me.email || ''
             }));
+            setKycData({ status: me.kycStatus || 'UNVERIFIED', url: me.idDocumentUrl || null });
           }
         }
       } catch (err) {
@@ -44,6 +48,32 @@ const UserProfile: React.FC = () => {
     };
     if (token) fetchProfile();
   }, [token, user]);
+
+  const handleKycUpload = async () => {
+    if (!kycFile) return;
+    setKycUploading(true);
+    setMessage(null);
+    try {
+      const formData = new FormData();
+      formData.append('document', kycFile);
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/auth/kyc`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData
+      });
+      if (res.ok) {
+        setMessage({ type: 'success', text: 'Document envoyé avec succès. En attente de validation.' });
+        setKycData(prev => ({ ...prev, status: 'PENDING' }));
+        setKycFile(null);
+      } else {
+        setMessage({ type: 'error', text: 'Erreur lors de l\'envoi du document.' });
+      }
+    } catch (err) {
+      setMessage({ type: 'error', text: 'Erreur réseau.' });
+    } finally {
+      setKycUploading(false);
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -144,6 +174,50 @@ const UserProfile: React.FC = () => {
               <label style={labelStyle}>Téléphone</label>
               <input type="tel" name="phone" value={formData.phone} onChange={handleChange} style={inputStyle} />
             </div>
+          </div>
+
+          {/* KYC Section */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid var(--color-neutral-100)', marginTop: '3rem' }}>
+            <ShieldCheck size={24} color="var(--color-primary-600)" />
+            <h2 style={{ fontSize: '1.25rem', color: 'var(--color-neutral-800)', margin: 0 }}>Vérification d'identité (KYC)</h2>
+          </div>
+          
+          <div style={{ padding: '1.5rem', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '2rem' }}>
+            {kycData.status === 'VERIFIED' && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#16a34a', fontWeight: 'bold' }}>
+                <ShieldCheck size={20} /> Votre identité est vérifiée.
+              </div>
+            )}
+            
+            {kycData.status === 'PENDING' && (
+              <div style={{ color: '#d97706', fontWeight: 'bold' }}>
+                Votre document est en cours de vérification par notre équipe.
+              </div>
+            )}
+            
+            {kycData.status === 'REJECTED' && (
+              <div style={{ color: '#dc2626', fontWeight: 'bold', marginBottom: '1rem' }}>
+                Votre document a été refusé. Veuillez en soumettre un nouveau (Pièce d'identité ou Passeport lisible).
+              </div>
+            )}
+            
+            {(kycData.status === 'UNVERIFIED' || kycData.status === 'REJECTED') && (
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Uploader une pièce d'identité (CNI, Passeport)</label>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                  <input type="file" accept="image/*,.pdf" onChange={(e) => setKycFile(e.target.files?.[0] || null)} style={{ border: '1px solid #cbd5e1', padding: '0.5rem', borderRadius: '4px', flex: 1, backgroundColor: 'white' }} />
+                  <button 
+                    type="button" 
+                    onClick={handleKycUpload} 
+                    disabled={!kycFile || kycUploading} 
+                    className="btn btn-primary"
+                    style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                  >
+                    <Upload size={18} /> {kycUploading ? 'Envoi...' : 'Envoyer'}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid var(--color-neutral-100)', marginTop: '3rem' }}>

@@ -39,6 +39,119 @@ const UserDashboard = () => {
 
   if (!user) return null;
 
+    const renderTimeline = (type: 'project' | 'investment', item: any) => {
+    let steps: any[] = [];
+    let currentStepIndex = 0;
+    
+    if (type === 'project') {
+      if (item.status === 'REJECTED') {
+        return (
+          <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#fee2e2', borderRadius: '8px', color: '#dc2626', fontWeight: 'bold' }}>
+            Projet refusé. Veuillez contacter le support pour plus d'informations.
+          </div>
+        );
+      }
+      
+      steps = [
+        { label: 'Soumission', key: 'SUBMITTED' },
+        { label: 'Analyse', key: 'DRAFT' },
+        { label: 'En collecte', key: 'COLLECTING' },
+        { label: 'Financé', key: 'FUNDED' },
+        { label: 'Terminé', key: 'COMPLETED' },
+      ];
+      
+      const statusOrder = ['SUBMITTED', 'DRAFT', 'COLLECTING', 'FUNDED', 'COMPLETED'];
+      currentStepIndex = statusOrder.indexOf(item.status);
+      if (currentStepIndex === -1) currentStepIndex = 0;
+      
+    } else {
+      if (item.status === 'REJECTED') {
+        return (
+          <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#fee2e2', borderRadius: '8px', color: '#dc2626', fontWeight: 'bold' }}>
+            Investissement annulé ou refusé.
+          </div>
+        );
+      }
+
+      steps = [
+        { label: 'Promesse', completed: true },
+        { label: 'Fonds reçus', completed: item.status === 'VALIDATED' },
+        { label: 'En collecte', completed: item.project.status === 'FUNDED' || item.project.status === 'COMPLETED' },
+        { label: 'Projet financé', completed: item.project.status === 'FUNDED' || item.project.status === 'COMPLETED' },
+        { label: 'Rendement', completed: item.project.status === 'COMPLETED' },
+      ];
+      
+      // Determine current step based on logic
+      if (item.status === 'PENDING') {
+        currentStepIndex = 1; // Waiting for funds
+      } else if (item.status === 'VALIDATED') {
+        if (item.project.status === 'COLLECTING' || item.project.status === 'DRAFT' || item.project.status === 'SUBMITTED') {
+          currentStepIndex = 2; // Funds received, waiting for project to finish collecting
+        } else if (item.project.status === 'FUNDED') {
+          currentStepIndex = 3;
+        } else if (item.project.status === 'COMPLETED') {
+          currentStepIndex = 4;
+        }
+      }
+    }
+
+    return (
+      <div style={{ marginTop: '1.5rem', padding: '1.5rem', backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+        <h5 style={{ margin: '0 0 1.5rem 0', color: 'var(--color-neutral-700)', fontSize: '0.95rem' }}>Suivi d'avancement</h5>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative' }}>
+          {/* Ligne de fond */}
+          <div style={{ position: 'absolute', top: '12px', left: '10%', right: '10%', height: '4px', backgroundColor: '#e2e8f0', zIndex: 1, borderRadius: '2px' }}></div>
+          
+          {/* Ligne de progression */}
+          <div style={{ position: 'absolute', top: '12px', left: '10%', right: `calc(100% - 10% - (80% / ${steps.length - 1} * ${currentStepIndex}))`, height: '4px', backgroundColor: 'var(--color-primary-500)', zIndex: 2, borderRadius: '2px', transition: 'right 0.5s ease' }}></div>
+
+          {steps.map((step, index) => {
+            let isCompleted = false;
+            let isActive = false;
+            
+            if (type === 'project') {
+              isCompleted = index < currentStepIndex || (index === currentStepIndex && currentStepIndex === steps.length - 1);
+              isActive = index === currentStepIndex && currentStepIndex !== steps.length - 1;
+            } else {
+              isCompleted = step.completed || index < currentStepIndex;
+              isActive = index === currentStepIndex && !step.completed;
+              if (index === steps.length - 1 && step.completed) { isCompleted = true; isActive = false; }
+            }
+
+            return (
+              <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 3, width: '20%' }}>
+                <div style={{ 
+                  width: '28px', 
+                  height: '28px', 
+                  borderRadius: '50%', 
+                  backgroundColor: isCompleted ? 'var(--color-primary-500)' : isActive ? 'white' : 'white',
+                  border: isCompleted ? '2px solid var(--color-primary-500)' : isActive ? '2px solid var(--color-primary-500)' : '2px solid #cbd5e1',
+                  display: 'flex', 
+                  justifyContent: 'center', 
+                  alignItems: 'center',
+                  marginBottom: '0.75rem',
+                  boxShadow: isActive ? '0 0 0 4px rgba(22, 163, 74, 0.1)' : 'none',
+                  transition: 'all 0.3s ease'
+                }}>
+                  {isCompleted ? <CheckCircle size={16} color="white" /> : isActive ? <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: 'var(--color-primary-500)' }} /> : null}
+                </div>
+                <div style={{ 
+                  fontSize: '0.75rem', 
+                  fontWeight: isCompleted || isActive ? 'bold' : 'normal',
+                  color: isCompleted || isActive ? 'var(--color-neutral-800)' : 'var(--color-neutral-400)',
+                  textAlign: 'center',
+                  lineHeight: '1.2'
+                }}>
+                  {step.label}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
   const renderStatus = (status: string) => {
     switch (status) {
       case 'PENDING': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#d97706', fontSize: '0.875rem', fontWeight: '600' }}><Clock size={16} /> En attente</span>;
@@ -140,12 +253,16 @@ const UserDashboard = () => {
               ) : (
                 <div style={{ display: 'grid', gap: '1rem' }}>
                   {projects.map(p => (
-                    <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                      <div>
-                        <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '1.1rem', color: 'var(--color-primary-900)' }}>{p.title}</h4>
-                        <div style={{ color: 'var(--color-neutral-500)', fontSize: '0.9rem' }}>Cible : {p.target.toLocaleString()} FCFA</div>
+                    <div key={p.id} style={{ padding: '1.5rem', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <div>
+                          <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '1.25rem', color: 'var(--color-primary-900)' }}>{p.title}</h4>
+                          <div style={{ color: 'var(--color-neutral-500)', fontSize: '0.95rem' }}>Montant cible : <strong>{p.target.toLocaleString('fr-FR')} FCFA</strong></div>
+                          {p.status === 'COLLECTING' && <div style={{ color: 'var(--color-primary-700)', fontSize: '0.9rem', marginTop: '0.5rem', fontWeight: 'bold' }}>Fonds levés : {(p.raised || 0).toLocaleString('fr-FR')} FCFA</div>}
+                        </div>
+                        <div>{renderStatus(p.status)}</div>
                       </div>
-                      <div>{renderStatus(p.status)}</div>
+                      {renderTimeline('project', p)}
                     </div>
                   ))}
                   <button onClick={() => navigate('/financer')} className="btn btn-outline" style={{ marginTop: '1rem', alignSelf: 'flex-start' }}>Soumettre un nouveau projet</button>
@@ -167,16 +284,19 @@ const UserDashboard = () => {
               ) : (
                 <div style={{ display: 'grid', gap: '1rem' }}>
                   {investments.map(inv => (
-                    <div key={inv.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                      <div>
-                        <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '1.1rem', color: 'var(--color-primary-900)' }}>{inv.project.title}</h4>
-                        <div style={{ color: 'var(--color-neutral-600)', fontWeight: 'bold' }}>{inv.amount.toLocaleString()} FCFA</div>
-                        <div style={{ color: 'var(--color-neutral-500)', fontSize: '0.85rem', marginTop: '0.25rem' }}>Rendement cible : {inv.project.returnRate}%</div>
+                    <div key={inv.id} style={{ padding: '1.5rem', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <div>
+                          <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '1.25rem', color: 'var(--color-primary-900)' }}>{inv.project.title}</h4>
+                          <div style={{ color: 'var(--color-neutral-600)', fontSize: '1.1rem' }}>Investissement : <strong style={{color: 'var(--color-primary-700)'}}>{inv.amount.toLocaleString('fr-FR')} FCFA</strong></div>
+                          <div style={{ color: 'var(--color-neutral-500)', fontSize: '0.9rem', marginTop: '0.25rem' }}>Rendement cible : {inv.project.returnRate}%</div>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                          <div style={{ marginBottom: '0.5rem' }}>{renderStatus(inv.status)}</div>
+                          <span style={{ fontSize: '0.75rem', color: 'var(--color-neutral-400)' }}>Le {new Date(inv.createdAt).toLocaleDateString('fr-FR')}</span>
+                        </div>
                       </div>
-                      <div style={{ textAlign: 'right' }}>
-                        <div style={{ marginBottom: '0.5rem' }}>{renderStatus(inv.status)}</div>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--color-neutral-400)' }}>{new Date(inv.createdAt).toLocaleDateString()}</span>
-                      </div>
+                      {renderTimeline('investment', inv)}
                     </div>
                   ))}
                   <button onClick={() => navigate('/investir')} className="btn btn-primary" style={{ marginTop: '1rem', alignSelf: 'flex-start' }}>Nouvel investissement</button>

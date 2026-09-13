@@ -154,7 +154,7 @@ const AdminDashboard = () => {
             <button onClick={() => setShowPreview(false)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', cursor: 'pointer', zIndex: 10 }}>
               <X size={24} />
             </button>
-            <div style={{ pointerEvents: 'none' }}>
+            <div>
               <ProjectDetails isPreview={true} previewData={previewProject} />
             </div>
           </div>

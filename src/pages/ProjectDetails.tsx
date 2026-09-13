@@ -18,7 +18,8 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
   const [paymentMethod, setPaymentMethod] = useState('BANK_TRANSFER');
   const [investLoading, setInvestLoading] = useState(false);
   const [investSuccess, setInvestSuccess] = useState(false);
-    
+  const [showInvestorsList, setShowInvestorsList] = useState(false);
+
   useEffect(() => {
     if (isPreview && previewData) {
       setProject(previewData);
@@ -32,7 +33,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
         .then(data => {
           setProject(data);
 
-          
+
           setLoading(false);
         })
         .catch(err => {
@@ -131,9 +132,9 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
 
           <div style={{ backgroundColor: 'var(--color-surface)', padding: '2rem', borderRadius: 'var(--radius-lg)', marginTop: '2rem' }}>
             <div style={{ marginBottom: '1rem' }}>
-                <h2 style={{ fontSize: '1.25rem', marginBottom: '0.25rem' }}>Localisation du projet</h2>
-                <p style={{ color: 'var(--color-neutral-600)', fontSize: '0.875rem' }}>{t('projectDetails.mapDisclaimer')}</p>
-              </div>
+              <h2 style={{ fontSize: '1.25rem', marginBottom: '0.25rem' }}>Localisation du projet</h2>
+              <p style={{ color: 'var(--color-neutral-600)', fontSize: '0.875rem' }}>{t('projectDetails.mapDisclaimer')}</p>
+            </div>
             <ProjectMap location={project.location} />
           </div>
         </div>
@@ -178,34 +179,110 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
               </div>
             </div>
 
-            {!showInvestForm && !investSuccess && (
-              <button 
-                onClick={() => {
-                  if (!isAuthenticated) {
-                    navigate('/login');
-                  } else {
-                    setShowInvestForm(true);
-                  }
-                }} 
-                className="btn btn-primary" 
-                style={{ width: '100%', padding: '1rem', fontSize: '1.1rem', fontWeight: 'bold' }} 
-                disabled={project.status === 'FUNDED' || project.status === 'COMPLETED' || project.status === 'SUBMITTED' || project.status === 'DRAFT'}
-              >
-                {project.status === 'FUNDED' || project.status === 'COMPLETED' ? t('projectDetails.statusFunded') : 
-                 project.status === 'SUBMITTED' || project.status === 'DRAFT' ? 'Projet non ouvert' : 'Investir maintenant'}
-              </button>
+            {!isPreview ? (
+              <>
+                {!showInvestForm && !investSuccess && (
+                  <button
+                    onClick={() => {
+                      if (!isAuthenticated) {
+                        navigate('/login');
+                      } else {
+                        setShowInvestForm(true);
+                      }
+                    }}
+                    className="btn btn-primary"
+                    style={{ width: '100%', padding: '1rem', fontSize: '1.1rem', fontWeight: 'bold' }}
+                    disabled={project.status === 'FUNDED' || project.status === 'COMPLETED' || project.status === 'SUBMITTED' || project.status === 'DRAFT'}
+                  >
+                    {project.status === 'FUNDED' || project.status === 'COMPLETED' ? t('projectDetails.statusFunded') :
+                      project.status === 'SUBMITTED' || project.status === 'DRAFT' ? 'Projet non ouvert' : 'Investir maintenant'}
+                  </button>
+                )}
+              </>
+            ) : (
+              <div style={{ padding: '1rem', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', marginTop: '1rem' }}>
+                <h4 style={{ margin: '0 0 1rem 0', color: 'var(--color-primary-800)', fontSize: '1.1rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.5rem' }}>Aperçu Administrateur</h4>
+
+                {project.owner ? (
+                  <div style={{ marginBottom: '1rem' }}>
+                    <div style={{ fontSize: '0.85rem', color: 'var(--color-neutral-500)', marginBottom: '0.25rem' }}>Porteur du projet</div>
+                    <div style={{ fontWeight: '600', color: 'var(--color-neutral-800)' }}>{project.owner.firstName} {project.owner.lastName}</div>
+                    <div style={{ fontSize: '0.9rem', color: 'var(--color-neutral-600)' }}>{project.owner.email}</div>
+                    <div style={{ fontSize: '0.9rem', color: 'var(--color-neutral-600)' }}>{project.owner.phone}</div>
+                    {project.owner.kycStatus === 'VERIFIED' && <span style={{ display: 'inline-block', marginTop: '0.25rem', padding: '0.15rem 0.5rem', borderRadius: '4px', backgroundColor: '#dcfce7', color: '#16a34a', fontSize: '0.75rem', fontWeight: 'bold' }}>KYC Vérifié</span>}
+                  </div>
+                ) : (
+                  <div style={{ marginBottom: '1rem', fontStyle: 'italic', color: 'var(--color-neutral-500)' }}>Projet créé par l'équipe (Interne)</div>
+                )}
+
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                  <button
+                    onClick={() => setShowInvestorsList(!showInvestorsList)}
+                    style={{ flex: 1, backgroundColor: 'white', padding: '0.75rem', borderRadius: '6px', border: '1px solid #e2e8f0', cursor: 'pointer', textAlign: 'left' }}
+                    title="Voir la liste des investisseurs"
+                  >
+                    <div style={{ fontSize: '0.75rem', color: 'var(--color-neutral-500)', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', justifyContent: 'space-between' }}>
+                      Investisseur(s)
+                      <span style={{ fontSize: '0.7rem', color: 'var(--color-primary-600)' }}>{showInvestorsList ? 'Cacher' : 'Voir'}</span>
+                    </div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'var(--color-primary-600)' }}>{project._count?.investments || 0}</div>
+                  </button>
+                  <div style={{ flex: 1, backgroundColor: 'white', padding: '0.75rem', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--color-neutral-500)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Fonds levés</div>
+                    <div style={{ fontSize: '1.1rem', fontWeight: 'bold', color: 'var(--color-primary-600)' }}>{(project.raised || 0).toLocaleString('fr-FR')} FCFA</div>
+                  </div>
+                </div>
+
+                {showInvestorsList && project.investments && project.investments.length > 0 && (
+                  <div style={{ marginTop: '1rem', backgroundColor: 'white', borderRadius: '6px', border: '1px solid #e2e8f0', overflow: 'hidden' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+                      <thead style={{ backgroundColor: '#f1f5f9' }}>
+                        <tr>
+                          <th style={{ padding: '0.5rem', textAlign: 'left', borderBottom: '1px solid #e2e8f0', color: 'var(--color-neutral-600)' }}>Nom</th>
+                          <th style={{ padding: '0.5rem', textAlign: 'right', borderBottom: '1px solid #e2e8f0', color: 'var(--color-neutral-600)' }}>Montant</th>
+                          <th style={{ padding: '0.5rem', textAlign: 'center', borderBottom: '1px solid #e2e8f0', color: 'var(--color-neutral-600)' }}>Statut</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {project.investments.map((inv: any) => (
+                          <tr key={inv.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                            <td style={{ padding: '0.5rem' }}>
+                              <div style={{ fontWeight: '600' }}>{inv.user?.firstName} {inv.user?.lastName}</div>
+                              <div style={{ fontSize: '0.75rem', color: 'var(--color-neutral-500)' }}>{inv.user?.email}</div>
+                            </td>
+                            <td style={{ padding: '0.5rem', textAlign: 'right', fontWeight: 'bold', color: 'var(--color-primary-700)' }}>
+                              {inv.amount.toLocaleString('fr-FR')} FCFA
+                            </td>
+                            <td style={{ padding: '0.5rem', textAlign: 'center' }}>
+                              {inv.status === 'VALIDATED' && <span style={{ color: '#16a34a', fontSize: '0.75rem', fontWeight: 'bold' }}>Validé</span>}
+                              {inv.status === 'PENDING' && <span style={{ color: '#d97706', fontSize: '0.75rem', fontWeight: 'bold' }}>En attente</span>}
+                              {inv.status === 'REJECTED' && <span style={{ color: '#dc2626', fontSize: '0.75rem', fontWeight: 'bold' }}>Refusé</span>}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {showInvestorsList && (!project.investments || project.investments.length === 0) && (
+                  <div style={{ marginTop: '1rem', backgroundColor: 'white', padding: '1rem', borderRadius: '6px', border: '1px solid #e2e8f0', textAlign: 'center', fontSize: '0.85rem', color: 'var(--color-neutral-500)' }}>
+                    Aucun investisseur pour le moment.
+                  </div>
+                )}
+              </div>
             )}
 
             {showInvestForm && !investSuccess && (
               <div style={{ marginTop: '1.5rem', padding: '1.5rem', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
                 <h4 style={{ margin: '0 0 1rem 0', color: 'var(--color-primary-900)' }}>Finaliser l'investissement</h4>
-                
+
                 <div style={{ marginBottom: '1rem' }}>
                   <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '500' }}>Montant (FCFA)</label>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     min={project.minTicket}
-                    value={investAmount} 
+                    value={investAmount}
                     onChange={e => setInvestAmount(Number(e.target.value))}
                     style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '1px solid #cbd5e1' }}
                     placeholder={`Min. ${project.minTicket.toLocaleString()} FCFA`}
@@ -214,8 +291,8 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
 
                 <div style={{ marginBottom: '1.5rem' }}>
                   <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '500' }}>Moyen de paiement</label>
-                  <select 
-                    value={paymentMethod} 
+                  <select
+                    value={paymentMethod}
                     onChange={e => setPaymentMethod(e.target.value)}
                     style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '1px solid #cbd5e1', backgroundColor: 'white' }}
                   >
@@ -225,15 +302,15 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                 </div>
 
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  <button 
-                    onClick={() => setShowInvestForm(false)} 
-                    className="btn btn-outline" 
+                  <button
+                    onClick={() => setShowInvestForm(false)}
+                    className="btn btn-outline"
                     style={{ flex: 1, padding: '0.75rem' }}
                     disabled={investLoading}
                   >
                     Annuler
                   </button>
-                  <button 
+                  <button
                     onClick={async () => {
                       if (!investAmount || investAmount < project.minTicket) {
                         alert(`Le montant minimum est de ${project.minTicket} FCFA`);
@@ -243,7 +320,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                       try {
                         const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/investments`, {
                           method: 'POST',
-                          headers: { 
+                          headers: {
                             'Authorization': `Bearer ${token}`,
                             'Content-Type': 'application/json'
                           },
@@ -264,8 +341,8 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                       } finally {
                         setInvestLoading(false);
                       }
-                    }} 
-                    className="btn btn-primary" 
+                    }}
+                    className="btn btn-primary"
                     style={{ flex: 1, padding: '0.75rem' }}
                     disabled={investLoading}
                   >
@@ -291,8 +368,8 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
         </div>
       </div>
 
-          {/* Section Localisation Approximative */}
-             </div>
+      {/* Section Localisation Approximative */}
+    </div>
   );
 };
 

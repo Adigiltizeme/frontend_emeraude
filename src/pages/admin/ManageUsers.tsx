@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
-import { ArrowLeft, Mail, Phone, Calendar, User as UserIcon, Edit, Trash2, Eye, Search, Filter, Download , ShieldCheck, ShieldAlert, Check, X as XIcon, FileText } from 'lucide-react';
+import { Activity, ArrowLeft, Mail, Phone, Calendar, User as UserIcon, Edit, Trash2, Eye, Search, Filter, Download , ShieldCheck, ShieldAlert, Check, X as XIcon, FileText } from 'lucide-react';
 
 interface UserData {
   id: string;
@@ -322,7 +322,7 @@ const ManageUsers: React.FC = () => {
       {/* Modale de détails utilisateur */}
       {selectedUser && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }} onClick={() => setSelectedUser(null)}>
-          <div style={{ backgroundColor: 'white', borderRadius: '8px', width: '100%', maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto', padding: '2rem' }} onClick={e => e.stopPropagation()}>
+          <div style={{ backgroundColor: 'white', borderRadius: '8px', width: '100%', maxWidth: '700px', maxHeight: '90vh', overflowY: 'auto', padding: '2rem' }} onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '1rem' }}>
               <h2 style={{ margin: 0, color: 'var(--color-neutral-800)' }}>Profil Utilisateur</h2>
               <button onClick={() => setSelectedUser(null)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--color-neutral-500)' }}><XIcon size={24} /></button>
@@ -344,7 +344,7 @@ const ManageUsers: React.FC = () => {
               
               {/* Activité */}
               <div style={{ flex: 1, minWidth: '250px' }}>
-                <h3 style={{ fontSize: '1.1rem', color: 'var(--color-primary-700)', marginBottom: '1rem' }}>Activité sur la plateforme</h3>
+                <h3 style={{ fontSize: '1.1rem', color: 'var(--color-primary-700)', marginBottom: '1rem' }}>Activité Globale</h3>
                 <div style={{ display: 'flex', gap: '1rem' }}>
                   <div style={{ backgroundColor: '#f0fdf4', padding: '1rem', borderRadius: '8px', flex: 1, textAlign: 'center', border: '1px solid #bbf7d0' }}>
                     <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#16a34a' }}>{selectedUser._count?.investments || 0}</div>
@@ -359,59 +359,127 @@ const ManageUsers: React.FC = () => {
             </div>
             
             <div style={{ marginTop: '2rem', backgroundColor: '#f8fafc', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-              <h3 style={{ fontSize: '1.1rem', color: 'var(--color-neutral-800)', marginTop: 0, marginBottom: '1rem' }}>Suivi d'Activité (Confidentiel Administrateur)</h3>
-                
-                {/* Investissements */}
-                <div style={{ marginBottom: '1.5rem' }}>
-                  <h4 style={{ fontSize: '0.95rem', color: 'var(--color-primary-700)', marginBottom: '0.5rem' }}>Portefeuille d'Investissements ({selectedUser.investments?.length || 0})</h4>
-                  {(!selectedUser.investments || selectedUser.investments.length === 0) ? (
-                    <div style={{ fontSize: '0.85rem', color: 'var(--color-neutral-500)', fontStyle: 'italic' }}>Aucun investissement réalisé.</div>
-                  ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                      {selectedUser.investments.map((inv: any) => (
-                        <div key={inv.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'white', padding: '0.75rem', borderRadius: '6px', border: '1px solid #e2e8f0', fontSize: '0.85rem' }}>
+              <style dangerouslySetInnerHTML={{ __html: `
+                .tracking-card {
+                  transition: all 0.3s ease;
+                  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+                  background: linear-gradient(to right, #ffffff, #f8fafc);
+                }
+                .tracking-card:hover {
+                  transform: translateY(-2px);
+                  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.1);
+                  border-color: #bbf7d0 !important;
+                }
+                .pulse-dot {
+                  width: 8px;
+                  height: 8px;
+                  border-radius: 50%;
+                  display: inline-block;
+                  margin-right: 6px;
+                  animation: pulse 2s infinite;
+                }
+                @keyframes pulse {
+                  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7); }
+                  70% { transform: scale(1); box-shadow: 0 0 0 4px rgba(22, 163, 74, 0); }
+                  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+                }
+                .pulse-dot.pending {
+                  background-color: #f59e0b;
+                  animation: pulse-pending 2s infinite;
+                }
+                @keyframes pulse-pending {
+                  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+                  70% { transform: scale(1); box-shadow: 0 0 0 4px rgba(245, 158, 11, 0); }
+                  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+                }
+              ` }} />
+              <h3 style={{ fontSize: '1.1rem', color: 'var(--color-neutral-800)', marginTop: 0, marginBottom: '1.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <div style={{ backgroundColor: '#dcfce7', padding: '0.5rem', borderRadius: '8px' }}>
+                    <Activity size={20} color="#16a34a" />
+                  </div>
+                  Suivi d'Activité (Confidentiel Administrateur)
+                </div>
+              </h3>
+              
+              {/* Investissements */}
+              <div style={{ marginBottom: '2rem' }}>
+                <h4 style={{ fontSize: '0.95rem', color: 'var(--color-primary-700)', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  Portefeuille d'Investissements 
+                  <span style={{ backgroundColor: 'var(--color-primary-100)', color: 'var(--color-primary-800)', padding: '0.15rem 0.5rem', borderRadius: '9999px', fontSize: '0.75rem' }}>{selectedUser.investments?.length || 0}</span>
+                </h4>
+                {(!selectedUser.investments || selectedUser.investments.length === 0) ? (
+                  <div style={{ fontSize: '0.85rem', color: 'var(--color-neutral-500)', fontStyle: 'italic', padding: '1rem', backgroundColor: 'white', borderRadius: '8px', border: '1px dashed #cbd5e1' }}>Aucun investissement réalisé.</div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    {selectedUser.investments.map((inv: any) => (
+                      <div key={inv.id} className="tracking-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '0.85rem' }}>
+                        <div>
+                          <div style={{ fontWeight: 'bold', color: 'var(--color-neutral-800)', fontSize: '0.95rem', marginBottom: '0.25rem' }}>{inv.project?.title}</div>
+                          <div style={{ color: 'var(--color-neutral-500)' }}>Montant : <span style={{ color: 'var(--color-primary-600)', fontWeight: 'bold', fontSize: '0.95rem' }}>{inv.amount.toLocaleString('fr-FR')} FCFA</span></div>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                          <div style={{ marginBottom: '0.25rem' }}>
+                            {inv.status === 'VALIDATED' && <span style={{ color: '#16a34a', fontWeight: 'bold', backgroundColor: '#dcfce7', padding: '0.25rem 0.5rem', borderRadius: '4px' }}><span className="pulse-dot" style={{ backgroundColor: '#16a34a' }}></span>Validé</span>}
+                            {inv.status === 'PENDING' && <span style={{ color: '#d97706', fontWeight: 'bold', backgroundColor: '#fef3c7', padding: '0.25rem 0.5rem', borderRadius: '4px' }}><span className="pulse-dot pending"></span>En attente</span>}
+                            {inv.status === 'REJECTED' && <span style={{ color: '#dc2626', fontWeight: 'bold', backgroundColor: '#fee2e2', padding: '0.25rem 0.5rem', borderRadius: '4px' }}>Refusé</span>}
+                          </div>
+                          <div style={{ color: 'var(--color-neutral-500)', fontSize: '0.75rem', marginTop: '0.5rem' }}>Statut Projet: <span style={{fontWeight: '500'}}>{inv.project?.status}</span></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              {/* Projets soumis */}
+              <div style={{ marginBottom: '1rem' }}>
+                <h4 style={{ fontSize: '0.95rem', color: 'var(--color-primary-700)', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  Projets Soumis
+                  <span style={{ backgroundColor: 'var(--color-primary-100)', color: 'var(--color-primary-800)', padding: '0.15rem 0.5rem', borderRadius: '9999px', fontSize: '0.75rem' }}>{selectedUser.ownedProjects?.length || 0}</span>
+                </h4>
+                {(!selectedUser.ownedProjects || selectedUser.ownedProjects.length === 0) ? (
+                  <div style={{ fontSize: '0.85rem', color: 'var(--color-neutral-500)', fontStyle: 'italic', padding: '1rem', backgroundColor: 'white', borderRadius: '8px', border: '1px dashed #cbd5e1' }}>Aucun projet soumis.</div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    {selectedUser.ownedProjects.map((proj: any) => {
+                      const target = proj.target || 1;
+                      const raised = proj.raised || 0;
+                      const percent = Math.min(100, Math.round((raised / target) * 100));
+                      
+                      return (
+                      <div key={proj.id} className="tracking-card" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', backgroundColor: 'white', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '0.85rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                           <div>
-                            <div style={{ fontWeight: 'bold', color: 'var(--color-neutral-800)' }}>{inv.project?.title}</div>
-                            <div style={{ color: 'var(--color-neutral-500)' }}>Montant : <span style={{ color: 'var(--color-primary-600)', fontWeight: 'bold' }}>{inv.amount.toLocaleString('fr-FR')} FCFA</span></div>
+                            <div style={{ fontWeight: 'bold', color: 'var(--color-neutral-800)', fontSize: '0.95rem', marginBottom: '0.25rem' }}>{proj.title}</div>
+                            <div style={{ color: 'var(--color-neutral-500)' }}>Cible : <span style={{ fontWeight: '500', color: 'var(--color-neutral-700)' }}>{proj.target.toLocaleString('fr-FR')} FCFA</span></div>
                           </div>
                           <div style={{ textAlign: 'right' }}>
-                            <div>
-                              {inv.status === 'VALIDATED' && <span style={{ color: '#16a34a', fontWeight: 'bold' }}>Investissement Validé</span>}
-                              {inv.status === 'PENDING' && <span style={{ color: '#d97706', fontWeight: 'bold' }}>Promesse en attente</span>}
-                              {inv.status === 'REJECTED' && <span style={{ color: '#dc2626', fontWeight: 'bold' }}>Refusé</span>}
+                            <div style={{ fontWeight: 'bold', display: 'inline-block', padding: '0.25rem 0.5rem', borderRadius: '4px', backgroundColor: proj.status === 'FUNDED' || proj.status === 'COMPLETED' ? '#dcfce7' : '#f1f5f9', color: proj.status === 'FUNDED' || proj.status === 'COMPLETED' ? '#16a34a' : 'var(--color-primary-700)' }}>
+                              {proj.status}
                             </div>
-                            <div style={{ color: 'var(--color-neutral-500)', fontSize: '0.75rem', marginTop: '0.2rem' }}>Statut Projet: {inv.project?.status}</div>
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                
-                {/* Projets soumis */}
-                <div style={{ marginBottom: '2rem' }}>
-                  <h4 style={{ fontSize: '0.95rem', color: 'var(--color-primary-700)', marginBottom: '0.5rem' }}>Projets Soumis ({selectedUser.ownedProjects?.length || 0})</h4>
-                  {(!selectedUser.ownedProjects || selectedUser.ownedProjects.length === 0) ? (
-                    <div style={{ fontSize: '0.85rem', color: 'var(--color-neutral-500)', fontStyle: 'italic' }}>Aucun projet soumis.</div>
-                  ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                      {selectedUser.ownedProjects.map((proj: any) => (
-                        <div key={proj.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'white', padding: '0.75rem', borderRadius: '6px', border: '1px solid #e2e8f0', fontSize: '0.85rem' }}>
-                          <div>
-                            <div style={{ fontWeight: 'bold', color: 'var(--color-neutral-800)' }}>{proj.title}</div>
-                            <div style={{ color: 'var(--color-neutral-500)' }}>Cible : <span style={{ fontWeight: '500' }}>{proj.target.toLocaleString('fr-FR')} FCFA</span></div>
+                        
+                        {/* Mini Progress Bar */}
+                        <div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'var(--color-neutral-500)', marginBottom: '0.25rem' }}>
+                            <span>Levés: {(proj.raised || 0).toLocaleString('fr-FR')} FCFA</span>
+                            <span style={{fontWeight: 'bold', color: 'var(--color-primary-600)'}}>{percent}%</span>
                           </div>
-                          <div style={{ textAlign: 'right' }}>
-                            <div style={{ fontWeight: 'bold', color: proj.status === 'FUNDED' || proj.status === 'COMPLETED' ? '#16a34a' : 'var(--color-primary-600)' }}>{proj.status}</div>
-                            <div style={{ color: 'var(--color-neutral-500)', fontSize: '0.75rem', marginTop: '0.2rem' }}>Levés: {(proj.raised || 0).toLocaleString('fr-FR')} FCFA</div>
+                          <div style={{ width: '100%', height: '6px', backgroundColor: '#e2e8f0', borderRadius: '3px', overflow: 'hidden' }}>
+                            <div style={{ width: `${percent}%`, height: '100%', backgroundColor: 'var(--color-primary-500)', borderRadius: '3px', transition: 'width 1s ease-in-out' }}></div>
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                
-                <h3 style={{ fontSize: '1.1rem', color: 'var(--color-neutral-800)', marginTop: '2rem', marginBottom: '1rem', paddingTop: '1.5rem', borderTop: '1px solid #e2e8f0' }}>Statut KYC</h3>
+                      </div>
+                    )})}
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            <div style={{ marginTop: '2rem', backgroundColor: '#f8fafc', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+              <h3 style={{ fontSize: '1.1rem', color: 'var(--color-neutral-800)', marginTop: 0, marginBottom: '1rem' }}>Statut KYC</h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
                 <div>
                   {selectedUser.kycStatus === 'VERIFIED' && <span style={{ padding: '0.5rem 1rem', borderRadius: '4px', backgroundColor: '#dcfce7', color: '#16a34a', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><ShieldCheck size={18} /> Identité Vérifiée</span>}

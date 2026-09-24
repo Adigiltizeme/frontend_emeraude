@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -6,6 +6,14 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [info, setInfo] = useState('');
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('expired')) {
+      setInfo('Votre session a expiré. Veuillez vous reconnecter.');
+    }
+  }, []);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -43,6 +51,7 @@ const Login = () => {
         <h2 style={{ textAlign: 'center', marginBottom: '0.5rem', color: 'var(--color-primary-900)', fontSize: '1.75rem' }}>Espace Utilisateur</h2>
         <p style={{ textAlign: 'center', marginBottom: '2rem', color: 'var(--color-neutral-500)' }}>Connectez-vous à votre compte Emeraude Africa</p>
 
+        {info && <div style={{ backgroundColor: '#dbeafe', color: '#1d4ed8', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', fontSize: '0.875rem', border: '1px solid #93c5fd' }}>{info}</div>}
         {error && <div style={{ backgroundColor: '#fee2e2', color: '#991b1b', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', fontSize: '0.875rem', border: '1px solid #f87171' }}>{error}</div>}
 
         <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>

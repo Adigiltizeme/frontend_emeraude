@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 interface User {
   id: string;
@@ -42,6 +42,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem('emeraude_token');
     localStorage.removeItem('emeraude_user');
   };
+
+  useEffect(() => {
+    const originalFetch = window.fetch;
+    window.fetch = async (...args) => {
+      const response = await originalFetch(...args);
+      
+      // If unauthorized and not on a login/register route, logout and redirect
+      if (response.status === 401) {
+        const url = typeof args[0] === 'string' ? args[0] : args[0] instanceof Request ? args[0].url : '';
+        if (!url.includes('/auth/login') && !url.includes('/auth/register')) {
+          logout();
+          window.location.href = '/login?expired=true';
+        }
+      }
+      return response;
+    };
+
+    return () => {
+      window.fetch = originalFetch;
+    };
+  }, []);
 
   return (
     <AuthContext.Provider value={{

@@ -307,13 +307,43 @@ const UserDashboard = () => {
         </div>
 
         {/* CARTE DOCUMENTS */}
-        <div style={{ backgroundColor: 'var(--color-white)', padding: '2rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-neutral-200)', opacity: 0.7 }}>
-          <FileText size={32} color="var(--color-neutral-400)" style={{ marginBottom: '1rem' }} />
+        <div style={{ backgroundColor: 'var(--color-white)', padding: '2rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-neutral-200)' }}>
+          <FileText size={32} color="var(--color-primary-500)" style={{ marginBottom: '1rem' }} />
           <h3 style={{ color: 'var(--color-neutral-800)', marginBottom: '0.5rem', marginTop: 0 }}>Mes Documents</h3>
-          <p style={{ color: 'var(--color-neutral-500)' }}>
-            Vos contrats de financement apparaîtront ici.
+          <p style={{ color: 'var(--color-neutral-500)', marginBottom: '1.5rem' }}>
+            Vos attestations d'investissement.
           </p>
-          <button className="btn btn-outline" disabled style={{ marginTop: '1.5rem', width: '100%' }}>Bientôt disponible</button>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '200px', overflowY: 'auto', paddingRight: '0.5rem' }}>
+            {investments.length === 0 ? (
+              <div style={{ padding: '1rem', backgroundColor: '#f8fafc', borderRadius: '6px', fontSize: '0.9rem', color: 'var(--color-neutral-500)', textAlign: 'center' }}>Aucun document disponible</div>
+            ) : (
+              investments.map(inv => (
+                <div key={`doc-${inv.id}`} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem', backgroundColor: '#f1f5f9', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+                  <div style={{ fontSize: '0.85rem' }}>
+                    <div style={{ fontWeight: 'bold', color: 'var(--color-neutral-700)' }}>Attestation - {inv.project.title}</div>
+                    <div style={{ color: 'var(--color-primary-600)', fontWeight: 'bold' }}>{inv.amount.toLocaleString('fr-FR')} FCFA</div>
+                  </div>
+                  <button 
+                    onClick={() => {
+                      const text = `ATTESTATION D'INVESTISSEMENT\n\nPlateforme: Emeraude Africa\nDate: ${new Date(inv.createdAt).toLocaleDateString('fr-FR')}\n\nInvestisseur: ${user.firstName || ''} ${user.lastName || ''}\nEmail: ${user.email}\n\nProjet: ${inv.project.title}\nMontant investi: ${inv.amount.toLocaleString('fr-FR')} FCFA\nStatut de l'investissement: ${inv.status}\n\nCeci est une attestation générée automatiquement par la plateforme Emeraude Africa.`;
+                      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = `Attestation_${inv.project.title.replace(/\s+/g, '_')}.txt`;
+                      a.click();
+                      URL.revokeObjectURL(url);
+                    }}
+                    className="btn btn-outline" 
+                    style={{ padding: '0.35rem 0.75rem', fontSize: '0.8rem', backgroundColor: 'white' }}
+                  >
+                    Télécharger
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
         </div>
 
         {/* CARTE PROFIL */}

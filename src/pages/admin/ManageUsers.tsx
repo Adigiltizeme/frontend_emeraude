@@ -19,6 +19,8 @@ interface UserData {
     investments: number;
     ownedProjects: number;
   };
+  investments?: any[];
+  ownedProjects?: any[];
 }
 
 const ManageUsers: React.FC = () => {
@@ -357,7 +359,59 @@ const ManageUsers: React.FC = () => {
             </div>
             
             <div style={{ marginTop: '2rem', backgroundColor: '#f8fafc', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-              <h3 style={{ fontSize: '1.1rem', color: 'var(--color-neutral-800)', marginTop: 0, marginBottom: '1rem' }}>Statut KYC</h3>
+              <h3 style={{ fontSize: '1.1rem', color: 'var(--color-neutral-800)', marginTop: 0, marginBottom: '1rem' }}>Suivi d'Activité (Confidentiel Administrateur)</h3>
+                
+                {/* Investissements */}
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <h4 style={{ fontSize: '0.95rem', color: 'var(--color-primary-700)', marginBottom: '0.5rem' }}>Portefeuille d'Investissements ({selectedUser.investments?.length || 0})</h4>
+                  {(!selectedUser.investments || selectedUser.investments.length === 0) ? (
+                    <div style={{ fontSize: '0.85rem', color: 'var(--color-neutral-500)', fontStyle: 'italic' }}>Aucun investissement réalisé.</div>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      {selectedUser.investments.map((inv: any) => (
+                        <div key={inv.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'white', padding: '0.75rem', borderRadius: '6px', border: '1px solid #e2e8f0', fontSize: '0.85rem' }}>
+                          <div>
+                            <div style={{ fontWeight: 'bold', color: 'var(--color-neutral-800)' }}>{inv.project?.title}</div>
+                            <div style={{ color: 'var(--color-neutral-500)' }}>Montant : <span style={{ color: 'var(--color-primary-600)', fontWeight: 'bold' }}>{inv.amount.toLocaleString('fr-FR')} FCFA</span></div>
+                          </div>
+                          <div style={{ textAlign: 'right' }}>
+                            <div>
+                              {inv.status === 'VALIDATED' && <span style={{ color: '#16a34a', fontWeight: 'bold' }}>Investissement Validé</span>}
+                              {inv.status === 'PENDING' && <span style={{ color: '#d97706', fontWeight: 'bold' }}>Promesse en attente</span>}
+                              {inv.status === 'REJECTED' && <span style={{ color: '#dc2626', fontWeight: 'bold' }}>Refusé</span>}
+                            </div>
+                            <div style={{ color: 'var(--color-neutral-500)', fontSize: '0.75rem', marginTop: '0.2rem' }}>Statut Projet: {inv.project?.status}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                
+                {/* Projets soumis */}
+                <div style={{ marginBottom: '2rem' }}>
+                  <h4 style={{ fontSize: '0.95rem', color: 'var(--color-primary-700)', marginBottom: '0.5rem' }}>Projets Soumis ({selectedUser.ownedProjects?.length || 0})</h4>
+                  {(!selectedUser.ownedProjects || selectedUser.ownedProjects.length === 0) ? (
+                    <div style={{ fontSize: '0.85rem', color: 'var(--color-neutral-500)', fontStyle: 'italic' }}>Aucun projet soumis.</div>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      {selectedUser.ownedProjects.map((proj: any) => (
+                        <div key={proj.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'white', padding: '0.75rem', borderRadius: '6px', border: '1px solid #e2e8f0', fontSize: '0.85rem' }}>
+                          <div>
+                            <div style={{ fontWeight: 'bold', color: 'var(--color-neutral-800)' }}>{proj.title}</div>
+                            <div style={{ color: 'var(--color-neutral-500)' }}>Cible : <span style={{ fontWeight: '500' }}>{proj.target.toLocaleString('fr-FR')} FCFA</span></div>
+                          </div>
+                          <div style={{ textAlign: 'right' }}>
+                            <div style={{ fontWeight: 'bold', color: proj.status === 'FUNDED' || proj.status === 'COMPLETED' ? '#16a34a' : 'var(--color-primary-600)' }}>{proj.status}</div>
+                            <div style={{ color: 'var(--color-neutral-500)', fontSize: '0.75rem', marginTop: '0.2rem' }}>Levés: {(proj.raised || 0).toLocaleString('fr-FR')} FCFA</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                
+                <h3 style={{ fontSize: '1.1rem', color: 'var(--color-neutral-800)', marginTop: '2rem', marginBottom: '1rem', paddingTop: '1.5rem', borderTop: '1px solid #e2e8f0' }}>Statut KYC</h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
                 <div>
                   {selectedUser.kycStatus === 'VERIFIED' && <span style={{ padding: '0.5rem 1rem', borderRadius: '4px', backgroundColor: '#dcfce7', color: '#16a34a', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><ShieldCheck size={18} /> Identité Vérifiée</span>}

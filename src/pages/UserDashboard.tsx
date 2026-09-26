@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { Building2, FileText, Settings, Lightbulb, Clock, CheckCircle, XCircle } from 'lucide-react';
 
 const UserDashboard = () => {
-  const { user, token } = useAuth();
+  const { user, token, logout } = useAuth();
   const navigate = useNavigate();
   
   const [investments, setInvestments] = useState<any[]>([]);
@@ -23,139 +23,168 @@ const UserDashboard = () => {
       fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/investments/my-investments`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
-      .then(res => res.json())
-      .then(data => { setInvestments(data); setLoadingInvestments(false); })
-      .catch(err => { console.error(err); setLoadingInvestments(false); });
+      .then(res => {
+        if (res.status === 401) {
+          logout();
+          window.location.href = '/login?expired=true';
+          return;
+        }
+        if (!res.ok) throw new Error('Failed to fetch');
+        return res.json();
+      })
+      .then(data => { setInvestments(Array.isArray(data) ? data : []); setLoadingInvestments(false); })
+      .catch(err => { console.error(err); setInvestments([]); setLoadingInvestments(false); });
 
       // Fetch Projects
       fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects/my-projects`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
-      .then(res => res.json())
-      .then(data => { setProjects(data); setLoadingProjects(false); })
-      .catch(err => { console.error(err); setLoadingProjects(false); });
+      .then(res => {
+        if (res.status === 401) {
+          logout();
+          window.location.href = '/login?expired=true';
+          return;
+        }
+        if (!res.ok) throw new Error('Failed to fetch');
+        return res.json();
+      })
+      .then(data => { setProjects(Array.isArray(data) ? data : []); setLoadingProjects(false); })
+      .catch(err => { console.error(err); setProjects([]); setLoadingProjects(false); });
     }
   }, [token]);
 
   if (!user) return null;
 
     const renderTimeline = (type: 'project' | 'investment', item: any) => {
-    let steps: any[] = [];
-    let currentStepIndex = 0;
-    
-    if (type === 'project') {
-      if (item.status === 'REJECTED') {
-        return (
-          <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#fee2e2', borderRadius: '8px', color: '#dc2626', fontWeight: 'bold' }}>
-            Projet refusé. Veuillez contacter le support pour plus d'informations.
-          </div>
-        );
-      }
+      let steps: any[] = [];
+      let currentStepIndex = 0;
+      let completedStepsCount = 0;
       
-      steps = [
-        { label: 'Soumission', key: 'SUBMITTED' },
-        { label: 'Analyse', key: 'DRAFT' },
-        { label: 'En collecte', key: 'COLLECTING' },
-        { label: 'Financé', key: 'FUNDED' },
-        { label: 'Terminé', key: 'COMPLETED' },
-      ];
-      
-      const statusOrder = ['SUBMITTED', 'DRAFT', 'COLLECTING', 'FUNDED', 'COMPLETED'];
-      currentStepIndex = statusOrder.indexOf(item.status);
-      if (currentStepIndex === -1) currentStepIndex = 0;
-      
-    } else {
-      if (item.status === 'REJECTED') {
-        return (
-          <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#fee2e2', borderRadius: '8px', color: '#dc2626', fontWeight: 'bold' }}>
-            Investissement annulé ou refusé.
-          </div>
-        );
-      }
-
-      steps = [
-        { label: 'Promesse', completed: true },
-        { label: 'Fonds reçus', completed: item.status === 'VALIDATED' },
-        { label: 'En collecte', completed: item.project.status === 'FUNDED' || item.project.status === 'COMPLETED' },
-        { label: 'Projet financé', completed: item.project.status === 'FUNDED' || item.project.status === 'COMPLETED' },
-        { label: 'Rendement', completed: item.project.status === 'COMPLETED' },
-      ];
-      
-      // Determine current step based on logic
-      if (item.status === 'PENDING') {
-        currentStepIndex = 1; // Waiting for funds
-      } else if (item.status === 'VALIDATED') {
-        if (item.project.status === 'COLLECTING' || item.project.status === 'DRAFT' || item.project.status === 'SUBMITTED') {
-          currentStepIndex = 2; // Funds received, waiting for project to finish collecting
-        } else if (item.project.status === 'FUNDED') {
-          currentStepIndex = 3;
-        } else if (item.project.status === 'COMPLETED') {
-          currentStepIndex = 4;
+      if (type === 'project') {
+        if (item.status === 'REJECTED') {
+          return (
+            <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#fee2e2', borderRadius: '8px', color: '#dc2626', fontWeight: 'bold' }}>
+              Projet refusé. Veuillez contacter le support pour plus d'informations.
+            </div>
+          );
+        }
+        
+        steps = [
+          { label: 'Soumission', key: 'SUBMITTED' },
+          { label: 'Analyse', key: 'DRAFT' },
+          { label: 'En collecte', key: 'COLLECTING' },
+          { label: 'Financé', key: 'FUNDED' },
+          { label: 'Terminé', key: 'COMPLETED' },
+        ];
+        
+        const statusOrder = ['SUBMITTED', 'DRAFT', 'COLLECTING', 'FUNDED', 'COMPLETED'];
+        currentStepIndex = statusOrder.indexOf(item.status);
+        if (currentStepIndex === -1) currentStepIndex = 0;
+        completedStepsCount = currentStepIndex;
+        
+      } else {
+        if (item.status === 'REJECTED') {
+          return (
+            <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#fee2e2', borderRadius: '8px', color: '#dc2626', fontWeight: 'bold' }}>
+              Investissement annulé ou refusé.
+            </div>
+          );
+        }
+  
+        const isValidated = item.status === 'VALIDATED' || item.status === 'CONFIRMED';
+        
+        steps = [
+          { label: 'Promesse', completed: true },
+          { label: 'Fonds reçus', completed: isValidated },
+          { label: 'En collecte', completed: isValidated && (item.project.status === 'COLLECTING' || item.project.status === 'FUNDED' || item.project.status === 'COMPLETED') },
+          { label: 'Projet financé', completed: isValidated && (item.project.status === 'FUNDED' || item.project.status === 'COMPLETED') },
+          { label: 'Rendement', completed: isValidated && item.project.status === 'COMPLETED' },
+        ];
+        
+        // Determine current step based on logic
+        if (item.status === 'PENDING') {
+          currentStepIndex = 1; // Waiting for funds
+          completedStepsCount = 0; // Only Promesse is done (index 0)
+        } else if (isValidated) {
+          if (item.project.status === 'DRAFT' || item.project.status === 'SUBMITTED') {
+            currentStepIndex = 2; // Funds received, waiting for project to go live
+            completedStepsCount = 1;
+          } else if (item.project.status === 'COLLECTING') {
+            currentStepIndex = 3; // Waiting for project to be funded
+            completedStepsCount = 2;
+          } else if (item.project.status === 'FUNDED') {
+            currentStepIndex = 4; // Waiting for completion/yield
+            completedStepsCount = 3;
+          } else if (item.project.status === 'COMPLETED') {
+            currentStepIndex = 4;
+            completedStepsCount = 4;
+          } else {
+            currentStepIndex = 1;
+            completedStepsCount = 1;
+          }
         }
       }
-    }
-
-    return (
-      <div style={{ marginTop: '1.5rem', padding: '1.5rem', backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
-        <h5 style={{ margin: '0 0 1.5rem 0', color: 'var(--color-neutral-700)', fontSize: '0.95rem' }}>Suivi d'avancement</h5>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative' }}>
-          {/* Ligne de fond */}
-          <div style={{ position: 'absolute', top: '12px', left: '10%', right: '10%', height: '4px', backgroundColor: '#e2e8f0', zIndex: 1, borderRadius: '2px' }}></div>
-          
-          {/* Ligne de progression */}
-          <div style={{ position: 'absolute', top: '12px', left: '10%', right: `calc(100% - 10% - (80% / ${steps.length - 1} * ${currentStepIndex}))`, height: '4px', backgroundColor: 'var(--color-primary-500)', zIndex: 2, borderRadius: '2px', transition: 'right 0.5s ease' }}></div>
-
-          {steps.map((step, index) => {
-            let isCompleted = false;
-            let isActive = false;
+  
+      return (
+        <div style={{ marginTop: '1.5rem', padding: '1.5rem', backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+          <h5 style={{ margin: '0 0 1.5rem 0', color: 'var(--color-neutral-700)', fontSize: '0.95rem' }}>Suivi d'avancement</h5>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative' }}>
+            {/* Ligne de fond */}
+            <div style={{ position: 'absolute', top: '12px', left: '10%', right: '10%', height: '4px', backgroundColor: '#e2e8f0', zIndex: 1, borderRadius: '2px' }}></div>
             
-            if (type === 'project') {
-              isCompleted = index < currentStepIndex || (index === currentStepIndex && currentStepIndex === steps.length - 1);
-              isActive = index === currentStepIndex && currentStepIndex !== steps.length - 1;
-            } else {
-              isCompleted = step.completed || index < currentStepIndex;
-              isActive = index === currentStepIndex && !step.completed;
-              if (index === steps.length - 1 && step.completed) { isCompleted = true; isActive = false; }
-            }
-
-            return (
-              <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 3, width: '20%' }}>
-                <div style={{ 
-                  width: '28px', 
-                  height: '28px', 
-                  borderRadius: '50%', 
-                  backgroundColor: isCompleted ? 'var(--color-primary-500)' : isActive ? 'white' : 'white',
-                  border: isCompleted ? '2px solid var(--color-primary-500)' : isActive ? '2px solid var(--color-primary-500)' : '2px solid #cbd5e1',
-                  display: 'flex', 
-                  justifyContent: 'center', 
-                  alignItems: 'center',
-                  marginBottom: '0.75rem',
-                  boxShadow: isActive ? '0 0 0 4px rgba(22, 163, 74, 0.1)' : 'none',
-                  transition: 'all 0.3s ease'
-                }}>
-                  {isCompleted ? <CheckCircle size={16} color="white" /> : isActive ? <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: 'var(--color-primary-500)' }} /> : null}
+            {/* Ligne de progression */}
+            <div style={{ position: 'absolute', top: '12px', left: '10%', right: `calc(100% - 10% - (80% / ${steps.length - 1} * ${completedStepsCount}))`, height: '4px', backgroundColor: 'var(--color-primary-500)', zIndex: 2, borderRadius: '2px', transition: 'right 0.5s ease' }}></div>
+  
+            {steps.map((step, index) => {
+              let isCompleted = false;
+              let isActive = false;
+              
+              if (type === 'project') {
+                isCompleted = index <= completedStepsCount;
+                isActive = index === currentStepIndex && currentStepIndex !== steps.length - 1;
+              } else {
+                isCompleted = index <= completedStepsCount;
+                isActive = index === currentStepIndex && !isCompleted;
+              }
+  
+              return (
+                <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 3, width: '20%' }}>
+                  <div style={{ 
+                    width: '28px', 
+                    height: '28px', 
+                    borderRadius: '50%', 
+                    backgroundColor: isCompleted ? 'var(--color-primary-500)' : 'white',
+                    border: isCompleted ? '2px solid var(--color-primary-500)' : isActive ? '2px solid var(--color-primary-500)' : '2px solid #cbd5e1',
+                    display: 'flex', 
+                    justifyContent: 'center', 
+                    alignItems: 'center',
+                    marginBottom: '0.75rem',
+                    boxShadow: isActive ? '0 0 0 4px rgba(22, 163, 74, 0.1)' : 'none',
+                    transition: 'all 0.3s ease'
+                  }}>
+                    {isCompleted ? <CheckCircle size={16} color="white" /> : isActive ? <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: 'var(--color-primary-500)' }} /> : null}
+                  </div>
+                  <div style={{ 
+                    fontSize: '0.75rem', 
+                    fontWeight: isCompleted || isActive ? 'bold' : 'normal',
+                    color: isCompleted || isActive ? 'var(--color-neutral-800)' : 'var(--color-neutral-400)',
+                    textAlign: 'center'
+                  }}>
+                    {step.label}
+                  </div>
                 </div>
-                <div style={{ 
-                  fontSize: '0.75rem', 
-                  fontWeight: isCompleted || isActive ? 'bold' : 'normal',
-                  color: isCompleted || isActive ? 'var(--color-neutral-800)' : 'var(--color-neutral-400)',
-                  textAlign: 'center',
-                  lineHeight: '1.2'
-                }}>
-                  {step.label}
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </div>
-    );
-  };
-
-  const renderStatus = (status: string) => {
+      );
+    };
+  
+    const renderStatus = (status: string) => {
     switch (status) {
       case 'PENDING': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#d97706', fontSize: '0.875rem', fontWeight: '600' }}><Clock size={16} /> En attente</span>;
-      case 'CONFIRMED': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#16a34a', fontSize: '0.875rem', fontWeight: '600' }}><CheckCircle size={16} /> Validé</span>;
+      case 'CONFIRMED': 
+      case 'VALIDATED': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#16a34a', fontSize: '0.875rem', fontWeight: '600' }}><CheckCircle size={16} /> Validé</span>;
       case 'CANCELLED': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#dc2626', fontSize: '0.875rem', fontWeight: '600' }}><XCircle size={16} /> Refusé</span>;
       case 'SUBMITTED': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#d97706', fontSize: '0.875rem', fontWeight: '600' }}><Clock size={16} /> En cours d'étude</span>;
       case 'COLLECTING': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#2563eb', fontSize: '0.875rem', fontWeight: '600' }}><CheckCircle size={16} /> En collecte</span>;
@@ -276,32 +305,66 @@ const UserDashboard = () => {
                 <h3 style={{ color: 'var(--color-neutral-800)', margin: 0, fontSize: '1.5rem' }}>Mes Investissements</h3>
               </div>
               
-              {loadingInvestments ? <p>Chargement...</p> : !hasInvestments ? (
-                <div>
-                  <p style={{ color: 'var(--color-neutral-500)' }}>Vous n'avez pas encore d'investissement actif. Explorez nos projets pour commencer.</p>
-                  <button onClick={() => navigate('/investir')} className="btn btn-primary" style={{ marginTop: '1rem' }}>Découvrir les projets</button>
-                </div>
-              ) : (
-                <div style={{ display: 'grid', gap: '1rem' }}>
-                  {investments.map(inv => (
-                    <div key={inv.id} style={{ padding: '1.5rem', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                        <div>
-                          <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '1.25rem', color: 'var(--color-primary-900)' }}>{inv.project.title}</h4>
-                          <div style={{ color: 'var(--color-neutral-600)', fontSize: '1.1rem' }}>Investissement : <strong style={{color: 'var(--color-primary-700)'}}>{inv.amount.toLocaleString('fr-FR')} FCFA</strong></div>
-                          <div style={{ color: 'var(--color-neutral-500)', fontSize: '0.9rem', marginTop: '0.25rem' }}>Rendement cible : {inv.project.returnRate}%</div>
+                              {loadingInvestments ? <p>Chargement...</p> : !hasInvestments ? (
+                  <div>
+                    <p style={{ color: 'var(--color-neutral-500)' }}>Vous n'avez pas encore d'investissement actif. Explorez nos projets pour commencer.</p>
+                    <button onClick={() => navigate('/investir')} className="btn btn-primary" style={{ marginTop: '1rem' }}>Découvrir les projets</button>
+                  </div>
+                ) : (
+                  <div style={{ display: 'grid', gap: '1rem' }}>
+                    {Object.values(investments.reduce((acc: any, inv: any) => {
+                      if (!acc[inv.projectId]) {
+                        acc[inv.projectId] = {
+                          project: inv.project,
+                          totalAmount: 0,
+                          transactions: [],
+                          status: 'PENDING',
+                          createdAt: inv.createdAt
+                        };
+                      }
+                      acc[inv.projectId].transactions.push(inv);
+                      acc[inv.projectId].totalAmount += inv.amount;
+                      if (inv.status === 'VALIDATED' || inv.status === 'CONFIRMED') {
+                        acc[inv.projectId].status = 'VALIDATED';
+                      }
+                      // Sort transactions by date desc
+                      acc[inv.projectId].transactions.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                      return acc;
+                    }, {})).map((group: any) => (
+                      <div key={`group-${group.project.id}`} style={{ padding: '1.5rem', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                          <div>
+                            <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '1.25rem', color: 'var(--color-primary-900)' }}>{group.project.title}</h4>
+                            <div style={{ color: 'var(--color-neutral-600)', fontSize: '1.1rem' }}>Total Investi : <strong style={{color: 'var(--color-primary-700)'}}>{group.totalAmount.toLocaleString('fr-FR')} FCFA</strong></div>
+                            <div style={{ color: 'var(--color-neutral-500)', fontSize: '0.9rem', marginTop: '0.25rem' }}>Rendement cible : {group.project.returnRate}%</div>
+                          </div>
+                          <div style={{ textAlign: 'right' }}>
+                            <div style={{ marginBottom: '0.5rem' }}>{renderStatus(group.status)}</div>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--color-neutral-400)' }}>Dernier ajout : {new Date(group.createdAt).toLocaleDateString('fr-FR')}</span>
+                          </div>
                         </div>
-                        <div style={{ textAlign: 'right' }}>
-                          <div style={{ marginBottom: '0.5rem' }}>{renderStatus(inv.status)}</div>
-                          <span style={{ fontSize: '0.75rem', color: 'var(--color-neutral-400)' }}>Le {new Date(inv.createdAt).toLocaleDateString('fr-FR')}</span>
-                        </div>
+                        
+                        {group.transactions.length > 1 && (
+                          <div style={{ marginTop: '1rem', padding: '0.75rem', backgroundColor: 'white', borderRadius: '6px', border: '1px dashed #cbd5e1' }}>
+                            <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: 'var(--color-neutral-700)', marginBottom: '0.5rem' }}>Détail de vos transactions :</div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                              {group.transactions.map((t: any, i: number) => (
+                                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                                  <span style={{ color: 'var(--color-neutral-600)' }}>{t.amount.toLocaleString('fr-FR')} FCFA <span style={{fontSize: '0.75rem', color: '#94a3b8'}}>(Le {new Date(t.createdAt).toLocaleDateString('fr-FR')})</span></span>
+                                  {renderStatus(t.status)}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        
+                        {/* Fake an 'item' that represents the overall investment for the timeline */}
+                        {renderTimeline('investment', { status: group.status, project: group.project })}
                       </div>
-                      {renderTimeline('investment', inv)}
-                    </div>
-                  ))}
-                  <button onClick={() => navigate('/investir')} className="btn btn-primary" style={{ marginTop: '1rem', alignSelf: 'flex-start' }}>Nouvel investissement</button>
-                </div>
-              )}
+                    ))}
+                    <button onClick={() => navigate('/investir')} className="btn btn-primary" style={{ marginTop: '1rem', alignSelf: 'flex-start' }}>Nouvel investissement</button>
+                  </div>
+                )}
             </>
           )}
         </div>

@@ -11,6 +11,8 @@ import HowItWorks from './pages/HowItWorks';
 import Contact from './pages/Contact';
 import Legal from './pages/Legal';
 import ProjectDetails from './pages/ProjectDetails';
+import SimulatePayment from './pages/SimulatePayment';
+
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminRoute from './components/AdminRoute';
 import CreateProject from './pages/admin/CreateProject';
@@ -55,6 +57,7 @@ function App() {
 
               <Route path="/investir" element={<Invest />} />
               <Route path="/projet/:id" element={<ProjectDetails />} />
+              <Route path="/simulate-payment" element={<SimulatePayment />} />
               <Route path="/financer" element={<Finance />} />
               <Route path="/a-propos" element={<About />} />
               <Route path="/faq" element={<FAQ />} />

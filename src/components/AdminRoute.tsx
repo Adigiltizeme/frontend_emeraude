@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Navigate, Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, Users, Settings, User, LogOut, Menu, X, Banknote } from 'lucide-react';
+import { LayoutDashboard, Users, Settings, User, LogOut, Menu, X, Banknote, MessageSquare} from 'lucide-react';
 
 const AdminRoute = () => {
   const { isAuthenticated, isAdmin, logout } = useAuth();
@@ -40,6 +40,7 @@ const AdminRoute = () => {
     { path: '/admin/projects', icon: <LayoutDashboard size={20} />, label: "Porteurs de projets" },
     { path: '/admin/users', icon: <Users size={20} />, label: "Utilisateurs" },
     { path: '/admin/profile', icon: <User size={20} />, label: "Mon Profil" },
+    { path: '/admin/support', icon: <MessageSquare size={20} />, label: "Support Client" },
     { path: '/admin/settings', icon: <Settings size={20} />, label: "Paramètres du site" },
   ];
 

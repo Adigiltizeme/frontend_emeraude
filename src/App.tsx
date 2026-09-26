@@ -21,6 +21,7 @@ import ManageUsers from './pages/admin/ManageUsers';
 import EditUser from './pages/admin/EditUser';
 import Profile from './pages/admin/Profile';
 import AdminSettings from './pages/admin/AdminSettings';
+import AdminSupportPage from './pages/admin/AdminSupportPage';
 import AdminInvestments from './pages/admin/AdminInvestments';
 import AdminProjects from './pages/admin/AdminProjects';
 import Register from './pages/Register';
@@ -76,6 +77,7 @@ function App() {
                 <Route path="users/edit/:id" element={<EditUser />} />
                 <Route path="profile" element={<Profile />} />
                 <Route path="settings" element={<AdminSettings />} />
+                <Route path="support" element={<AdminSupportPage />} />
               </Route>
             </Routes>
           </main>

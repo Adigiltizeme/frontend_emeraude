@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Building2, FileText, Settings, Lightbulb, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { Building2, FileText, Settings, Lightbulb, Clock, CheckCircle, XCircle, Headset } from 'lucide-react';
+import { UserSupport } from '../components/support/UserSupport';
 
 const UserDashboard = () => {
   const { user, token, logout } = useAuth();
@@ -13,7 +14,7 @@ const UserDashboard = () => {
   const [loadingProjects, setLoadingProjects] = useState(true);
 
   // L'utilisateur démarre sur l'onglet correspondant à son intention initiale, mais peut basculer
-  const [activeTab, setActiveTab] = useState<'investments' | 'projects'>(
+  const [activeTab, setActiveTab] = useState<'investments' | 'projects' | 'support'>(
     user?.intention === 'Porteur de projet' ? 'projects' : 'investments'
   );
 
@@ -244,6 +245,25 @@ const UserDashboard = () => {
           </button>
 
           <button 
+            onClick={() => setActiveTab('support')}
+            style={{ 
+              padding: '1rem 2rem', 
+              backgroundColor: 'transparent', 
+              border: 'none', 
+              borderBottom: activeTab === 'support' ? '3px solid var(--color-primary-600)' : '3px solid transparent',
+              color: activeTab === 'support' ? 'var(--color-primary-800)' : 'var(--color-neutral-500)',
+              fontWeight: activeTab === 'support' ? 'bold' : 'normal',
+              fontSize: '1.1rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              marginBottom: '-2px'
+            }}>
+            <Headset size={20} /> Support Client
+          </button>
+
+          <button 
             onClick={() => setActiveTab('projects')}
             style={{ 
               padding: '1rem 2rem', 
@@ -269,7 +289,9 @@ const UserDashboard = () => {
         {/* CARTE DYNAMIQUE (INVESTISSEMENTS OU PROJETS) */}
         <div style={{ backgroundColor: 'var(--color-white)', padding: '2rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-neutral-200)', gridColumn: '1 / -1' }}>
           
-          {activeTab === 'projects' ? (
+          {activeTab === 'support' ? (
+            <UserSupport />
+          ) : activeTab === 'projects' ? (
             <>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
                 <Lightbulb size={32} color="var(--color-primary-500)" />

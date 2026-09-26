@@ -61,40 +61,26 @@ const Home = () => {
 
   useEffect(() => {
     let animationId: number;
+    let exactScroll = 0;
 
     const scroll = () => {
-      if (scrollRef.current ) {
-        scrollRef.current.scrollLeft += 0.5; // Auto scroll speed
+      if (scrollRef.current) {
+        exactScroll += 0.8; 
+        scrollRef.current.scrollLeft = exactScroll;
+        if (scrollRef.current.scrollLeft >= (scrollRef.current.scrollWidth / 2)) {
+          exactScroll = 0;
+          scrollRef.current.scrollLeft = 0;
+        }
       }
       animationId = requestAnimationFrame(scroll);
     };
     
     animationId = requestAnimationFrame(scroll);
     
-    const el = scrollRef.current;
-    
-    const handleEnter = () => {  };
-    const handleLeave = () => {  };
-    const handleTouchStart = () => {  };
-    const handleTouchEnd = () => { setTimeout(() => {  }, 2000); };
-    
-    if (el) {
-      el.addEventListener('mouseenter', handleEnter);
-      el.addEventListener('mouseleave', handleLeave);
-      el.addEventListener('touchstart', handleTouchStart);
-      el.addEventListener('touchend', handleTouchEnd);
-    }
-    
     return () => {
       cancelAnimationFrame(animationId);
-      if (el) {
-        el.removeEventListener('mouseenter', handleEnter);
-        el.removeEventListener('mouseleave', handleLeave);
-        el.removeEventListener('touchstart', handleTouchStart);
-        el.removeEventListener('touchend', handleTouchEnd);
-      }
     };
-  }, []);
+  }, [topProjects]);
 
 
   return (

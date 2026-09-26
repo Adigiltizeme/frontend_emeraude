@@ -115,21 +115,21 @@ const Home = () => {
 
       {/* Top Projects Marquee Section */}
       {topProjects.length > 0 && (
-        <section className="marquee-container">
-          <h2 style={{ textAlign: 'center', marginBottom: '2rem', color: 'var(--color-primary-900)' }}>{t('home.topProjects')}</h2>
-          <div className="marquee-content">
+        <section style={{ padding: "2rem 0", backgroundColor: "var(--color-surface)", width: "100%", overflow: "hidden" }}>
+          <h2 className="section-title">{t('home.topProjects')}</h2>
+          <div className="projects-scroll-container">
             {displayProjects.map((project, index) => {
               const isClosed = project.status === "FUNDED" || project.status === "COMPLETED";
               return (
                 <div
                   key={index}
-                  className="project-card-marquee"
+                  className="project-card-scroll"
                   onClick={() => navigate(`/projet/${project.id}`)}
                   style={{ position: 'relative' }}
                 >
                   <div style={{ position: 'absolute', top: '0.5rem', right: '0.5rem', backgroundColor: project.status === 'COLLECTING' ? 'var(--color-primary-600)' : 'var(--color-neutral-800)', color: 'white', padding: '0.25rem 0.5rem', borderRadius: '999px', fontSize: '0.7rem', fontWeight: 'bold', textTransform: 'uppercase', zIndex: 1, boxShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>{t(`admin.status.${project.status}`)}</div>
                   <img style={{ filter: isClosed ? 'grayscale(100%) opacity(0.8)' : 'none' }} src={project.image || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=1973&auto=format&fit=crop'} alt={project.title} />
-                  <div className="project-card-marquee-info">
+                  <div className="project-card-scroll-info">
                     <h4>{project.title}</h4>
                     <p>{t('home.profitability')} : {project.rentYield || project.returnRate}%</p>
                   </div>
@@ -142,7 +142,7 @@ const Home = () => {
 
       {/* Features Section */}
       <section className="container" style={{ padding: '4rem 1rem' }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '3rem' }}>{t('home.featuresTitle')}</h2>
+        <h2 className="section-title">{t('home.featuresTitle')}</h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
           <div className="feature-card" style={{ textAlign: 'center', padding: '2rem', backgroundColor: 'var(--color-surface)', borderRadius: 'var(--radius-lg)' }}>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem', color: 'var(--color-primary-600)' }}>
@@ -211,7 +211,7 @@ const Home = () => {
         }} />
 
         <div className="container" style={{ position: 'relative', zIndex: 2 }}>
-          <h2 style={{ color: 'white', marginBottom: '1.5rem', fontSize: 'clamp(1.8rem, 6vw, 2.5rem)', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>{t('home.contactTitle')}</h2>
+          <h2 className="section-title section-title-light">{t('home.contactTitle')}</h2>
           <p style={{ maxWidth: '700px', margin: '0 auto 2.5rem', fontSize: '1.1rem', lineHeight: '1.6', color: '#cbd5e1', textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}>
             {t('home.contactDesc')}
           </p>
@@ -231,7 +231,7 @@ const Home = () => {
       {/* CTA Section */}
       <section style={{ backgroundColor: 'var(--color-primary-50)', padding: '4rem 1rem', textAlign: 'center' }}>
         <div className="container">
-          <h2>{t('home.ctaTitle')}</h2>
+          <h2 className="section-title">{t('home.ctaTitle')}</h2>
           <p style={{ maxWidth: '600px', margin: '1rem auto 2rem', color: 'var(--color-neutral-600)' }}>
             {t('home.ctaDesc')}
           </p>

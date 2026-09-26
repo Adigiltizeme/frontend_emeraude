@@ -70,7 +70,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
         </Link>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '3rem' }}>
+      <div className="project-layout-grid">
         {/* Colonne Principale (Détails) */}
         <div>
           <div className="zoom-wrapper" style={{ width: '100%', height: '400px', borderRadius: 'var(--radius-lg)', marginBottom: '2rem' }}>
@@ -81,13 +81,13 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
             <MapPin size={20} />
             {project.location}
           </div>
-          <h1 style={{ marginBottom: '1.5rem' }}>{project.title}</h1>
+          <h1 className="project-title" style={{ marginBottom: "1.5rem" }}>{project.title}</h1>
 
           <div style={{ backgroundColor: 'var(--color-surface)', padding: '2rem', borderRadius: 'var(--radius-lg)', marginBottom: '2rem' }}>
             <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem' }}>{t('projectDetails.descriptionTitle')}</h2>
             <p style={{ color: 'var(--color-neutral-800)', lineHeight: '1.6', marginBottom: '2rem' }}>{project.description}</p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginTop: '2rem', borderTop: '1px solid var(--color-neutral-200)', paddingTop: '2rem' }}>
+            <div className="project-details-grid">
               <div>
                 <h3 style={{ fontSize: '1.1rem', color: 'var(--color-primary-800)', marginBottom: '1rem' }}>{t('projectDetails.financialTitle')}</h3>
                 <ul style={{ color: 'var(--color-neutral-800)', paddingLeft: '1.2rem', lineHeight: '1.8' }}>

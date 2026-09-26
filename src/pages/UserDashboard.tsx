@@ -215,9 +215,10 @@ const UserDashboard = () => {
   // Par défaut, s'il n'a rien fait, on ne lui montre que l'onglet de son intention initiale.
   const showInvestorTab = user?.intention === 'Investissement' || hasInvestments || (!hasProjects && user?.intention === 'Demande de renseignements');
   const showProjectTab = user?.intention === 'Porteur de projet' || hasProjects;
-  const showTabsHeader = showInvestorTab && showProjectTab;
+  // Always show tabs now because we have the Support tab
+  const showTabsHeader = true;
 
-  const dashboardTitle = activeTab === 'projects' ? 'Mon Espace Porteur de Projet' : 'Mon Espace Investisseur';
+  const dashboardTitle = activeTab === 'projects' ? 'Mon Espace Porteur de Projet' : activeTab === 'support' ? 'Support Client' : 'Mon Espace Investisseur';
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '3rem 1rem' }}>
@@ -236,6 +237,7 @@ const UserDashboard = () => {
       {/* TABS CONTROLLER (Uniquement si les deux sont pertinents) */}
       {showTabsHeader && (
         <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', borderBottom: '2px solid var(--color-neutral-200)' }}>
+            {showInvestorTab && (
           <button 
             onClick={() => setActiveTab('investments')}
             style={{ 
@@ -254,6 +256,7 @@ const UserDashboard = () => {
             }}>
             <Building2 size={20} /> Vue Investisseur
           </button>
+            )}
 
           <button 
             onClick={() => setActiveTab('support')}
@@ -274,6 +277,7 @@ const UserDashboard = () => {
             <Headset size={20} /> Support Client
           </button>
 
+            {showProjectTab && (
           <button 
             onClick={() => setActiveTab('projects')}
             style={{ 
@@ -292,6 +296,7 @@ const UserDashboard = () => {
             }}>
             <Lightbulb size={20} /> Vue Porteur de Projet
           </button>
+            )}
         </div>
       )}
 

@@ -81,9 +81,9 @@ function App() {
           </main>
 
           <footer>
-            <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', textAlign: 'center' }}>
               <p>{t('footer.copyright')}</p>
-              <div style={{ display: 'flex', gap: '1rem' }}>
+              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center', width: '100%' }}>
                 <Link to="/a-propos">{t('nav.about')}</Link>
                 <Link to="/faq">{t('nav.faq')}</Link>
                 <Link to="/contact">{t('nav.contact')}</Link>

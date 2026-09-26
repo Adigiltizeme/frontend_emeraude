@@ -211,7 +211,7 @@ const Home = () => {
         }} />
 
         <div className="container" style={{ position: 'relative', zIndex: 2 }}>
-          <h2 style={{ color: 'white', marginBottom: '1.5rem', fontSize: '2.5rem', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>{t('home.contactTitle')}</h2>
+          <h2 style={{ color: 'white', marginBottom: '1.5rem', fontSize: 'clamp(1.8rem, 6vw, 2.5rem)', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>{t('home.contactTitle')}</h2>
           <p style={{ maxWidth: '700px', margin: '0 auto 2.5rem', fontSize: '1.1rem', lineHeight: '1.6', color: '#cbd5e1', textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}>
             {t('home.contactDesc')}
           </p>

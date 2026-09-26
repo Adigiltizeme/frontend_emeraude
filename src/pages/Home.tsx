@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSiteSettings } from '../context/SettingsContext';
 import { Building2, ShieldCheck, TrendingUp, Users } from 'lucide-react';
@@ -18,6 +18,7 @@ const Home = () => {
   const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [topProjects, setTopProjects] = useState<any[]>([]);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Hero slideshow
@@ -57,6 +58,45 @@ const Home = () => {
 
   // On répète les projets pour l'effet de défilement infini sans coupure sur les très grands écrans
   const displayProjects = [...topProjects, ...topProjects, ...topProjects, ...topProjects];
+
+  useEffect(() => {
+    let animationId: number;
+    let isHovered = false;
+
+    const scroll = () => {
+      if (scrollRef.current && !isHovered) {
+        scrollRef.current.scrollLeft += 0.5; // Auto scroll speed
+      }
+      animationId = requestAnimationFrame(scroll);
+    };
+    
+    animationId = requestAnimationFrame(scroll);
+    
+    const el = scrollRef.current;
+    
+    const handleEnter = () => { isHovered = true; };
+    const handleLeave = () => { isHovered = false; };
+    const handleTouchStart = () => { isHovered = true; };
+    const handleTouchEnd = () => { setTimeout(() => { isHovered = false; }, 2000); };
+    
+    if (el) {
+      el.addEventListener('mouseenter', handleEnter);
+      el.addEventListener('mouseleave', handleLeave);
+      el.addEventListener('touchstart', handleTouchStart);
+      el.addEventListener('touchend', handleTouchEnd);
+    }
+    
+    return () => {
+      cancelAnimationFrame(animationId);
+      if (el) {
+        el.removeEventListener('mouseenter', handleEnter);
+        el.removeEventListener('mouseleave', handleLeave);
+        el.removeEventListener('touchstart', handleTouchStart);
+        el.removeEventListener('touchend', handleTouchEnd);
+      }
+    };
+  }, []);
+
 
   return (
     <div className="home-page">
@@ -117,7 +157,7 @@ const Home = () => {
       {topProjects.length > 0 && (
         <section style={{ padding: "2rem 0", backgroundColor: "var(--color-surface)", width: "100%", overflow: "hidden" }}>
           <h2 className="section-title">{t('home.topProjects')}</h2>
-          <div className="projects-scroll-container">
+          <div className="projects-scroll-container" ref={scrollRef}>
             {displayProjects.map((project, index) => {
               const isClosed = project.status === "FUNDED" || project.status === "COMPLETED";
               return (

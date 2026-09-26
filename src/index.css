@@ -518,7 +518,7 @@ img:hover {
   overflow-x: auto;
   gap: 1.5rem;
   padding: 1rem 1rem 2rem 1rem;
-  scroll-snap-type: x mandatory;
+  
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none; /* Firefox */
 }
@@ -530,7 +530,7 @@ img:hover {
   flex: 0 0 auto;
   /* See at least 2 cards on mobile, up to 300px on desktop */
   width: clamp(160px, 42vw, 300px); 
-  scroll-snap-align: start;
+  
   background: white;
   border-radius: var(--radius-md);
   overflow: hidden;

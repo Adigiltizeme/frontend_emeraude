@@ -61,10 +61,10 @@ const Home = () => {
 
   useEffect(() => {
     let animationId: number;
-    let isHovered = false;
+    let 
 
     const scroll = () => {
-      if (scrollRef.current && !isHovered) {
+      if (scrollRef.current ) {
         scrollRef.current.scrollLeft += 0.5; // Auto scroll speed
       }
       animationId = requestAnimationFrame(scroll);
@@ -74,10 +74,10 @@ const Home = () => {
     
     const el = scrollRef.current;
     
-    const handleEnter = () => { isHovered = true; };
-    const handleLeave = () => { isHovered = false; };
-    const handleTouchStart = () => { isHovered = true; };
-    const handleTouchEnd = () => { setTimeout(() => { isHovered = false; }, 2000); };
+    const handleEnter = () => {  };
+    const handleLeave = () => {  };
+    const handleTouchStart = () => {  };
+    const handleTouchEnd = () => { setTimeout(() => {  }, 2000); };
     
     if (el) {
       el.addEventListener('mouseenter', handleEnter);

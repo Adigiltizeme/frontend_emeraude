@@ -181,7 +181,7 @@ export const UserSupport: React.FC = () => {
         {!showNewTicket && !activeTicket && (
           <div style={{ margin: 'auto', textAlign: 'center', color: 'var(--color-neutral-400)' }}>
             <MessageSquare size={48} style={{ margin: '0 auto 1rem', opacity: 0.5 }} />
-            <p>SǸlectionnez un ticket ou crǸez-en un nouveau</p>
+            <p>Sélectionnez un ticket ou créez-en un nouveau</p>
           </div>
         )}
 

@@ -178,7 +178,7 @@ export const AdminSupport: React.FC = () => {
         {!activeTicket && (
           <div style={{ margin: 'auto', textAlign: 'center', color: 'var(--color-neutral-400)' }}>
             <MessageSquare size={48} style={{ margin: '0 auto 1rem', opacity: 0.5 }} />
-            <p>SǸlectionnez un ticket pour afficher la conversation</p>
+            <p>Sélectionnez un ticket pour afficher la conversation</p>
           </div>
         )}
 

@@ -106,7 +106,7 @@ const Home = () => {
         <div className="container" style={{ position: 'relative', zIndex: 2, margin: '0 auto' }}>
           <h1 style={{ color: 'white', fontSize: '3rem', textShadow: '0 2px 8px rgba(0,0,0,0.8)', marginBottom: '1rem' }}>{t('home.title')}</h1>
           <p style={{ color: 'white', fontSize: '1.25rem', maxWidth: '800px', margin: '0 auto 2.5rem', textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>{t('home.subtitle')}</p>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
             <button onClick={() => navigate('/investir')} className="btn btn-secondary" style={{ padding: '1rem 2rem', fontSize: '1.1rem' }}>{t('home.btnInvest')}</button>
             <button onClick={() => navigate('/financer')} className="btn btn-outline" style={{ color: 'white', borderColor: 'white', padding: '1rem 2rem', fontSize: '1.1rem' }}>{t('home.btnFinance')}</button>
           </div>

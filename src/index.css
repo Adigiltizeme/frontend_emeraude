@@ -61,6 +61,11 @@
   padding: 0;
 }
 
+html, body {
+  overflow-x: hidden;
+  width: 100vw;
+}
+
 body {
   font-family: var(--font-body);
   color: var(--color-text-main);
@@ -379,7 +384,28 @@ img:hover {
   margin-bottom: 1rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
+  /* Force wrap on all flex containers that might overflow */
+  .hero > div > div[style*="display: flex"],
+  .contact-section > div > div[style*="display: flex"] {
+    flex-wrap: wrap;
+  }
+  .navbar {
+    padding: 1rem;
+    flex-wrap: wrap;
+  }
+  .navbar nav {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .navbar nav a {
+    font-size: 0.85rem;
+  }
+  .btn {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
   .admin-sidebar {
     position: fixed;
     top: 70px; /* Below the main header */

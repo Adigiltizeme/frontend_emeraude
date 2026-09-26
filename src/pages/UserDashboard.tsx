@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useSocket } from '../context/SocketContext';
 import { Building2, FileText, Settings, Lightbulb, Clock, CheckCircle, XCircle, Headset } from 'lucide-react';
 import { UserSupport } from '../components/support/UserSupport';
 
 const UserDashboard = () => {
   const { user, token, logout } = useAuth();
   const navigate = useNavigate();
+  const { socket } = useSocket();
   
   const [investments, setInvestments] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useSocket } from '../../context/SocketContext';
 import { MessageSquare, Plus, Send, X, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 
 export const UserSupport: React.FC = () => {
@@ -13,11 +14,33 @@ export const UserSupport: React.FC = () => {
   const [newMessage, setNewMessage] = useState('');
   const [replyMessage, setReplyMessage] = useState('');
   
+  const { socket } = useSocket();
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5050';
 
   useEffect(() => {
     fetchTickets();
   }, []);
+
+  useEffect(() => {
+    if (!socket) return;
+    
+    const handleNewMessage = (data: any) => {
+      if (activeTicket && data.ticketId === activeTicket.id) {
+        setActiveTicket((prev: any) => ({
+          ...prev,
+          messages: [...prev.messages, data.message]
+        }));
+      }
+      fetchTickets(); // Refresh list to update count
+    };
+
+    socket.on('ticket.message.new', handleNewMessage);
+    
+    return () => {
+      socket.off('ticket.message.new', handleNewMessage);
+    };
+  }, [socket, activeTicket]);
+
 
   const fetchTickets = async () => {
     setLoading(true);

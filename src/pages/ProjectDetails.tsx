@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useSocket } from '../context/SocketContext';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, MapPin, TrendingUp, Clock, AlertTriangle, FileText, Download, CheckCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';

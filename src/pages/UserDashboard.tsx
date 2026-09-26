@@ -200,7 +200,7 @@ const UserDashboard = () => {
       case 'CONFIRMED':
       case 'VALIDATED': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#16a34a', fontSize: '0.875rem', fontWeight: '600' }}><CheckCircle size={16} /> Validé</span>;
       case 'CANCELLED': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#dc2626', fontSize: '0.875rem', fontWeight: '600' }}><XCircle size={16} /> Refusé</span>;
-      case 'SUBMITTED': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#d97706', fontSize: '0.875rem', fontWeight: '600' }}><Clock size={16} /> En cours d'éétude</span>;
+      case 'SUBMITTED': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#d97706', fontSize: '0.875rem', fontWeight: '600' }}><Clock size={16} /> En cours d'étude</span>;
       case 'COLLECTING': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#2563eb', fontSize: '0.875rem', fontWeight: '600' }}><CheckCircle size={16} /> En collecte</span>;
       case 'FUNDED': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#16a34a', fontSize: '0.875rem', fontWeight: '600' }}><CheckCircle size={16} /> Financé</span>;
       default: return <span>{status}</span>;
@@ -316,7 +316,7 @@ const UserDashboard = () => {
 
               {loadingProjects ? <p>Chargement...</p> : !hasProjects ? (
                 <div>
-                  <p style={{ color: 'var(--color-neutral-500)' }}>Vous n'avez pas encore soumis de projet. Déposez votre dossier pour éétude.</p>
+                  <p style={{ color: 'var(--color-neutral-500)' }}>Vous n'avez pas encore soumis de projet. Déposez votre dossier pour étude.</p>
                   <button onClick={() => navigate('/financer')} className="btn btn-primary" style={{ marginTop: '1rem' }}>Soumettre un projet</button>
                 </div>
               ) : (

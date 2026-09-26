@@ -219,7 +219,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                 <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
                   <button
                     onClick={() => setShowInvestorsList(!showInvestorsList)}
-                    style={{ flex: 1, backgroundColor: 'white', padding: '0.75rem', borderRadius: '6px', border: '1px solid #e2e8f0', cursor: 'pointer', textAlign: 'left' }}
+                    style={{ flex: '1 1 300px', backgroundColor: 'white', padding: '0.75rem', borderRadius: '6px', border: '1px solid #e2e8f0', cursor: 'pointer', textAlign: 'left' }}
                     title="Voir la liste des investisseurs"
                   >
                     <div style={{ fontSize: '0.75rem', color: 'var(--color-neutral-500)', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', justifyContent: 'space-between' }}>
@@ -228,7 +228,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                     </div>
                     <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'var(--color-primary-600)' }}>{project._count?.investments || 0}</div>
                   </button>
-                  <div style={{ flex: 1, backgroundColor: 'white', padding: '0.75rem', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+                  <div style={{ flex: '1 1 300px', backgroundColor: 'white', padding: '0.75rem', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
                     <div style={{ fontSize: '0.75rem', color: 'var(--color-neutral-500)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Fonds levés</div>
                     <div style={{ fontSize: '1.1rem', fontWeight: 'bold', color: 'var(--color-primary-600)' }}>{(project.raised || 0).toLocaleString('fr-FR')} FCFA</div>
                   </div>
@@ -327,14 +327,14 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                           <div 
                             onClick={() => setGateway('MONEROO')}
-                            style={{ flex: 1, minWidth: '150px', padding: '1rem', border: gateway === 'MONEROO' ? '2px solid var(--color-primary-600)' : '1px solid #e2e8f0', borderRadius: '8px', cursor: 'pointer', backgroundColor: gateway === 'MONEROO' ? 'var(--color-primary-50)' : 'white' }}
+                            style={{ flex: '1 1 300px', minWidth: '150px', padding: '1rem', border: gateway === 'MONEROO' ? '2px solid var(--color-primary-600)' : '1px solid #e2e8f0', borderRadius: '8px', cursor: 'pointer', backgroundColor: gateway === 'MONEROO' ? 'var(--color-primary-50)' : 'white' }}
                           >
                             <div style={{ fontWeight: 'bold', color: 'var(--color-primary-700)' }}>Moneroo</div>
                             <div style={{ fontSize: '0.75rem', color: 'var(--color-neutral-500)' }}>Wave, Orange, MTN, Cartes (Afrique Subsaharienne)</div>
                           </div>
                           <div 
                             onClick={() => setGateway('PAYMOB')}
-                            style={{ flex: 1, minWidth: '150px', padding: '1rem', border: gateway === 'PAYMOB' ? '2px solid var(--color-primary-600)' : '1px solid #e2e8f0', borderRadius: '8px', cursor: 'pointer', backgroundColor: gateway === 'PAYMOB' ? 'var(--color-primary-50)' : 'white' }}
+                            style={{ flex: '1 1 300px', minWidth: '150px', padding: '1rem', border: gateway === 'PAYMOB' ? '2px solid var(--color-primary-600)' : '1px solid #e2e8f0', borderRadius: '8px', cursor: 'pointer', backgroundColor: gateway === 'PAYMOB' ? 'var(--color-primary-50)' : 'white' }}
                           >
                             <div style={{ fontWeight: 'bold', color: 'var(--color-primary-700)' }}>Paymob</div>
                             <div style={{ fontSize: '0.75rem', color: 'var(--color-neutral-500)' }}>Vodafone Cash, InstaPay, Cartes (Égypte)</div>
@@ -348,7 +348,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                     <button
                       onClick={() => setShowInvestForm(false)}
                       className="btn btn-outline"
-                      style={{ flex: 1, padding: '0.75rem' }}
+                      style={{ flex: '1 1 300px', padding: '0.75rem' }}
                       disabled={investLoading}
                     >
                       Annuler
@@ -392,7 +392,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                         }
                       }}
                       className="btn btn-primary"
-                      style={{ flex: 1, padding: '0.75rem' }}
+                      style={{ flex: '1 1 300px', padding: '0.75rem' }}
                       disabled={investLoading}
                     >
                       {investLoading ? 'Validation...' : 'Confirmer'}

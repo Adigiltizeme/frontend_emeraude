@@ -128,7 +128,8 @@ const UserDashboard = () => {
       return (
         <div style={{ marginTop: '1.5rem', padding: '1.5rem', backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
           <h5 style={{ margin: '0 0 1.5rem 0', color: 'var(--color-neutral-700)', fontSize: '0.95rem' }}>Suivi d'avancement</h5>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative' }}>
+          <div style={{ width: '100%', overflowX: 'auto', paddingBottom: '0.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative', minWidth: '500px' }}>
             {/* Ligne de fond */}
             <div style={{ position: 'absolute', top: '12px', left: '10%', right: '10%', height: '4px', backgroundColor: '#e2e8f0', zIndex: 1, borderRadius: '2px' }}></div>
             
@@ -175,6 +176,7 @@ const UserDashboard = () => {
                 </div>
               );
             })}
+          </div>
           </div>
         </div>
       );

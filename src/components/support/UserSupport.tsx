@@ -194,11 +194,11 @@ export const UserSupport: React.FC = () => {
             <form onSubmit={handleCreateTicket} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
                 <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Sujet</label>
-                <input required type="text" value={newSubject} onChange={e => setNewSubject(e.target.value)} className="form-control" placeholder="Quel est votre problme ?" />
+                <input required type="text" value={newSubject} onChange={e => setNewSubject(e.target.value)} className="form-control" placeholder="Quel est votre problème ?" />
               </div>
               <div>
                 <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Message</label>
-                <textarea required value={newMessage} onChange={e => setNewMessage(e.target.value)} className="form-control" rows={5} placeholder="DǸcrivez votre demande en dǸtail..."></textarea>
+                <textarea required value={newMessage} onChange={e => setNewMessage(e.target.value)} className="form-control" rows={5} placeholder="Décrivez votre demande en détail..."></textarea>
               </div>
               <button type="submit" className="btn btn-primary">Envoyer la demande</button>
             </form>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
@@ -15,7 +15,16 @@ const UserDashboard = () => {
   const [loadingInvestments, setLoadingInvestments] = useState(true);
   const [loadingProjects, setLoadingProjects] = useState(true);
 
-  // L'utilisateur démarre sur l'onglet correspondant à son intention initiale, mais peut basculer
+  useEffect(() => {
+    if (!socket) return;
+    const handleInvestmentUpdated = (updatedInv: any) => {
+      setInvestments(prev => prev.map(inv => inv.id === updatedInv.id ? { ...inv, status: updatedInv.status } : inv));
+    };
+    socket.on('investment.updated', handleInvestmentUpdated);
+    return () => { socket.off('investment.updated', handleInvestmentUpdated); };
+  }, [socket]);
+
+  // L'utilisateur dÃ©marre sur l'onglet correspondant Ã  son intention initiale, mais peut basculer
   const [activeTab, setActiveTab] = useState<'investments' | 'projects' | 'support'>(
     user?.intention === 'Porteur de projet' ? 'projects' : 'investments'
   );
@@ -67,7 +76,7 @@ const UserDashboard = () => {
         if (item.status === 'REJECTED') {
           return (
             <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#fee2e2', borderRadius: '8px', color: '#dc2626', fontWeight: 'bold' }}>
-              Projet refusé. Veuillez contacter le support pour plus d'informations.
+              Projet refusÃ©. Veuillez contacter le support pour plus d'informations.
             </div>
           );
         }
@@ -76,8 +85,8 @@ const UserDashboard = () => {
           { label: 'Soumission', key: 'SUBMITTED' },
           { label: 'Analyse', key: 'DRAFT' },
           { label: 'En collecte', key: 'COLLECTING' },
-          { label: 'Financé', key: 'FUNDED' },
-          { label: 'Terminé', key: 'COMPLETED' },
+          { label: 'FinancÃ©', key: 'FUNDED' },
+          { label: 'TerminÃ©', key: 'COMPLETED' },
         ];
         
         const statusOrder = ['SUBMITTED', 'DRAFT', 'COLLECTING', 'FUNDED', 'COMPLETED'];
@@ -89,7 +98,7 @@ const UserDashboard = () => {
         if (item.status === 'REJECTED') {
           return (
             <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#fee2e2', borderRadius: '8px', color: '#dc2626', fontWeight: 'bold' }}>
-              Investissement annulé ou refusé.
+              Investissement annulÃ© ou refusÃ©.
             </div>
           );
         }
@@ -98,9 +107,9 @@ const UserDashboard = () => {
         
         steps = [
           { label: 'Promesse', completed: true },
-          { label: 'Fonds reçus', completed: isValidated },
+          { label: 'Fonds reÃ§us', completed: isValidated },
           { label: 'En collecte', completed: isValidated && (item.project.status === 'COLLECTING' || item.project.status === 'FUNDED' || item.project.status === 'COMPLETED') },
-          { label: 'Projet financé', completed: isValidated && (item.project.status === 'FUNDED' || item.project.status === 'COMPLETED') },
+          { label: 'Projet financÃ©', completed: isValidated && (item.project.status === 'FUNDED' || item.project.status === 'COMPLETED') },
           { label: 'Rendement', completed: isValidated && item.project.status === 'COMPLETED' },
         ];
         
@@ -189,11 +198,11 @@ const UserDashboard = () => {
     switch (status) {
       case 'PENDING': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#d97706', fontSize: '0.875rem', fontWeight: '600' }}><Clock size={16} /> En attente</span>;
       case 'CONFIRMED': 
-      case 'VALIDATED': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#16a34a', fontSize: '0.875rem', fontWeight: '600' }}><CheckCircle size={16} /> Validé</span>;
-      case 'CANCELLED': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#dc2626', fontSize: '0.875rem', fontWeight: '600' }}><XCircle size={16} /> Refusé</span>;
-      case 'SUBMITTED': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#d97706', fontSize: '0.875rem', fontWeight: '600' }}><Clock size={16} /> En cours d'étude</span>;
+      case 'VALIDATED': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#16a34a', fontSize: '0.875rem', fontWeight: '600' }}><CheckCircle size={16} /> ValidÃ©</span>;
+      case 'CANCELLED': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#dc2626', fontSize: '0.875rem', fontWeight: '600' }}><XCircle size={16} /> RefusÃ©</span>;
+      case 'SUBMITTED': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#d97706', fontSize: '0.875rem', fontWeight: '600' }}><Clock size={16} /> En cours d'Ã©tude</span>;
       case 'COLLECTING': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#2563eb', fontSize: '0.875rem', fontWeight: '600' }}><CheckCircle size={16} /> En collecte</span>;
-      case 'FUNDED': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#16a34a', fontSize: '0.875rem', fontWeight: '600' }}><CheckCircle size={16} /> Financé</span>;
+      case 'FUNDED': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#16a34a', fontSize: '0.875rem', fontWeight: '600' }}><CheckCircle size={16} /> FinancÃ©</span>;
       default: return <span>{status}</span>;
     }
   };
@@ -201,9 +210,9 @@ const UserDashboard = () => {
   const hasInvestments = investments.length > 0;
   const hasProjects = projects.length > 0;
 
-  // Afficher les deux onglets UNIQUEMENT si l'utilisateur a de l'activité dans les deux, 
-  // OU s'il a une intention X mais a commencé l'activité Y.
-  // Par défaut, s'il n'a rien fait, on ne lui montre que l'onglet de son intention initiale.
+  // Afficher les deux onglets UNIQUEMENT si l'utilisateur a de l'activitÃ© dans les deux, 
+  // OU s'il a une intention X mais a commencÃ© l'activitÃ© Y.
+  // Par dÃ©faut, s'il n'a rien fait, on ne lui montre que l'onglet de son intention initiale.
   const showInvestorTab = user?.intention === 'Investissement' || hasInvestments || (!hasProjects && user?.intention === 'Demande de renseignements');
   const showProjectTab = user?.intention === 'Porteur de projet' || hasProjects;
   const showTabsHeader = showInvestorTab && showProjectTab;
@@ -218,7 +227,7 @@ const UserDashboard = () => {
       </div>
 
       <div style={{ backgroundColor: 'var(--color-white)', padding: '2rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', marginBottom: '2rem' }}>
-        <h2 style={{ color: 'var(--color-primary-800)', marginBottom: '0.5rem', fontSize: '1.5rem', marginTop: 0 }}>Bonjour, {user.firstName || user.email} 👋</h2>
+        <h2 style={{ color: 'var(--color-primary-800)', marginBottom: '0.5rem', fontSize: '1.5rem', marginTop: 0 }}>Bonjour, {user.firstName || user.email} ðŸ‘‹</h2>
         <p style={{ color: 'var(--color-neutral-600)', fontSize: '1.1rem', margin: 0 }}>
           Bienvenue sur votre espace personnel Emeraude Africa.
         </p>
@@ -302,7 +311,7 @@ const UserDashboard = () => {
               
               {loadingProjects ? <p>Chargement...</p> : !hasProjects ? (
                 <div>
-                  <p style={{ color: 'var(--color-neutral-500)' }}>Vous n'avez pas encore soumis de projet. Déposez votre dossier pour étude.</p>
+                  <p style={{ color: 'var(--color-neutral-500)' }}>Vous n'avez pas encore soumis de projet. DÃ©posez votre dossier pour Ã©tude.</p>
                   <button onClick={() => navigate('/financer')} className="btn btn-primary" style={{ marginTop: '1rem' }}>Soumettre un projet</button>
                 </div>
               ) : (
@@ -313,7 +322,7 @@ const UserDashboard = () => {
                         <div>
                           <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '1.25rem', color: 'var(--color-primary-900)' }}>{p.title}</h4>
                           <div style={{ color: 'var(--color-neutral-500)', fontSize: '0.95rem' }}>Montant cible : <strong>{p.target.toLocaleString('fr-FR')} FCFA</strong></div>
-                          {p.status === 'COLLECTING' && <div style={{ color: 'var(--color-primary-700)', fontSize: '0.9rem', marginTop: '0.5rem', fontWeight: 'bold' }}>Fonds levés : {(p.raised || 0).toLocaleString('fr-FR')} FCFA</div>}
+                          {p.status === 'COLLECTING' && <div style={{ color: 'var(--color-primary-700)', fontSize: '0.9rem', marginTop: '0.5rem', fontWeight: 'bold' }}>Fonds levÃ©s : {(p.raised || 0).toLocaleString('fr-FR')} FCFA</div>}
                         </div>
                         <div>{renderStatus(p.status)}</div>
                       </div>
@@ -334,7 +343,7 @@ const UserDashboard = () => {
                               {loadingInvestments ? <p>Chargement...</p> : !hasInvestments ? (
                   <div>
                     <p style={{ color: 'var(--color-neutral-500)' }}>Vous n'avez pas encore d'investissement actif. Explorez nos projets pour commencer.</p>
-                    <button onClick={() => navigate('/investir')} className="btn btn-primary" style={{ marginTop: '1rem' }}>Découvrir les projets</button>
+                    <button onClick={() => navigate('/investir')} className="btn btn-primary" style={{ marginTop: '1rem' }}>DÃ©couvrir les projets</button>
                   </div>
                 ) : (
                   <div style={{ display: 'grid', gap: '1rem' }}>
@@ -372,7 +381,7 @@ const UserDashboard = () => {
                         
                         {group.transactions.length > 1 && (
                           <div style={{ marginTop: '1rem', padding: '0.75rem', backgroundColor: 'white', borderRadius: '6px', border: '1px dashed #cbd5e1' }}>
-                            <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: 'var(--color-neutral-700)', marginBottom: '0.5rem' }}>Détail de vos transactions :</div>
+                            <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: 'var(--color-neutral-700)', marginBottom: '0.5rem' }}>DÃ©tail de vos transactions :</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                               {group.transactions.map((t: any, i: number) => (
                                 <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
@@ -415,7 +424,7 @@ const UserDashboard = () => {
                   </div>
                   <button 
                     onClick={() => {
-                      const text = `ATTESTATION D'INVESTISSEMENT\n\nPlateforme: Emeraude Africa\nDate: ${new Date(inv.createdAt).toLocaleDateString('fr-FR')}\n\nInvestisseur: ${user.firstName || ''} ${user.lastName || ''}\nEmail: ${user.email}\n\nProjet: ${inv.project.title}\nMontant investi: ${inv.amount.toLocaleString('fr-FR')} FCFA\nStatut de l'investissement: ${inv.status}\n\nCeci est une attestation générée automatiquement par la plateforme Emeraude Africa.`;
+                      const text = `ATTESTATION D'INVESTISSEMENT\n\nPlateforme: Emeraude Africa\nDate: ${new Date(inv.createdAt).toLocaleDateString('fr-FR')}\n\nInvestisseur: ${user.firstName || ''} ${user.lastName || ''}\nEmail: ${user.email}\n\nProjet: ${inv.project.title}\nMontant investi: ${inv.amount.toLocaleString('fr-FR')} FCFA\nStatut de l'investissement: ${inv.status}\n\nCeci est une attestation gÃ©nÃ©rÃ©e automatiquement par la plateforme Emeraude Africa.`;
                       const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
                       const url = URL.createObjectURL(blob);
                       const a = document.createElement('a');
@@ -427,7 +436,7 @@ const UserDashboard = () => {
                     className="btn btn-outline" 
                     style={{ padding: '0.35rem 0.75rem', fontSize: '0.8rem', backgroundColor: 'white' }}
                   >
-                    Télécharger
+                    TÃ©lÃ©charger
                   </button>
                 </div>
               ))
@@ -439,7 +448,7 @@ const UserDashboard = () => {
         <div style={{ backgroundColor: 'var(--color-white)', padding: '2rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-neutral-200)' }}>
           <Settings size={32} color="var(--color-primary-500)" style={{ marginBottom: '1rem' }} />
           <h3 style={{ color: 'var(--color-neutral-800)', marginBottom: '0.5rem', marginTop: 0 }}>Mon Profil</h3>
-          <p style={{ color: 'var(--color-neutral-500)' }}>Gérez vos informations personnelles et vos coordonnées KYC.</p>
+          <p style={{ color: 'var(--color-neutral-500)' }}>GÃ©rez vos informations personnelles et vos coordonnÃ©es KYC.</p>
           <button onClick={() => navigate('/mon-profil')} className="btn btn-outline" style={{ marginTop: '1.5rem', width: '100%' }}>Modifier mon profil</button>
         </div>
 

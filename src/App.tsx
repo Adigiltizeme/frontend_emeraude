@@ -40,6 +40,7 @@ function App() {
   return (
     <AuthProvider>
       <SettingsProvider>
+      <SocketProvider>
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <div className="app-container">
           <InteractiveBackground />
@@ -96,6 +97,7 @@ function App() {
           </footer>
         </div>
       </BrowserRouter>
+      </SocketProvider>
       </SettingsProvider>
     </AuthProvider>
   );

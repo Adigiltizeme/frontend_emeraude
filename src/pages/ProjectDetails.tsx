@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useSocket } from '../context/SocketContext';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +12,21 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [project, setProject] = useState<any>(previewData);
+  const { socket } = useSocket();
+
+  // WebSocket : mise à jour temps réel des levées de fonds
+  useEffect(() => {
+    if (!socket || !project) return;
+    const handleProjectFunded = (data: any) => {
+      if (data.projectId === project.id) {
+        fetch(`/projects/`)
+          .then(res => res.json())
+          .then(data => setProject(data));
+      }
+    };
+    socket.on('project.funded', handleProjectFunded);
+    return () => { socket.off('project.funded', handleProjectFunded); };
+  }, [socket, project]);
   const [loading, setLoading] = useState(true);
   const { isAuthenticated, token } = useAuth();
   const [showInvestForm, setShowInvestForm] = useState(false);
@@ -57,9 +72,9 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
     return <div style={{ padding: '4rem', textAlign: 'center', minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', color: '#991b1b' }}>Projet introuvable</div>;
   }
 
-  // Calcul du pourcentage de levée (simulé pour l'instant si non géré en base)
+  // Calcul du pourcentage de levÃ©e (simulÃ© pour l'instant si non gÃ©rÃ© en base)
   const targetNum = project.target || 1;
-  const raisedNum = 0; // À remplacer par project.raised si implémenté
+  const raisedNum = 0; // Ã€ remplacer par project.raised si implÃ©mentÃ©
   const progressPercent = Math.min(100, Math.round((raisedNum / targetNum) * 100));
 
   return (
@@ -72,7 +87,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
       )}
 
       <div className="project-layout-grid">
-        {/* Colonne Principale (Détails) */}
+        {/* Colonne Principale (DÃ©tails) */}
         <div>
           <div className="zoom-wrapper" style={{ width: '100%', height: '400px', borderRadius: 'var(--radius-lg)', marginBottom: '2rem' }}>
             <div className="zoom-bg" style={{ backgroundImage: `url(${project.image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'})` }}></div>
@@ -92,9 +107,9 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
               <div>
                 <h3 style={{ fontSize: '1.1rem', color: 'var(--color-primary-800)', marginBottom: '1rem' }}>{t('projectDetails.financialTitle')}</h3>
                 <ul style={{ color: 'var(--color-neutral-800)', paddingLeft: '1.2rem', lineHeight: '1.8' }}>
-                  <li><strong>Rentabilité locative :</strong> {project.rentYield ? `~${project.rentYield}% / an` : 'Non applicable'}</li>
-                  <li><strong>Plus-value estimée :</strong> {project.capitalGain ? `~${project.capitalGain}% / an` : 'Non applicable'}</li>
-                  <li><strong>Garantie :</strong> {project.guarantee || 'Non spécifiée'}</li>
+                  <li><strong>RentabilitÃ© locative :</strong> {project.rentYield ? `~${project.rentYield}% / an` : 'Non applicable'}</li>
+                  <li><strong>Plus-value estimÃ©e :</strong> {project.capitalGain ? `~${project.capitalGain}% / an` : 'Non applicable'}</li>
+                  <li><strong>Garantie :</strong> {project.guarantee || 'Non spÃ©cifiÃ©e'}</li>
                   <li><strong>Distribution :</strong> {project.distribution || 'Trimestrielle'}</li>
                 </ul>
               </div>
@@ -102,7 +117,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                 <h3 style={{ fontSize: '1.1rem', color: 'var(--color-primary-800)', marginBottom: '1rem' }}>{t('projectDetails.impactTitle')}</h3>
                 <ul style={{ color: 'var(--color-neutral-800)', paddingLeft: '1.2rem', lineHeight: '1.8' }}>
                   <li><strong>Type de bien :</strong> {project.assetType}</li>
-                  <li><strong>Impact social / environnemental :</strong> {project.impact || 'Non spécifié'}</li>
+                  <li><strong>Impact social / environnemental :</strong> {project.impact || 'Non spÃ©cifiÃ©'}</li>
                 </ul>
               </div>
             </div>
@@ -141,7 +156,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
           </div>
         </div>
 
-        {/* Colonne Latérale (Investissement) */}
+        {/* Colonne LatÃ©rale (Investissement) */}
         <div>
           <div style={{ backgroundColor: 'var(--color-white)', padding: '2rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', position: 'sticky', top: '2rem' }}>
             <div style={{ marginBottom: '1.5rem' }}>
@@ -203,7 +218,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
               </>
             ) : (
               <div style={{ padding: '1rem', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', marginTop: '1rem' }}>
-                <h4 style={{ margin: '0 0 1rem 0', color: 'var(--color-primary-800)', fontSize: '1.1rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.5rem' }}>Aperçu Administrateur</h4>
+                <h4 style={{ margin: '0 0 1rem 0', color: 'var(--color-primary-800)', fontSize: '1.1rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.5rem' }}>AperÃ§u Administrateur</h4>
 
                 {project.owner ? (
                   <div style={{ marginBottom: '1rem' }}>
@@ -211,10 +226,10 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                     <div style={{ fontWeight: '600', color: 'var(--color-neutral-800)' }}>{project.owner.firstName} {project.owner.lastName}</div>
                     <div style={{ fontSize: '0.9rem', color: 'var(--color-neutral-600)' }}>{project.owner.email}</div>
                     <div style={{ fontSize: '0.9rem', color: 'var(--color-neutral-600)' }}>{project.owner.phone}</div>
-                    {project.owner.kycStatus === 'VERIFIED' && <span style={{ display: 'inline-block', marginTop: '0.25rem', padding: '0.15rem 0.5rem', borderRadius: '4px', backgroundColor: '#dcfce7', color: '#16a34a', fontSize: '0.75rem', fontWeight: 'bold' }}>KYC Vérifié</span>}
+                    {project.owner.kycStatus === 'VERIFIED' && <span style={{ display: 'inline-block', marginTop: '0.25rem', padding: '0.15rem 0.5rem', borderRadius: '4px', backgroundColor: '#dcfce7', color: '#16a34a', fontSize: '0.75rem', fontWeight: 'bold' }}>KYC VÃ©rifiÃ©</span>}
                   </div>
                 ) : (
-                  <div style={{ marginBottom: '1rem', fontStyle: 'italic', color: 'var(--color-neutral-500)' }}>Projet créé par l'équipe (Interne)</div>
+                  <div style={{ marginBottom: '1rem', fontStyle: 'italic', color: 'var(--color-neutral-500)' }}>Projet crÃ©Ã© par l'Ã©quipe (Interne)</div>
                 )}
 
                 <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
@@ -230,7 +245,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                     <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'var(--color-primary-600)' }}>{project._count?.investments || 0}</div>
                   </button>
                   <div style={{ flex: '1 1 300px', backgroundColor: 'white', padding: '0.75rem', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--color-neutral-500)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Fonds levés</div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--color-neutral-500)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Fonds levÃ©s</div>
                     <div style={{ fontSize: '1.1rem', fontWeight: 'bold', color: 'var(--color-primary-600)' }}>{(project.raised || 0).toLocaleString('fr-FR')} FCFA</div>
                   </div>
                 </div>
@@ -256,9 +271,9 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                               {inv.amount.toLocaleString('fr-FR')} FCFA
                             </td>
                             <td style={{ padding: '0.5rem', textAlign: 'center' }}>
-                              {inv.status === 'VALIDATED' && <span style={{ color: '#16a34a', fontSize: '0.75rem', fontWeight: 'bold' }}>Validé</span>}
+                              {inv.status === 'VALIDATED' && <span style={{ color: '#16a34a', fontSize: '0.75rem', fontWeight: 'bold' }}>ValidÃ©</span>}
                               {inv.status === 'PENDING' && <span style={{ color: '#d97706', fontSize: '0.75rem', fontWeight: 'bold' }}>En attente</span>}
-                              {inv.status === 'REJECTED' && <span style={{ color: '#dc2626', fontSize: '0.75rem', fontWeight: 'bold' }}>Refusé</span>}
+                              {inv.status === 'REJECTED' && <span style={{ color: '#dc2626', fontSize: '0.75rem', fontWeight: 'bold' }}>RefusÃ©</span>}
                             </td>
                           </tr>
                         ))}
@@ -308,7 +323,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                   </div>
 
                   <div style={{ marginBottom: '1.5rem' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '500' }}>Méthode de Paiement</label>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '500' }}>MÃ©thode de Paiement</label>
                     <select
                       value={paymentMethod}
                       onChange={(e) => {
@@ -318,7 +333,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                       }}
                       style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #e2e8f0', marginBottom: '1rem' }}
                     >
-                      <option value="CREDIT_CARD">Paiement en ligne (Immédiat)</option>
+                      <option value="CREDIT_CARD">Paiement en ligne (ImmÃ©diat)</option>
                       <option value="BANK_TRANSFER">Transfert manuel (Taptap Send, Remitly...)</option>
                     </select>
                     
@@ -338,7 +353,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                             style={{ flex: '1 1 300px', minWidth: '150px', padding: '1rem', border: gateway === 'PAYMOB' ? '2px solid var(--color-primary-600)' : '1px solid #e2e8f0', borderRadius: '8px', cursor: 'pointer', backgroundColor: gateway === 'PAYMOB' ? 'var(--color-primary-50)' : 'white' }}
                           >
                             <div style={{ fontWeight: 'bold', color: 'var(--color-primary-700)' }}>Paymob</div>
-                            <div style={{ fontSize: '0.75rem', color: 'var(--color-neutral-500)' }}>Vodafone Cash, InstaPay, Cartes (Égypte)</div>
+                            <div style={{ fontSize: '0.75rem', color: 'var(--color-neutral-500)' }}>Vodafone Cash, InstaPay, Cartes (Ã‰gypte)</div>
                           </div>
                         </div>
                       </div>
@@ -384,7 +399,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                             }
                           } else {
                             const err = await res.json();
-                            alert(err.message || 'Erreur lors de la création');
+                            alert(err.message || 'Erreur lors de la crÃ©ation');
                           }
                         } catch (error) {
                           alert('Erreur serveur');
@@ -406,9 +421,9 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
             {investSuccess && (
               <div style={{ marginTop: '1rem', padding: '1.5rem', backgroundColor: '#dcfce7', borderRadius: '8px', border: '1px solid #16a34a', textAlign: 'center' }}>
                 <CheckCircle size={32} color="#16a34a" style={{ margin: '0 auto 0.5rem' }} />
-                <h4 style={{ margin: '0 0 0.5rem 0', color: '#16a34a' }}>Demande enregistrée !</h4>
+                <h4 style={{ margin: '0 0 0.5rem 0', color: '#16a34a' }}>Demande enregistrÃ©e !</h4>
                 <p style={{ fontSize: '0.9rem', color: '#15803d', marginBottom: '1rem' }}>
-                  Notre équipe va vous contacter avec les instructions de paiement.
+                  Notre Ã©quipe va vous contacter avec les instructions de paiement.
                 </p>
                 <button onClick={() => navigate('/mon-compte')} className="btn btn-primary" style={{ width: '100%' }}>
                   Suivre mon investissement

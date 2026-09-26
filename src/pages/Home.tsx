@@ -61,7 +61,6 @@ const Home = () => {
 
   useEffect(() => {
     let animationId: number;
-    let 
 
     const scroll = () => {
       if (scrollRef.current ) {

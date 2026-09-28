@@ -4,6 +4,68 @@ import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
 import { Building2, FileText, Settings, Lightbulb, Clock, CheckCircle, XCircle, Headset } from 'lucide-react';
 import { UserSupport } from '../components/support/UserSupport';
+import { jsPDF } from "jspdf";
+
+
+const generatePDF = (inv: any, user: any) => {
+  const doc = new jsPDF();
+  
+  // Header
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(20, 80, 50); // Vert Emeraude
+  doc.setFontSize(22);
+  doc.text("ATTESTATION D'INVESTISSEMENT", 105, 30, { align: "center" });
+
+  doc.setFontSize(14);
+  doc.setTextColor(100, 100, 100);
+  doc.text("Emeraude Africa - Plateforme de Financement Participatif", 105, 40, { align: "center" });
+
+  // Ligne de separation
+  doc.setDrawColor(20, 80, 50);
+  doc.setLineWidth(1);
+  doc.line(20, 50, 190, 50);
+
+  // Informations Investisseur
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(12);
+  doc.setTextColor(0, 0, 0);
+  doc.text("INFORMATIONS DE L'INVESTISSEUR :", 20, 70);
+  
+  doc.setFont("helvetica", "normal");
+  doc.text(`Nom complet : ${user.firstName || ''} ${user.lastName || ''}`, 20, 80);
+  doc.text(`Adresse email : ${user.email}`, 20, 90);
+  doc.text(`Identifiant membre : ${user.id}`, 20, 100);
+
+  // Informations Investissement
+  doc.setFont("helvetica", "bold");
+  doc.text("DETAILS DE L'INVESTISSEMENT :", 20, 130);
+  
+  doc.setFont("helvetica", "normal");
+  doc.text(`Projet : ${inv.project.title}`, 20, 140);
+  const invDate = new Date(inv.createdAt).toLocaleDateString('fr-FR');
+  doc.text(`Date de l'operation : ${invDate}`, 20, 150);
+  doc.text(`Montant investi : ${inv.amount.toLocaleString('fr-FR')} FCFA`, 20, 160);
+  
+  // Statut
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(inv.status === 'VALIDATED' ? 20 : 150, inv.status === 'VALIDATED' ? 120 : 100, 50);
+  doc.text(`Statut actuel : ${inv.status}`, 20, 170);
+
+  // Ligne de fin
+  doc.setDrawColor(200, 200, 200);
+  doc.line(20, 240, 190, 240);
+
+  // Footer
+  doc.setFont("helvetica", "italic");
+  doc.setFontSize(10);
+  doc.setTextColor(150, 150, 150);
+  doc.text("Ceci est un document genere automatiquement par la plateforme Emeraude Africa.", 105, 250, { align: "center" });
+  doc.text("Il fait office de preuve de depot ou de promesse d'investissement sous reserve de validation.", 105, 255, { align: "center" });
+
+  // Save the PDF
+  const filename = `Attestation_${inv.project.title.replace(/\s+/g, '_')}_${invDate.replace(/\//g, '-')}.pdf`;
+  doc.save(filename);
+};
 
 const UserDashboard = () => {
   const { user, token, logout } = useAuth();
@@ -428,16 +490,7 @@ const UserDashboard = () => {
                     <div style={{ color: 'var(--color-primary-600)', fontWeight: 'bold' }}>{inv.amount.toLocaleString('fr-FR')} FCFA</div>
                   </div>
                   <button
-                    onClick={() => {
-                      const text = `ATTESTATION D'INVESTISSEMENT\n\nPlateforme: Emeraude Africa\nDate: ${new Date(inv.createdAt).toLocaleDateString('fr-FR')}\n\nInvestisseur: ${user.firstName || ''} ${user.lastName || ''}\nEmail: ${user.email}\n\nProjet: ${inv.project.title}\nMontant investi: ${inv.amount.toLocaleString('fr-FR')} FCFA\nStatut de l'investissement: ${inv.status}\n\nCeci est une attestation générée automatiquement par la plateforme Emeraude Africa.`;
-                      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-                      const url = URL.createObjectURL(blob);
-                      const a = document.createElement('a');
-                      a.href = url;
-                      a.download = `Attestation_${inv.project.title.replace(/\s+/g, '_')}.txt`;
-                      a.click();
-                      URL.revokeObjectURL(url);
-                    }}
+                    onClick={() => generatePDF(inv, user)}
                     className="btn btn-outline"
                     style={{ padding: '0.35rem 0.75rem', fontSize: '0.8rem', backgroundColor: 'white' }}
                   >

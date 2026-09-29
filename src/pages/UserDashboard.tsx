@@ -264,7 +264,7 @@ const UserDashboard = () => {
       <div style={{ marginTop: '1.5rem', padding: '1.5rem', backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
         <h5 style={{ margin: '0 0 1.5rem 0', color: 'var(--color-neutral-700)', fontSize: '0.95rem' }}>Suivi d'avancement</h5>
         <div style={{ width: '100%', overflowX: 'auto', paddingBottom: '0.5rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative', minWidth: '500px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative', minWidth: '400px' }}>
             {/* Ligne de fond */}
             <div style={{ position: 'absolute', top: '12px', left: '10%', right: '10%', height: '4px', backgroundColor: '#e2e8f0', zIndex: 1, borderRadius: '2px' }}></div>
 
@@ -344,33 +344,33 @@ const UserDashboard = () => {
   const dashboardTitle = activeTab === 'projects' ? 'Mon Espace Porteur de Projet' : activeTab === 'support' ? 'Support Client' : 'Mon Espace Investisseur';
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '3rem 1rem' }}>
+    <div className="dashboard-container">
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <h1 style={{ color: 'var(--color-primary-900)', margin: 0 }}>{dashboardTitle}</h1>
       </div>
 
-      <div style={{ backgroundColor: 'var(--color-white)', padding: '2rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', marginBottom: '2rem' }}>
+      <div className="card-padding" style={{ backgroundColor: 'var(--color-white)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', marginBottom: '2rem' }}>
         <h2 style={{ color: 'var(--color-primary-800)', marginBottom: '0.5rem', fontSize: '1.5rem', marginTop: 0 }}>Bonjour, {user.firstName || user.email} 👋</h2>
-        <p style={{ color: 'var(--color-neutral-600)', fontSize: '1.1rem', margin: 0 }}>
+        <p style={{ color: 'var(--color-neutral-600)',  margin: 0 }}>
           Bienvenue sur votre espace personnel Emeraude Africa.
         </p>
       </div>
 
       {/* TABS CONTROLLER (Uniquement si les deux sont pertinents) */}
       {showTabsHeader && (
-        <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', borderBottom: '2px solid var(--color-neutral-200)' }}>
+        <div className="tabs-container">
           {showInvestorTab && (
             <button
               onClick={() => setActiveTab('investments')}
               style={{
-                padding: '1rem 2rem',
+                
                 backgroundColor: 'transparent',
                 border: 'none',
                 borderBottom: activeTab === 'investments' ? '3px solid var(--color-primary-600)' : '3px solid transparent',
                 color: activeTab === 'investments' ? 'var(--color-primary-800)' : 'var(--color-neutral-500)',
                 fontWeight: activeTab === 'investments' ? 'bold' : 'normal',
-                fontSize: '1.1rem',
+                
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -384,13 +384,13 @@ const UserDashboard = () => {
           <button
             onClick={() => setActiveTab('support')}
             style={{
-              padding: '1rem 2rem',
+              
               backgroundColor: 'transparent',
               border: 'none',
               borderBottom: activeTab === 'support' ? '3px solid var(--color-primary-600)' : '3px solid transparent',
               color: activeTab === 'support' ? 'var(--color-primary-800)' : 'var(--color-neutral-500)',
               fontWeight: activeTab === 'support' ? 'bold' : 'normal',
-              fontSize: '1.1rem',
+              
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -404,13 +404,13 @@ const UserDashboard = () => {
             <button
               onClick={() => setActiveTab('projects')}
               style={{
-                padding: '1rem 2rem',
+                
                 backgroundColor: 'transparent',
                 border: 'none',
                 borderBottom: activeTab === 'projects' ? '3px solid var(--color-primary-600)' : '3px solid transparent',
                 color: activeTab === 'projects' ? 'var(--color-primary-800)' : 'var(--color-neutral-500)',
                 fontWeight: activeTab === 'projects' ? 'bold' : 'normal',
-                fontSize: '1.1rem',
+                
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -423,10 +423,10 @@ const UserDashboard = () => {
         </div>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+      <div className="grid-responsive">
 
         {/* CARTE DYNAMIQUE (INVESTISSEMENTS OU PROJETS) */}
-        <div style={{ backgroundColor: 'var(--color-white)', padding: '2rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-neutral-200)', gridColumn: '1 / -1' }}>
+        <div className="card-padding" style={{ backgroundColor: 'var(--color-white)', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-neutral-200)', gridColumn: '1 / -1', minWidth: 0 }}>
 
           {activeTab === 'support' ? (
             <UserSupport />
@@ -440,7 +440,7 @@ const UserDashboard = () => {
               {loadingProjects ? <p>Chargement...</p> : !hasProjects ? (
                 <div>
                   <p style={{ color: 'var(--color-neutral-500)' }}>Vous n'avez pas encore soumis de projet. Déposez votre dossier pour étude.</p>
-                  <button onClick={() => navigate('/financer')} className="btn btn-primary" style={{ marginTop: '1rem' }}>Soumettre un projet</button>
+                  <button onClick={() => navigate('/financer')} className="btn btn-primary tab-button" style={{ marginTop: '1rem' }}>Soumettre un projet</button>
                 </div>
               ) : (
                 <div style={{ display: 'grid', gap: '1rem' }}>
@@ -471,7 +471,7 @@ const UserDashboard = () => {
               {loadingInvestments ? <p>Chargement...</p> : !hasInvestments ? (
                 <div>
                   <p style={{ color: 'var(--color-neutral-500)' }}>Vous n'avez pas encore d'investissement actif. Explorez nos projets pour commencer.</p>
-                  <button onClick={() => navigate('/investir')} className="btn btn-primary" style={{ marginTop: '1rem' }}>Découvrir les projets</button>
+                  <button onClick={() => navigate('/investir')} className="btn btn-primary tab-button" style={{ marginTop: '1rem' }}>Découvrir les projets</button>
                 </div>
               ) : (
                 <div style={{ display: 'grid', gap: '1rem' }}>
@@ -525,7 +525,7 @@ const UserDashboard = () => {
                       {renderTimeline('investment', { status: group.status, project: group.project })}
                     </div>
                   ))}
-                  <button onClick={() => navigate('/investir')} className="btn btn-primary" style={{ marginTop: '1rem', alignSelf: 'flex-start' }}>Nouvel investissement</button>
+                  <button onClick={() => navigate('/investir')} className="btn btn-primary tab-button" style={{ marginTop: '1rem', alignSelf: 'flex-start' }}>Nouvel investissement</button>
                 </div>
               )}
             </>
@@ -533,7 +533,7 @@ const UserDashboard = () => {
         </div>
 
         {/* CARTE DOCUMENTS */}
-        <div style={{ backgroundColor: 'var(--color-white)', padding: '2rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-neutral-200)' }}>
+        <div className="card-padding" style={{ backgroundColor: 'var(--color-white)', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-neutral-200)', minWidth: 0 }}>
           <FileText size={32} color="var(--color-primary-500)" style={{ marginBottom: '1rem' }} />
           <h3 style={{ color: 'var(--color-neutral-800)', marginBottom: '0.5rem', marginTop: 0 }}>Mes Documents</h3>
           <p style={{ color: 'var(--color-neutral-500)', marginBottom: '1.5rem' }}>
@@ -564,7 +564,7 @@ const UserDashboard = () => {
         </div>
 
         {/* CARTE PROFIL */}
-        <div style={{ backgroundColor: 'var(--color-white)', padding: '2rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-neutral-200)' }}>
+        <div className="card-padding" style={{ backgroundColor: 'var(--color-white)', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-neutral-200)', minWidth: 0 }}>
           <Settings size={32} color="var(--color-primary-500)" style={{ marginBottom: '1rem' }} />
           <h3 style={{ color: 'var(--color-neutral-800)', marginBottom: '0.5rem', marginTop: 0 }}>Mon Profil</h3>
           <p style={{ color: 'var(--color-neutral-500)' }}>Gérez vos informations personnelles et vos coordonnées KYC.</p>

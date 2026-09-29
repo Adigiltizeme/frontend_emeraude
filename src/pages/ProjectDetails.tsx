@@ -34,6 +34,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
   const [paymentMethod, setPaymentMethod] = useState('BANK_TRANSFER');
   const [gateway, setGateway] = useState('MONEROO');
   const [investLoading, setInvestLoading] = useState(false);
+  const [acceptedCGU, setAcceptedCGU] = useState(false);
   const [investSuccess, setInvestSuccess] = useState(false);
   const [showInvestorsList, setShowInvestorsList] = useState(false);
 
@@ -322,6 +323,20 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                       />
                     </div>
                     
+                    <div style={{ marginBottom: '2rem', padding: '1rem', backgroundColor: '#f8fafc', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+                      <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', cursor: 'pointer' }}>
+                        <input 
+                          type="checkbox" 
+                          checked={acceptedCGU}
+                          onChange={(e) => setAcceptedCGU(e.target.checked)}
+                          style={{ marginTop: '0.25rem', width: '1.2rem', height: '1.2rem' }}
+                        />
+                        <span style={{ fontSize: '0.85rem', color: '#475569', lineHeight: '1.5' }}>
+                          J'accepte les <a href="/legal" target="_blank" style={{ color: 'var(--color-primary-600)', textDecoration: 'underline' }}>Conditions Générales de Vente (CGV)</a>.
+                        </span>
+                      </label>
+                    </div>
+
                     <div style={{ marginBottom: '2rem' }}>
                       <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '500' }}>Moyen de paiement</label>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -398,7 +413,12 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                     </button>
                     <button
                       onClick={async () => {
-                        if (!investAmount || investAmount < project.minTicket) {
+                        if (!acceptedCGU) {
+                            alert('Veuillez accepter les Conditions Générales.');
+                            return;
+                          }
+                          if (!acceptedCGU) { alert('Veuillez accepter les Conditions Générales.'); return; }
+                          if (!investAmount || investAmount < project.minTicket) {
                           alert(`Le montant minimum est de ${project.minTicket} FCFA`);
                           return;
                         }

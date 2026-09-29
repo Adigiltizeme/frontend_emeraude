@@ -10,57 +10,118 @@ import { jsPDF } from "jspdf";
 const generatePDF = (inv: any, user: any) => {
   const doc = new jsPDF();
   
-  // Header
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(20, 80, 50); // Vert Emeraude
-  doc.setFontSize(22);
-  doc.text("ATTESTATION D'INVESTISSEMENT", 105, 30, { align: "center" });
+  // Formatage propre du montant (eviter les bugs d'espacement de jsPDF avec toLocaleString)
+  const formattedAmount = inv.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  
+  // Traduction du statut
+  let statusText = inv.status;
+  let statusColor: [number, number, number] = [100, 100, 100];
+  if (inv.status === 'VALIDATED') { statusText = 'VALIDÉ'; statusColor = [20, 120, 50]; }
+  if (inv.status === 'PENDING') { statusText = 'EN ATTENTE DE PAIEMENT'; statusColor = [200, 120, 0]; }
+  if (inv.status === 'CANCELLED') { statusText = 'ANNULÉ'; statusColor = [200, 50, 50]; }
 
-  doc.setFontSize(14);
+  // Design : Bandeau superieur (Header)
+  doc.setFillColor(20, 80, 50); // Vert Emeraude
+  doc.rect(0, 0, 210, 40, 'F');
+  
+  doc.setTextColor(255, 255, 255);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(24);
+  doc.text("EMERAUDE AFRICA", 105, 18, { align: "center" });
+  
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "normal");
+  doc.text("PLATEFORME DE FINANCEMENT PARTICIPATIF IMMOBILIER", 105, 28, { align: "center" });
+
+  // Titre du document
+  doc.setTextColor(20, 80, 50);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(18);
+  doc.text("ATTESTATION D'INVESTISSEMENT", 105, 60, { align: "center" });
+  
+  // References
+  doc.setFontSize(10);
   doc.setTextColor(100, 100, 100);
-  doc.text("Emeraude Africa - Plateforme de Financement Participatif", 105, 40, { align: "center" });
+  doc.setFont("helvetica", "normal");
+  const shortInvId = inv.id ? inv.id.substring(0, 8).toUpperCase() : 'N/A';
+  const shortUserId = user.id ? user.id.substring(0, 8).toUpperCase() : 'N/A';
+  doc.text(`Réf. Attestation : CERT-INV-${shortInvId}`, 20, 75);
+  doc.text(`Date d'émission : ${new Date().toLocaleDateString('fr-FR')}`, 130, 75);
 
   // Ligne de separation
-  doc.setDrawColor(20, 80, 50);
-  doc.setLineWidth(1);
-  doc.line(20, 50, 190, 50);
-
-  // Informations Investisseur
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(12);
-  doc.setTextColor(0, 0, 0);
-  doc.text("INFORMATIONS DE L'INVESTISSEUR :", 20, 70);
-  
-  doc.setFont("helvetica", "normal");
-  doc.text(`Nom complet : ${user.firstName || ''} ${user.lastName || ''}`, 20, 80);
-  doc.text(`Adresse email : ${user.email}`, 20, 90);
-  doc.text(`Identifiant membre : ${user.id}`, 20, 100);
-
-  // Informations Investissement
-  doc.setFont("helvetica", "bold");
-  doc.text("DETAILS DE L'INVESTISSEMENT :", 20, 130);
-  
-  doc.setFont("helvetica", "normal");
-  doc.text(`Projet : ${inv.project.title}`, 20, 140);
-  const invDate = new Date(inv.createdAt).toLocaleDateString('fr-FR');
-  doc.text(`Date de l'operation : ${invDate}`, 20, 150);
-  doc.text(`Montant investi : ${inv.amount.toLocaleString('fr-FR')} FCFA`, 20, 160);
-  
-  // Statut
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(inv.status === 'VALIDATED' ? 20 : 150, inv.status === 'VALIDATED' ? 120 : 100, 50);
-  doc.text(`Statut actuel : ${inv.status}`, 20, 170);
-
-  // Ligne de fin
   doc.setDrawColor(200, 200, 200);
-  doc.line(20, 240, 190, 240);
+  doc.setLineWidth(0.5);
+  doc.line(20, 80, 190, 80);
 
-  // Footer
-  doc.setFont("helvetica", "italic");
-  doc.setFontSize(10);
-  doc.setTextColor(150, 150, 150);
-  doc.text("Ceci est un document genere automatiquement par la plateforme Emeraude Africa.", 105, 250, { align: "center" });
-  doc.text("Il fait office de preuve de depot ou de promesse d'investissement sous reserve de validation.", 105, 255, { align: "center" });
+  // Bloc : Informations de l'investisseur
+  doc.setFillColor(245, 248, 246);
+  doc.rect(20, 90, 170, 35, 'F');
+  
+  doc.setTextColor(20, 80, 50);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(11);
+  doc.text("INFORMATIONS DE L'INVESTISSEUR", 25, 100);
+  
+  doc.setTextColor(50, 50, 50);
+  doc.setFont("helvetica", "normal");
+  doc.text(`Investisseur :`, 25, 110);
+  doc.setFont("helvetica", "bold");
+  doc.text(`${user.firstName || ''} ${user.lastName || ''}`.toUpperCase(), 60, 110);
+  
+  doc.setFont("helvetica", "normal");
+  doc.text(`Email :`, 25, 118);
+  doc.text(user.email || '', 60, 118);
+  
+  doc.text(`ID Membre :`, 25, 126);
+  doc.text(`EMR-${shortUserId}`, 60, 126);
+
+  // Bloc : Details de l'investissement
+  doc.setFillColor(245, 248, 246);
+  doc.rect(20, 135, 170, 50, 'F');
+  
+  doc.setTextColor(20, 80, 50);
+  doc.setFont("helvetica", "bold");
+  doc.text("DÉTAILS DE L'OPÉRATION", 25, 145);
+  
+  doc.setTextColor(50, 50, 50);
+  doc.setFont("helvetica", "normal");
+  doc.text(`Projet financé :`, 25, 155);
+  doc.setFont("helvetica", "bold");
+  doc.text(`${inv.project.title}`, 65, 155);
+  
+  doc.setFont("helvetica", "normal");
+  const invDate = new Date(inv.createdAt).toLocaleDateString('fr-FR');
+  doc.text(`Date de l'opération :`, 25, 163);
+  doc.text(`${invDate}`, 65, 163);
+  
+  doc.text(`Montant engagé :`, 25, 171);
+  doc.setFont("helvetica", "bold");
+  doc.text(`${formattedAmount} FCFA`, 65, 171);
+  
+  doc.setFont("helvetica", "normal");
+  doc.text(`Statut actuel :`, 25, 179);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
+  doc.text(`${statusText}`, 65, 179);
+
+  // Espace Signature
+  doc.setDrawColor(20, 80, 50);
+  doc.setLineWidth(0.5);
+  doc.rect(130, 200, 60, 30);
+  doc.setTextColor(100, 100, 100);
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "normal");
+  doc.text("Cachet & Signature", 160, 206, { align: "center" });
+  doc.text("La Direction", 160, 225, { align: "center" });
+
+  // Footer (Mentions legales)
+  doc.setFillColor(20, 80, 50);
+  doc.rect(0, 280, 210, 17, 'F');
+  
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(8);
+  doc.text("Emeraude Africa - Document généré électroniquement.", 105, 286, { align: "center" });
+  doc.text("Cette attestation est délivrée à titre de preuve d'engagement et est soumise à la validation des fonds par nos services.", 105, 292, { align: "center" });
 
   // Save the PDF
   const filename = `Attestation_${inv.project.title.replace(/\s+/g, '_')}_${invDate.replace(/\//g, '-')}.pdf`;

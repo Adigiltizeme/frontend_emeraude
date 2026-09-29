@@ -310,17 +310,44 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                   </button>
                   <h3 style={{ margin: '0 0 1.5rem 0', color: 'var(--color-primary-900)', fontSize: '1.5rem' }}>Finaliser l'investissement</h3>
                 
-                  <div style={{ marginBottom: '1rem' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '500' }}>Montant (FCFA)</label>
-                    <input
-                      type="number"
-                      min={project.minTicket}
-                      value={investAmount}
-                      onChange={e => setInvestAmount(Number(e.target.value))}
-                      style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '1px solid #cbd5e1' }}
-                      placeholder={`Min. ${project.minTicket.toLocaleString()} FCFA`}
-                    />
-                  </div>
+                  <div style={{ marginBottom: '1.5rem' }}>
+                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '500' }}>Montant (FCFA)</label>
+                      <input
+                        type="number"
+                        min={project.minTicket}
+                        value={investAmount}
+                        onChange={e => setInvestAmount(Number(e.target.value))}
+                        style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '1px solid #cbd5e1' }}
+                        placeholder={`Min. ${project.minTicket.toLocaleString()} FCFA`}
+                      />
+                    </div>
+                    
+                    <div style={{ marginBottom: '2rem' }}>
+                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '500' }}>Moyen de paiement</label>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem', border: gateway === 'STRIPE' ? '2px solid var(--color-primary-600)' : '1px solid #cbd5e1', borderRadius: '6px', cursor: 'pointer', backgroundColor: gateway === 'STRIPE' ? '#f0fdf4' : 'white' }}>
+                          <input type="radio" name="gateway" checked={gateway === 'STRIPE'} onChange={() => setGateway('STRIPE')} />
+                          <div>
+                            <strong>Carte Bancaire (Stripe)</strong>
+                            <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Visa, Mastercard, Paiement international</div>
+                          </div>
+                        </label>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem', border: gateway === 'MONEROO' ? '2px solid var(--color-primary-600)' : '1px solid #cbd5e1', borderRadius: '6px', cursor: 'pointer', backgroundColor: gateway === 'MONEROO' ? '#f0fdf4' : 'white' }}>
+                          <input type="radio" name="gateway" checked={gateway === 'MONEROO'} onChange={() => setGateway('MONEROO')} />
+                          <div>
+                            <strong>Mobile Money (Moneroo)</strong>
+                            <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Orange, Wave, MTN, Moov (Afrique)</div>
+                          </div>
+                        </label>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem', border: gateway === 'PAYMOB' ? '2px solid var(--color-primary-600)' : '1px solid #cbd5e1', borderRadius: '6px', cursor: 'pointer', backgroundColor: gateway === 'PAYMOB' ? '#f0fdf4' : 'white' }}>
+                          <input type="radio" name="gateway" checked={gateway === 'PAYMOB'} onChange={() => setGateway('PAYMOB')} />
+                          <div>
+                            <strong>Cartes & Wallets (Paymob)</strong>
+                            <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Moyen-Orient & Afrique du Nord</div>
+                          </div>
+                        </label>
+                      </div>
+                    </div>
 
                   <div style={{ marginBottom: '1.5rem' }}>
                     <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '500' }}>Méthode de Paiement</label>

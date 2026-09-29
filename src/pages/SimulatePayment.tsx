@@ -1,60 +1,72 @@
-import React, { useState } from 'react';
+﻿import { useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { CheckCircle, XCircle } from 'lucide-react';
+import { ShieldAlert } from 'lucide-react';
 
-const SimulatePayment: React.FC = () => {
+const SimulatePayment = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const gateway = searchParams.get('gateway') || 'Inconnu';
-  const amount = searchParams.get('amount') || '0';
-  // investmentId
   const [loading, setLoading] = useState(false);
 
-  const handleSimulate = async (status: string) => {
+  const gateway = searchParams.get('gateway');
+  const amount = searchParams.get('amount');
+  const investmentId = searchParams.get('investmentId');
+
+  const handleSimulateSuccess = async () => {
     setLoading(true);
-    // Directly call the webhook or just update status for demo purposes
-    // In a real flow, the webhook is called by the provider. Here we mock it by calling our own status update (Admin route, or a mock webhook route).
-    // Let's call a new mock webhook endpoint or just update it directly if we have a token. Since we don't have a token here, let's create a webhook endpoint in the backend.
-    
-    // For simplicity, we'll just redirect to dashboard with a message
-    setTimeout(() => {
-      alert(`Simulation réussie ! (Le Webhook de ${gateway} a dit: ${status})\nDans la vraie vie, l'admin ou le webhook valide l'investissement.`);
-      navigate('/mon-compte');
-    }, 1500);
+    try {
+      // In a real app, the webhook handles this. Since this is a pure simulation, we'll hit the webhook manually.
+      // Wait, since we are doing a simulation, we can just redirect to success. 
+      // The backend will remain PENDING unless we hit the webhook.
+      
+      // Hit the webhook manually to simulate the provider calling it
+      let webhookUrl = `${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/webhooks/${gateway?.toLowerCase()}`;
+      
+      let payload = {};
+      if (gateway === 'Moneroo') {
+        payload = { status: 'successful', transaction_id: 'SIM_MONEROO_' + investmentId };
+      } else if (gateway === 'Paymob') {
+        payload = { obj: { success: true, id: 'SIM_PAYMOB_' + investmentId } };
+      } else if (gateway === 'Stripe') {
+        payload = { type: 'checkout.session.completed', data: { object: { id: 'SIM_STRIPE_' + investmentId } } };
+      }
+
+      await fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      // Redirect to dashboard
+      navigate('/mon-compte?success=true&simulated=true');
+    } catch (err) {
+      console.error(err);
+      alert('Erreur lors de la simulation du webhook');
+      setLoading(false);
+    }
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8fafc', padding: '1rem' }}>
-      <div style={{ backgroundColor: 'white', padding: '2.5rem', borderRadius: '12px', boxShadow: '0 10px 25px rgba(0,0,0,0.05)', maxWidth: '500px', width: '100%', textAlign: 'center' }}>
-        <h2 style={{ color: 'var(--color-primary-700)', marginBottom: '1rem' }}>Simulateur de Paiement ({gateway})</h2>
-        <p style={{ color: 'var(--color-neutral-600)', marginBottom: '2rem' }}>
-          Vous êtes sur la page de paiement sécurisée de <strong>{gateway}</strong> (Mode Test).<br/>
-          Montant à payer : <strong style={{ fontSize: '1.2rem', color: 'var(--color-neutral-800)' }}>{Number(amount).toLocaleString('fr-FR')} FCFA</strong>
-        </p>
+    <div style={{ maxWidth: '600px', margin: '4rem auto', padding: '2rem', backgroundColor: 'white', borderRadius: '12px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', textAlign: 'center' }}>
+      <ShieldAlert size={48} color="var(--color-primary-600)" style={{ margin: '0 auto 1rem' }} />
+      <h1 style={{ color: 'var(--color-primary-900)', marginBottom: '0.5rem' }}>Simulation de Paiement : {gateway}</h1>
+      <p style={{ color: '#64748b', marginBottom: '2rem' }}>
+        Vous Ãªtes en mode "Sandbox". Aucune clÃ© API rÃ©elle n'est configurÃ©e pour {gateway}.
+      </p>
 
-        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-          <button 
-            onClick={() => handleSimulate('ACCEPTED')}
-            disabled={loading}
-            className="btn btn-primary" 
-            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', backgroundColor: '#16a34a', padding: '1rem' }}
-          >
-            <CheckCircle size={20} /> Simuler Succès
-          </button>
-          
-          <button 
-            onClick={() => handleSimulate('REFUSED')}
-            disabled={loading}
-            className="btn btn-outline" 
-            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#dc2626', borderColor: '#dc2626', padding: '1rem' }}
-          >
-            <XCircle size={20} /> Simuler Échec
-          </button>
-        </div>
-        
-        <p style={{ marginTop: '2rem', fontSize: '0.85rem', color: '#94a3b8' }}>
-          Remarque : Une fois vos clés secrètes ({gateway.toUpperCase()}_SECRET_KEY) ajoutées dans le .env, cette page sera remplacée par la VRAIE page de paiement.
-        </p>
+      <div style={{ padding: '1.5rem', backgroundColor: '#f8fafc', borderRadius: '8px', marginBottom: '2rem', textAlign: 'left' }}>
+        <h3 style={{ marginTop: 0 }}>DÃ©tails de la transaction</h3>
+        <p><strong>Montant :</strong> {Number(amount).toLocaleString()} FCFA</p>
+        <p><strong>ID Investissement :</strong> {investmentId}</p>
+        <p><strong>Passerelle :</strong> {gateway}</p>
+      </div>
+
+      <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+        <button onClick={() => navigate('/mon-compte?canceled=true')} className="btn btn-outline" disabled={loading}>
+          Annuler le paiement
+        </button>
+        <button onClick={handleSimulateSuccess} className="btn btn-primary" disabled={loading}>
+          {loading ? 'Validation en cours...' : 'Simuler un succÃ¨s'}
+        </button>
       </div>
     </div>
   );

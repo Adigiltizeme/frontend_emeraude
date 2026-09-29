@@ -19,6 +19,7 @@ const Register = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [acceptedCGU, setAcceptedCGU] = useState(false);
   const [success, setSuccess] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -27,6 +28,10 @@ const Register = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!acceptedCGU) {
+      setError('Veuillez accepter les CGU et la Politique de Confidentialité.');
+      return;
+    }
     setLoading(true);
     setError('');
 
@@ -118,7 +123,21 @@ const Register = () => {
             </select>
           </div>
 
-          <button type="submit" disabled={loading || success} className="btn btn-primary" style={{ padding: '1rem', fontSize: '1.1rem', fontWeight: 'bold', display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '1rem', backgroundColor: success ? '#10b981' : undefined, transition: 'all 0.3s ease' }}>
+          <div style={{ marginBottom: '1.5rem', padding: '0.75rem', backgroundColor: '#f8fafc', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+              <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', cursor: 'pointer' }}>
+                <input 
+                  type="checkbox" 
+                  checked={acceptedCGU}
+                  onChange={(e) => setAcceptedCGU(e.target.checked)}
+                  style={{ marginTop: '0.25rem', width: '1.2rem', height: '1.2rem' }}
+                />
+                <span style={{ fontSize: '0.85rem', color: '#475569', lineHeight: '1.4' }}>
+                  J'accepte les <a href="/cgu-cgv" target="_blank" style={{ color: 'var(--color-primary-600)', textDecoration: 'underline' }}>Conditions Générales d'Utilisation (CGU)</a> et j'ai lu la <a href="/politique-confidentialite" target="_blank" style={{ color: 'var(--color-primary-600)', textDecoration: 'underline' }}>Politique de Confidentialité</a>.
+                </span>
+              </label>
+            </div>
+
+            <button type="submit" disabled={loading || success} className="btn btn-primary" style={{ padding: '1rem', fontSize: '1.1rem', fontWeight: 'bold', display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '1rem', backgroundColor: success ? '#10b981' : undefined, transition: 'all 0.3s ease' }}>
             {success ? 'Inscription réussie ! Redirection...' : loading ? t('register.loading') : t('register.btnSubmit')}
           </button>
         </form>

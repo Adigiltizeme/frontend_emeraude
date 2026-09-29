@@ -332,7 +332,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                           style={{ marginTop: '0.25rem', width: '1.2rem', height: '1.2rem' }}
                         />
                         <span style={{ fontSize: '0.85rem', color: '#475569', lineHeight: '1.5' }}>
-                          J'accepte les <a href="/legal" target="_blank" style={{ color: 'var(--color-primary-600)', textDecoration: 'underline' }}>Conditions Générales de Vente (CGV)</a>.
+                          J'accepte les <a href="/cgu-cgv" target="_blank" style={{ color: 'var(--color-primary-600)', textDecoration: 'underline' }}>Conditions Générales de Vente (CGV)</a>.
                         </span>
                       </label>
                     </div>

@@ -10,7 +10,9 @@ import About from './pages/About';
 import FAQ from './pages/FAQ';
 import HowItWorks from './pages/HowItWorks';
 import Contact from './pages/Contact';
-import Legal from './pages/Legal';
+import LegalNotices from './pages/LegalNotices';
+import TermsOfUse from './pages/TermsOfUse';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 import ProjectDetails from './pages/ProjectDetails';
 import SimulatePayment from './pages/SimulatePayment';
 
@@ -66,7 +68,10 @@ function App() {
               <Route path="/faq" element={<FAQ />} />
               <Route path="/comment-ca-marche" element={<HowItWorks />} />
               <Route path="/contact" element={<Contact />} />
-              <Route path="/mentions-legales" element={<Legal />} />
+              <Route path="/mentions-legales" element={<LegalNotices />} />
+              <Route path="/cgu-cgv" element={<TermsOfUse />} />
+              <Route path="/politique-confidentialite" element={<PrivacyPolicy />} />
+              <Route path="/legal" element={<LegalNotices />} />
 
               {/* Admin Routes */}
               <Route path="/admin/login" element={<Login />} />

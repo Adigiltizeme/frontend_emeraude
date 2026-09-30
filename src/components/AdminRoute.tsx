@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Navigate, Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LayoutDashboard, Users, Settings, User, LogOut, Menu, X, Banknote, MessageSquare} from 'lucide-react';
@@ -41,7 +41,7 @@ const AdminRoute = () => {
     { path: '/admin/users', icon: <Users size={20} />, label: "Utilisateurs" },
     { path: '/admin/profile', icon: <User size={20} />, label: "Mon Profil" },
     { path: '/admin/support', icon: <MessageSquare size={20} />, label: "Support Client" },
-    { path: '/admin/settings', icon: <Settings size={20} />, label: "Paramètres du site" },
+    { path: '/admin/settings', icon: <Settings size={20} />, label: "ParamÃ¨tres du site" },
   ];
 
   return (
@@ -106,7 +106,7 @@ const AdminRoute = () => {
             }}
           >
             <LogOut size={20} />
-            Déconnexion
+            DÃ©connexion
           </button>
         </div>
       </aside>

@@ -1,28 +1,22 @@
 import { useState, useEffect } from 'react';
-
 import { useAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import { Plus, Edit, Trash2, Eye, X } from 'lucide-react';
-import ProjectDetails from '../ProjectDetails';
+import { Users, Briefcase, TrendingUp } from 'lucide-react';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 
 const AdminDashboard = () => {
-  
   const { token } = useAuth();
-  const navigate = useNavigate();
-  const [projects, setProjects] = useState<any[]>([]);
+  const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  
-  // States for Preview Modal
-  const [showPreview, setShowPreview] = useState(false);
-  const [previewProject, setPreviewProject] = useState<any>(null);
 
   useEffect(() => {
-    const fetchProjects = async () => {
+    const fetchStats = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/admin/stats`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
         if (res.ok) {
           const data = await res.json();
-          setProjects(data);
+          setStats(data);
         }
       } catch (err) {
         console.error(err);
@@ -30,136 +24,137 @@ const AdminDashboard = () => {
         setLoading(false);
       }
     };
-    fetchProjects();
-  }, []);
+    fetchStats();
+  }, [token]);
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm('Êtes-vous sûr de vouloir supprimer ce projet ?')) {
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects/${id}`, {
-          method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (res.ok) {
-          setProjects(projects.filter(p => p.id !== id));
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    }
-  };
+  if (loading) {
+    return <div style={{ padding: '2rem', textAlign: 'center' }}>Chargement des statistiques...</div>;
+  }
 
-  const renderStatus = (status: string) => {
-    switch (status) {
-      case 'DRAFT': return <span style={{ padding: '4px 8px', borderRadius: '4px', backgroundColor: '#f1f5f9', color: '#64748b', fontSize: '0.85rem', fontWeight: 'bold' }}>Brouillon</span>;
-      case 'SUBMITTED': return <span style={{ padding: '4px 8px', borderRadius: '4px', backgroundColor: '#fef3c7', color: '#d97706', fontSize: '0.85rem', fontWeight: 'bold' }}>En attente</span>;
-      case 'COLLECTING': return <span style={{ padding: '4px 8px', borderRadius: '4px', backgroundColor: '#dcfce7', color: '#16a34a', fontSize: '0.85rem', fontWeight: 'bold' }}>En collecte</span>;
-      case 'FUNDED': return <span style={{ padding: '4px 8px', borderRadius: '4px', backgroundColor: '#dbeafe', color: '#2563eb', fontSize: '0.85rem', fontWeight: 'bold' }}>Financé</span>;
-      case 'COMPLETED': return <span style={{ padding: '4px 8px', borderRadius: '4px', backgroundColor: '#f3e8ff', color: '#9333ea', fontSize: '0.85rem', fontWeight: 'bold' }}>Terminé</span>;
-      case 'CANCELLED': return <span style={{ padding: '4px 8px', borderRadius: '4px', backgroundColor: '#fee2e2', color: '#dc2626', fontSize: '0.85rem', fontWeight: 'bold' }}>Refusé</span>;
-      default: return <span>{status}</span>;
+  if (!stats) {
+    return <div style={{ padding: '2rem', textAlign: 'center', color: '#dc2626' }}>Erreur de chargement des données.</div>;
+  }
+
+  const COLORS = ['#16a34a', '#2563eb', '#d97706', '#9333ea', '#dc2626', '#64748b'];
+
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div style={{ backgroundColor: 'white', padding: '1rem', border: '1px solid #e2e8f0', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
+          <p style={{ margin: 0, fontWeight: 'bold', color: '#0f172a' }}>{label}</p>
+          <p style={{ margin: 0, color: 'var(--color-primary-600)' }}>
+            Levée : {payload[0].value.toLocaleString('fr-FR')} FCFA
+          </p>
+        </div>
+      );
     }
+    return null;
   };
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ color: 'var(--color-primary-900)', margin: 0 }}>Gestion des Projets</h1>
-        <button onClick={() => navigate('/admin/projects/new')} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Plus size={18} /> Nouveau projet
-        </button>
-      </div>
+    <div style={{ maxWidth: '1200px', margin: '0 auto', paddingBottom: '2rem' }}>
+      <h1 style={{ color: 'var(--color-primary-900)', marginBottom: '2rem' }}>Tableau de Bord Analytique</h1>
 
-      <div style={{ backgroundColor: 'var(--color-white)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--color-neutral-200)', overflow: 'hidden' }}>
-        {loading ? (
-          <div style={{ padding: '2rem', textAlign: 'center' }}>Chargement...</div>
-        ) : projects.length === 0 ? (
-          <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-neutral-600)' }}>Aucun projet trouvé.</div>
-        ) : (
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-              <thead>
-                <tr style={{ backgroundColor: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
-                  <th style={{ padding: '1rem', color: '#475569', fontWeight: '600' }}>Porteur de projet</th>
-                  <th style={{ padding: '1rem', color: '#475569', fontWeight: '600' }}>Titre du Projet</th>
-                  <th style={{ padding: '1rem', color: '#475569', fontWeight: '600' }}>Cible (FCFA)</th>
-                  <th style={{ padding: '1rem', color: '#475569', fontWeight: '600' }}>Date</th>
-                  <th style={{ padding: '1rem', color: '#475569', fontWeight: '600' }}>Statut</th>
-                  <th style={{ padding: '1rem', color: '#475569', fontWeight: '600', textAlign: 'right' }}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {projects.map((project) => (
-                  <tr key={project.id} style={{ borderBottom: '1px solid #e2e8f0' }}>
-                    
-                    <td style={{ padding: '1rem' }}>
-                      {project.owner ? (
-                        <>
-                          <div style={{ fontWeight: '500', color: '#0f172a' }}>{project.owner.firstName} {project.owner.lastName}</div>
-                          <div style={{ fontSize: '0.85rem', color: '#64748b' }}>{project.owner.email}</div>
-                          <div style={{ fontSize: '0.85rem', color: '#64748b' }}>{project.owner.phone}</div>
-                        </>
-                      ) : (
-                        <div style={{ color: '#94a3b8', fontStyle: 'italic' }}>Équipe Emeraude</div>
-                      )}
-                    </td>
-
-                    <td style={{ padding: '1rem', color: '#0f172a', fontWeight: '500' }}>{project.title}</td>
-                    
-                    <td style={{ padding: '1rem', fontWeight: 'bold', color: 'var(--color-primary-700)' }}>
-                      {project.target?.toLocaleString() || 0}
-                    </td>
-
-                    <td style={{ padding: '1rem', color: '#475569' }}>
-                      {new Date(project.createdAt).toLocaleDateString()}
-                    </td>
-                    
-                    <td style={{ padding: '1rem' }}>{renderStatus(project.status)}</td>
-                    
-                    <td style={{ padding: '1rem', textAlign: 'right' }}>
-                      <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', alignItems: 'center' }}>
-                        
-                        {/* THE EYE ICON REQUESTED BY THE USER */}
-                        <button 
-                          onClick={() => { setPreviewProject(project); setShowPreview(true); }} 
-                          style={{ background: 'none', border: 'none', color: '#16a34a', cursor: 'pointer', padding: '0.25rem' }} 
-                          title="Aperçu du projet (Modale)"
-                        >
-                          <Eye size={20} />
-                        </button>
-                        
-                        <button onClick={() => navigate(`/admin/projects/edit/${project.id}`)} style={{ background: 'none', border: 'none', color: 'var(--color-primary-600)', cursor: 'pointer', padding: '0.25rem' }} title="Modifier">
-                          <Edit size={20} />
-                        </button>
-                        
-                        <button onClick={() => handleDelete(project.id)} style={{ background: 'none', border: 'none', color: '#dc2626', cursor: 'pointer', padding: '0.25rem' }} title="Supprimer">
-                          <Trash2 size={20} />
-                        </button>
-                        
-                      </div>
-                    </td>
-
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      {/* KPIs */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
+        <div style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+          <div style={{ backgroundColor: '#dcfce7', padding: '1rem', borderRadius: '50%', color: '#16a34a' }}>
+            <TrendingUp size={32} />
           </div>
-        )}
-      </div>
-
-      {/* MODAL PREVIEW */}
-      {showPreview && previewProject && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, overflowY: 'auto', padding: '2rem' }}>
-          <div style={{ backgroundColor: 'white', maxWidth: '1200px', margin: '0 auto', borderRadius: '12px', position: 'relative' }}>
-            <button onClick={() => setShowPreview(false)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', cursor: 'pointer', zIndex: 10 }}>
-              <X size={24} />
-            </button>
-            <div>
-              <ProjectDetails isPreview={true} previewData={previewProject} />
-            </div>
+          <div>
+            <p style={{ margin: 0, color: '#64748b', fontSize: '0.9rem', fontWeight: 'bold', textTransform: 'uppercase' }}>Fonds Levés</p>
+            <h2 style={{ margin: 0, color: '#0f172a', fontSize: '1.8rem' }}>{stats.totalRaised.toLocaleString('fr-FR')} FCFA</h2>
           </div>
         </div>
-      )}
+
+        <div style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+          <div style={{ backgroundColor: '#e0e7ff', padding: '1rem', borderRadius: '50%', color: '#4f46e5' }}>
+            <Users size={32} />
+          </div>
+          <div>
+            <p style={{ margin: 0, color: '#64748b', fontSize: '0.9rem', fontWeight: 'bold', textTransform: 'uppercase' }}>Utilisateurs</p>
+            <h2 style={{ margin: 0, color: '#0f172a', fontSize: '1.8rem' }}>{stats.totalUsers} inscrits</h2>
+          </div>
+        </div>
+
+        <div style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+          <div style={{ backgroundColor: '#fef3c7', padding: '1rem', borderRadius: '50%', color: '#d97706' }}>
+            <Briefcase size={32} />
+          </div>
+          <div>
+            <p style={{ margin: 0, color: '#64748b', fontSize: '0.9rem', fontWeight: 'bold', textTransform: 'uppercase' }}>Projets Actifs</p>
+            <h2 style={{ margin: 0, color: '#0f172a', fontSize: '1.8rem' }}>{stats.totalProjects} projets</h2>
+          </div>
+        </div>
+      </div>
+
+      {/* Charts */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2rem' }}>
+        
+        {/* Evolution Chart */}
+        <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+          <h3 style={{ marginTop: 0, marginBottom: '2rem', color: '#1e293b' }}>Évolution des Investissements</h3>
+          <div style={{ height: '350px' }}>
+            {stats.investmentsByMonth.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={stats.investmentsByMonth} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                  <XAxis dataKey="name" stroke="#64748b" tick={{ fontSize: 12 }} />
+                  <YAxis stroke="#64748b" tick={{ fontSize: 12 }} tickFormatter={(value: any) => `${value / 1000}k`} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Area type="monotone" dataKey="total" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorTotal)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            ) : (
+              <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>
+                Aucune donnée d'investissement disponible.
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Status Pie Chart */}
+        <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+          <h3 style={{ marginTop: 0, marginBottom: '2rem', color: '#1e293b' }}>Répartition des Projets (Statut)</h3>
+          <div style={{ height: '350px' }}>
+            {stats.projectsByStatus.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={stats.projectsByStatus}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={70}
+                    outerRadius={110}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {stats.projectsByStatus.map((_entry: any, index: number) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    formatter={(value: number) => [value, 'Projets']}
+                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
+                  />
+                  <Legend verticalAlign="bottom" height={36} />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>
+                Aucun projet enregistré.
+              </div>
+            )}
+          </div>
+        </div>
+
+      </div>
     </div>
   );
 };

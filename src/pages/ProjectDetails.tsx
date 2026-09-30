@@ -414,10 +414,10 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                     <button
                       onClick={async () => {
                         if (!acceptedCGU) {
-                            alert('Veuillez accepter les Conditions Générales.');
+                            alert('Veuillez accepter les Conditions Générales de Vente.');
                             return;
                           }
-                          if (!acceptedCGU) { alert('Veuillez accepter les Conditions Générales.'); return; }
+                          if (!acceptedCGU) { alert('Veuillez accepter les Conditions Générales de Vente.'); return; }
                           if (!investAmount || investAmount < project.minTicket) {
                           alert(`Le montant minimum est de ${project.minTicket} FCFA`);
                           return;

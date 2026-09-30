@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+﻿import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AuthProvider } from './context/AuthContext';
 import { SocketProvider } from './context/SocketContext';
@@ -96,7 +96,9 @@ function App() {
                 <Link to="/a-propos">{t('nav.about')}</Link>
                 <Link to="/faq">{t('nav.faq')}</Link>
                 <Link to="/contact">{t('nav.contact')}</Link>
-                <Link to="/mentions-legales">{t('nav.legal')}</Link>
+                <Link to="/mentions-legales">Mentions Légales</Link>
+                <Link to="/cgu-cgv">CGU & CGV</Link>
+                <Link to="/politique-confidentialite">Confidentialité</Link>
               </div>
             </div>
           </footer>

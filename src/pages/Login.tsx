@@ -66,6 +66,9 @@ const Login = () => {
               onFocus={e => e.target.style.borderColor = 'var(--color-primary-500)'}
               onBlur={e => e.target.style.borderColor = '#cbd5e1'}
             />
+            <div style={{ textAlign: 'right', marginTop: '0.5rem' }}>
+              <Link to="/forgot-password" style={{ fontSize: '0.85rem', color: 'var(--color-primary-600)', textDecoration: 'none' }}>Mot de passe oublié ?</Link>
+            </div>
           </div>
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#475569' }}>Mot de passe</label>

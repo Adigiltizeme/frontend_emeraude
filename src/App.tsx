@@ -29,6 +29,8 @@ import AdminInvestments from './pages/admin/AdminInvestments';
 import AdminProjects from './pages/admin/AdminProjects';
 import Register from './pages/Register';
 import Login from './pages/Login';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import UserDashboard from './pages/UserDashboard';
 import UserProfile from './pages/UserProfile';
 import UserRoute from './components/UserRoute';
@@ -54,6 +56,8 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/inscription" element={<Register />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               
               <Route element={<UserRoute />}>
                 <Route path="/mon-compte" element={<UserDashboard />} />

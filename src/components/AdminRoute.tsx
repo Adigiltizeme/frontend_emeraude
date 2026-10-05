@@ -41,7 +41,7 @@ const AdminRoute = () => {
     { path: '/admin/users', icon: <Users size={20} />, label: "Utilisateurs" },
     { path: '/admin/profile', icon: <User size={20} />, label: "Mon Profil" },
     { path: '/admin/support', icon: <MessageSquare size={20} />, label: "Support Client" },
-    { path: '/admin/settings', icon: <Settings size={20} />, label: "ParamÃ¨tres du site" },
+    { path: '/admin/settings', icon: <Settings size={20} />, label: "Paramètres du site" },
   ];
 
   return (
@@ -106,7 +106,7 @@ const AdminRoute = () => {
             }}
           >
             <LogOut size={20} />
-            DÃ©connexion
+            Déconnexion
           </button>
         </div>
       </aside>

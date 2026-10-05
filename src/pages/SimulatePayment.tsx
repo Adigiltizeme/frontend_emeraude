@@ -52,11 +52,11 @@ const SimulatePayment = () => {
       <ShieldAlert size={48} color="var(--color-primary-600)" style={{ margin: '0 auto 1rem' }} />
       <h1 style={{ color: 'var(--color-primary-900)', marginBottom: '0.5rem' }}>Simulation de Paiement : {gateway}</h1>
       <p style={{ color: '#64748b', marginBottom: '2rem' }}>
-        Vous Ãªtes en mode "Sandbox". Aucune clÃ© API rÃ©elle n'est configurÃ©e pour {gateway}.
+        Vous êtes en mode "Sandbox". Aucune clé API réelle n'est configurée pour {gateway}.
       </p>
 
       <div style={{ padding: '1.5rem', backgroundColor: '#f8fafc', borderRadius: '8px', marginBottom: '2rem', textAlign: 'left' }}>
-        <h3 style={{ marginTop: 0 }}>DÃ©tails de la transaction</h3>
+        <h3 style={{ marginTop: 0 }}>Détails de la transaction</h3>
         <p><strong>Montant :</strong> {Number(amount).toLocaleString()} FCFA</p>
         <p><strong>ID Investissement :</strong> {investmentId}</p>
         <p><strong>Passerelle :</strong> {gateway}</p>
@@ -67,7 +67,7 @@ const SimulatePayment = () => {
           Annuler le paiement
         </button>
         <button onClick={handleSimulateSuccess} className="btn btn-primary" disabled={loading}>
-          {loading ? 'Validation en cours...' : 'Simuler un succÃ¨s'}
+          {loading ? 'Validation en cours...' : 'Simuler un succès'}
         </button>
       </div>
     </div>

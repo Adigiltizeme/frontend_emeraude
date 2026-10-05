@@ -147,7 +147,7 @@ const UserDashboard = () => {
     return () => { socket.off('investment.updated', handleInvestmentUpdated); };
   }, [socket]);
 
-  // L'utilisateur démarre sur l'onglet correspondant Ã  son intention initiale, mais peut basculer
+  // L'utilisateur démarre sur l'onglet correspondant à son intention initiale, mais peut basculer
   const [activeTab, setActiveTab] = useState<'investments' | 'projects' | 'support'>(
     user?.intention === 'Porteur de projet' ? 'projects' : 'investments'
   );

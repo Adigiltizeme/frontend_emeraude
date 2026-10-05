@@ -32,7 +32,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
   const [showInvestForm, setShowInvestForm] = useState(false);
   const [investAmount, setInvestAmount] = useState<number | ''>('');
   const [paymentMethod, setPaymentMethod] = useState('BANK_TRANSFER');
-  const [gateway, setGateway] = useState('MONEROO');
+  const [gateway, setGateway] = useState('CINETPAY');
   const [investLoading, setInvestLoading] = useState(false);
   const [acceptedCGU, setAcceptedCGU] = useState(false);
   const [investSuccess, setInvestSuccess] = useState(false);

@@ -20,7 +20,7 @@ const PrivacyPolicy = () => {
         <ul>
           <li>Données d'identification (Nom, prénom, adresse e-mail, numéro de téléphone).</li>
           <li>Documents légaux (Pièce d'identité, justificatif de domicile) dans le cadre de nos obligations de vérification (KYC).</li>
-          <li>Données de transaction (Historique d'investissement). Notez que nous ne stockons jamais vos numéros de carte bancaire (ces derniers sont traités directement par nos partenaires Stripe, Moneroo, Paymob).</li>
+          <li>Données de transaction (Historique d'investissement). Notez que nous ne stockons jamais vos numéros de carte bancaire (ces derniers sont traités directement par nos partenaires Stripe, CinetPay, PayDunya, Paymob).</li>
         </ul>
 
         <h3>2. Finalité du Traitement</h3>

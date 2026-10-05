@@ -22,8 +22,8 @@
     "react-map-gl": "^8.1.2",
     "react-redux": "^9.3.0",
     "react-router-dom": "^6.22.3",
-    "socket.io-client": "^4.6.0",
-    "recharts": "^2.12.3"
+    "recharts": "^2.15.4",
+    "socket.io-client": "^4.6.0"
   },
   "devDependencies": {
     "@types/mapbox-gl": "^3.4.1",

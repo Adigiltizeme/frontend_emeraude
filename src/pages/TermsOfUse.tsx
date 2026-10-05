@@ -22,7 +22,7 @@ const TermsOfUse = () => {
         <p>L'accès aux projets d'investissement nécessite la création d'un compte utilisateur et la fourniture de documents d'identité valides (processus KYC - Know Your Customer), conformément à la législation sur la lutte contre le blanchiment d'argent et le financement du terrorisme (LCB-FT).</p>
 
         <h3>3. Paiements et Sécurisation des Fonds</h3>
-        <p>Les transactions financières sont assurées par des prestataires de paiement sécurisés (Stripe, Moneroo, Paymob). Les fonds investis sont cantonnés dans un compte dédié jusqu'à la clôture de la levée de fonds. Si l'objectif de collecte n'est pas atteint ou si le projet est annulé, les investisseurs sont intégralement remboursés, sans frais supplémentaires.</p>
+        <p>Les transactions financières sont assurées par des prestataires de paiement sécurisés (Stripe, CinetPay, PayDunya, Paymob). Les fonds investis sont cantonnés dans un compte dédié jusqu'à la clôture de la levée de fonds. Si l'objectif de collecte n'est pas atteint ou si le projet est annulé, les investisseurs sont intégralement remboursés, sans frais supplémentaires.</p>
 
         <h3>4. Avertissement sur les Risques</h3>
         <p>L'investissement immobilier et le financement participatif comportent des risques inhérents :</p>

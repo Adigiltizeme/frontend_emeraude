@@ -26,8 +26,6 @@ const SimulatePayment = () => {
         payload = { cpm_trans_status: 'ACCEPTED', cpm_trans_id: 'SIM_CINET_' + investmentId };
       } else if (gateway === 'PAYDUNYA') {
         payload = { status: 'completed', hash: 'SIM_PAYDUNYA_' + investmentId };
-      } else if (gateway === 'Moneroo') {
-        payload = { status: 'successful', transaction_id: 'SIM_MONEROO_' + investmentId };
       } else if (gateway === 'Paymob') {
         payload = { obj: { success: true, id: 'SIM_PAYMOB_' + investmentId } };
       } else if (gateway === 'Stripe') {

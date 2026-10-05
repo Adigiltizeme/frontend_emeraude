@@ -347,10 +347,10 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                             <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Visa, Mastercard, Paiement international</div>
                           </div>
                         </label>
-                        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem', border: gateway === 'MONEROO' ? '2px solid var(--color-primary-600)' : '1px solid #cbd5e1', borderRadius: '6px', cursor: 'pointer', backgroundColor: gateway === 'MONEROO' ? '#f0fdf4' : 'white' }}>
-                          <input type="radio" name="gateway" checked={gateway === 'MONEROO'} onChange={() => setGateway('MONEROO')} />
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem', border: gateway === 'CINETPAY' ? '2px solid var(--color-primary-600)' : '1px solid #cbd5e1', borderRadius: '6px', cursor: 'pointer', backgroundColor: gateway === 'CINETPAY' ? '#f0fdf4' : 'white' }}>
+                          <input type="radio" name="gateway" checked={gateway === 'CINETPAY'} onChange={() => setGateway('CINETPAY')} />
                           <div>
-                            <strong>Mobile Money (Moneroo)</strong>
+                            <strong>CinetPay</strong>
                             <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Orange, Wave, MTN, Moov (Afrique)</div>
                           </div>
                         </label>
@@ -371,7 +371,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                       onChange={(e) => {
                           setPaymentMethod(e.target.value);
                           if (e.target.value === 'BANK_TRANSFER') setGateway('MANUAL');
-                          else setGateway('MONEROO');
+                          else setGateway('CINETPAY');
                       }}
                       style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #e2e8f0', marginBottom: '1rem' }}
                     >
@@ -384,10 +384,10 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                         <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Passerelle de Paiement</label>
                         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                           <div 
-                            onClick={() => setGateway('MONEROO')}
-                            style={{ flex: '1 1 300px', minWidth: '150px', padding: '1rem', border: gateway === 'MONEROO' ? '2px solid var(--color-primary-600)' : '1px solid #e2e8f0', borderRadius: '8px', cursor: 'pointer', backgroundColor: gateway === 'MONEROO' ? 'var(--color-primary-50)' : 'white' }}
+                            onClick={() => setGateway('CINETPAY')}
+                            style={{ flex: '1 1 300px', minWidth: '150px', padding: '1rem', border: gateway === 'CINETPAY' ? '2px solid var(--color-primary-600)' : '1px solid #e2e8f0', borderRadius: '8px', cursor: 'pointer', backgroundColor: gateway === 'CINETPAY' ? 'var(--color-primary-50)' : 'white' }}
                           >
-                            <div style={{ fontWeight: 'bold', color: 'var(--color-primary-700)' }}>Moneroo</div>
+                            <div style={{ fontWeight: 'bold', color: 'var(--color-primary-700)' }}>CinetPay</div>
                             <div style={{ fontSize: '0.75rem', color: 'var(--color-neutral-500)' }}>Wave, Orange, MTN, Cartes (Afrique Subsaharienne)</div>
                           </div>
                           <div 

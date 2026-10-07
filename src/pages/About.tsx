@@ -1,7 +1,9 @@
 import { useTranslation } from 'react-i18next';
+import { usePageMeta } from '../hooks/usePageMeta';
 
 const About = () => {
   const { t } = useTranslation();
+  usePageMeta(t('about.title'), t('about.subtitle'));
 
   return (
     <div className="container" style={{ padding: '4rem 1rem', maxWidth: '800px' }}>

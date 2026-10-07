@@ -1,12 +1,14 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Navigate, Outlet, Link, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, Users, Settings, User, LogOut, Menu, X, Banknote, MessageSquare} from 'lucide-react';
+import { LayoutDashboard, Users, Settings, User, LogOut, Menu, X, Banknote, MessageSquare, Inbox } from 'lucide-react';
 
 const AdminRoute = () => {
   const { isAuthenticated, isAdmin, logout } = useAuth();
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { t } = useTranslation();
 
   if (!isAuthenticated) {
     return <Navigate to="/admin/login" replace />;
@@ -35,13 +37,14 @@ const AdminRoute = () => {
   };
 
   const menuItems = [
-    { path: '/admin', icon: <LayoutDashboard size={20} />, label: "Vue d'ensemble" },
-    { path: '/admin/investments', icon: <Banknote size={20} />, label: "Investissements" },
-    { path: '/admin/projects', icon: <LayoutDashboard size={20} />, label: "Porteurs de projets" },
-    { path: '/admin/users', icon: <Users size={20} />, label: "Utilisateurs" },
-    { path: '/admin/profile', icon: <User size={20} />, label: "Mon Profil" },
-    { path: '/admin/support', icon: <MessageSquare size={20} />, label: "Support Client" },
-    { path: '/admin/settings', icon: <Settings size={20} />, label: "Paramètres du site" },
+    { path: '/admin', icon: <LayoutDashboard size={20} />, label: t('admin.nav.overview') },
+    { path: '/admin/investments', icon: <Banknote size={20} />, label: t('admin.nav.investments') },
+    { path: '/admin/projects', icon: <LayoutDashboard size={20} />, label: t('admin.nav.projects') },
+    { path: '/admin/users', icon: <Users size={20} />, label: t('admin.nav.users') },
+    { path: '/admin/leads', icon: <Inbox size={20} />, label: t('admin.nav.leads') },
+    { path: '/admin/profile', icon: <User size={20} />, label: t('admin.nav.profile') },
+    { path: '/admin/support', icon: <MessageSquare size={20} />, label: t('admin.nav.support') },
+    { path: '/admin/settings', icon: <Settings size={20} />, label: t('admin.nav.settings') },
   ];
 
   return (

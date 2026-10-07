@@ -28,6 +28,9 @@ import AdminSettings from './pages/admin/AdminSettings';
 import AdminSupportPage from './pages/admin/AdminSupportPage';
 import AdminInvestments from './pages/admin/AdminInvestments';
 import AdminProjects from './pages/admin/AdminProjects';
+import AdminLeads from './pages/admin/AdminLeads';
+import NewsletterSignup from './components/NewsletterSignup';
+import CookieConsent, { openCookieSettings } from './components/CookieConsent';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPassword';
@@ -91,23 +94,29 @@ function App() {
                 <Route path="profile" element={<Profile />} />
                 <Route path="settings" element={<AdminSettings />} />
                 <Route path="support" element={<AdminSupportPage />} />
+                <Route path="leads" element={<AdminLeads />} />
               </Route>
             </Routes>
           </main>
 
           <footer>
             <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', textAlign: 'center' }}>
-              <p>{t('footer.copyright')}</p>
+              <NewsletterSignup />
+              <p style={{ width: '100%' }}>{t('footer.copyright')}</p>
               <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center', width: '100%' }}>
                 <Link to="/a-propos">{t('nav.about')}</Link>
                 <Link to="/faq">{t('nav.faq')}</Link>
                 <Link to="/contact">{t('nav.contact')}</Link>
-                <Link to="/mentions-legales">Mentions Légales</Link>
-                <Link to="/cgu-cgv">CGU & CGV</Link>
-                <Link to="/politique-confidentialite">Confidentialité</Link>
+                <Link to="/mentions-legales">{t('footer.legalNotice')}</Link>
+                <Link to="/cgu-cgv">{t('footer.terms')}</Link>
+                <Link to="/politique-confidentialite">{t('footer.privacy')}</Link>
+                {import.meta.env.VITE_GA_MEASUREMENT_ID && (
+                  <button type="button" onClick={openCookieSettings} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', padding: 0, font: 'inherit', textDecoration: 'underline' }}>{t('footer.cookies')}</button>
+                )}
               </div>
             </div>
           </footer>
+          <CookieConsent />
         </div>
       </BrowserRouter>
       </SocketProvider>

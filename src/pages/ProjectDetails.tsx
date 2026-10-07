@@ -8,6 +8,7 @@ import ProjectMap from '../components/ProjectMap';
 import InvestModal from '../components/InvestModal';
 import { API_URL, authHeaders, formatMoney } from '../config/api';
 import { useLiveRefresh } from '../hooks/useLiveRefresh';
+import { usePageMeta } from '../hooks/usePageMeta';
 
 
 const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
@@ -21,6 +22,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
   const [showInvestForm, setShowInvestForm] = useState(false);
   const [investSuccess, setInvestSuccess] = useState(false);
   const [showInvestorsList, setShowInvestorsList] = useState(false);
+  usePageMeta(isPreview ? undefined : project?.title, project?.description, project?.image || undefined);
 
   const fetchProject = useCallback(() => {
     if (isPreview || !id) return;

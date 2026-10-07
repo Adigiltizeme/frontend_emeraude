@@ -152,7 +152,16 @@
     "phoneLabel": "Téléphone (Support)",
     "phoneHours": "Lundi - Vendredi, 9h - 18h GMT",
     "officeLabel": "Bureaux (Dakar)",
-    "officeAddress": "Plateau, Dakar<br />Sénégal"
+    "officeAddress": "Plateau, Dakar<br />Sénégal",
+    "labelPhone": "Téléphone (facultatif)",
+    "placeholderPhone": "+221 77 000 00 00",
+    "consent": "J'accepte que mes données soient utilisées pour répondre à ma demande, conformément à la <link>politique de confidentialité</link>.",
+    "sending": "Envoi en cours…",
+    "success": "Merci ! Votre message a bien été envoyé. Nous vous répondons sous 48 heures ouvrées.",
+    "error": "L'envoi a échoué. Réessayez ou écrivez-nous directement par e-mail.",
+    "errorConsent": "Veuillez accepter la politique de confidentialité.",
+    "errorMessage": "Votre message doit contenir au moins 10 caractères.",
+    "sendAnother": "Envoyer un autre message"
   },
   "legal": {
     "title": "Mentions Légales",
@@ -168,7 +177,11 @@
     "section5Desc": "L'investissement immobilier présente des risques, notamment la perte partielle ou totale du capital investi, et l'illiquidité. Les rendements passés ne préjugent pas des rendements futurs. Investissez uniquement des sommes dont vous n'avez pas un besoin immédiat."
   },
   "footer": {
-    "copyright": "© 2026 Emeraude Africa"
+    "copyright": "© 2026 Emeraude Africa",
+    "legalNotice": "Mentions légales",
+    "terms": "CGU & CGV",
+    "privacy": "Confidentialité",
+    "cookies": "Gérer les cookies"
   },
   "register": {
     "title": "Créer un compte",
@@ -341,6 +354,47 @@
       "priorityHint": "Codes séparés par des virgules, ex. : CINETPAY,WAVE,PAYDUNYA,FLUTTERWAVE,STRIPE. Vide = valeur du serveur.",
       "disabled": "Prestataires désactivés",
       "disabledHint": "Codes séparés par des virgules, ex. : STRIPE. Vide = aucun."
+    },
+    "nav": {
+      "overview": "Vue d'ensemble",
+      "investments": "Investissements",
+      "projects": "Porteurs de projets",
+      "users": "Utilisateurs",
+      "leads": "Demandes et prospects",
+      "profile": "Mon profil",
+      "support": "Support client",
+      "settings": "Paramètres du site"
+    },
+    "leads": {
+      "title": "Demandes et prospects",
+      "filterAll": "Toutes",
+      "empty": "Aucune demande pour le moment.",
+      "loading": "Chargement…",
+      "colDate": "Date",
+      "colType": "Type",
+      "colContact": "Contact",
+      "colRequest": "Demande",
+      "colStatus": "Statut",
+      "colActions": "Actions",
+      "markHandled": "Marquer comme traité",
+      "archive": "Archiver",
+      "reopen": "Rouvrir",
+      "reply": "Répondre",
+      "types": {
+        "CONTACT": "Contact",
+        "NEWSLETTER": "Lettre d'information"
+      },
+      "statuses": {
+        "NEW": "Nouveau",
+        "HANDLED": "Traité",
+        "ARCHIVED": "Archivé"
+      },
+      "subjects": {
+        "INVEST": "Investissement",
+        "PROJECT": "Proposition de projet",
+        "SUPPORT": "Support technique",
+        "OTHER": "Autre"
+      }
     }
   },
   "payment": {
@@ -405,6 +459,173 @@
       "success": "Simuler un paiement réussi",
       "failure": "Simuler un échec",
       "cancel": "Abandonner"
+    },
+    "pendingBanner": "Paiement à finaliser : {{amount}} pour « {{project}} »"
+  },
+  "newsletter": {
+    "title": "Restez informé",
+    "desc": "Recevez les nouveaux projets et nos actualités, une à deux fois par mois.",
+    "placeholder": "Votre adresse e-mail",
+    "button": "S'inscrire",
+    "consent": "J'accepte de recevoir la lettre d'information d'Emeraude Africa. Désinscription possible à tout moment.",
+    "success": "Inscription confirmée, merci !",
+    "error": "L'inscription a échoué. Réessayez dans quelques instants.",
+    "errorConsent": "Veuillez cocher la case de consentement."
+  },
+  "cookies": {
+    "text": "Nous utilisons des cookies de mesure d'audience pour améliorer le site, uniquement avec votre accord. Les cookies nécessaires au fonctionnement (session) sont toujours actifs.",
+    "accept": "Accepter",
+    "refuse": "Refuser",
+    "more": "En savoir plus"
+  },
+  "legalPages": {
+    "updated": "Dernière mise à jour : {{date}}",
+    "notice": {
+      "title": "Mentions légales",
+      "subtitle": "Informations légales concernant l'éditeur et l'hébergeur de la plateforme.",
+      "sections": [
+        {
+          "title": "1. Éditeur de la plateforme",
+          "items": [
+            "Nom de l'entreprise : Emeraude Africa (société fictive pour démo MVP)",
+            "Forme juridique : Société Anonyme (SA)",
+            "Siège social : Dakar, Sénégal",
+            "Capital social : 10 000 000 FCFA",
+            "Contact : {{email}}"
+          ]
+        },
+        {
+          "title": "2. Directeur de la publication",
+          "paragraphs": [
+            "Le directeur de la publication est M. Abdarrahman Samassa."
+          ]
+        },
+        {
+          "title": "3. Hébergement",
+          "paragraphs": [
+            "Le site est hébergé par :"
+          ],
+          "items": [
+            "Site web : Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, États-Unis.",
+            "Serveur et base de données : Railway Corp., San Francisco, CA, États-Unis.",
+            "Documents et images : Cloudinary Ltd. (documents d'identité stockés en accès restreint)."
+          ]
+        },
+        {
+          "title": "4. Agrément et régulation",
+          "paragraphs": [
+            "Dans le cadre du lancement en production, Emeraude Africa sera soumise à l'agrément des autorités de régulation compétentes pour le financement participatif (notamment l'Autorité des Marchés Financiers de l'UMOA)."
+          ]
+        },
+        {
+          "title": "5. Avertissement sur les risques",
+          "paragraphs": [
+            "L'investissement immobilier présente des risques, notamment la perte partielle ou totale du capital investi et l'illiquidité. Les rendements passés ne préjugent pas des rendements futurs. Investissez uniquement des sommes dont vous n'avez pas un besoin immédiat."
+          ]
+        }
+      ]
+    },
+    "terms": {
+      "title": "Conditions Générales d'Utilisation et de Vente (CGU/CGV)",
+      "subtitle": "Règles d'utilisation de la plateforme et cadre légal des investissements.",
+      "sections": [
+        {
+          "title": "1. Objet",
+          "paragraphs": [
+            "Les présentes Conditions Générales régissent l'accès et l'utilisation de la plateforme de financement participatif immobilier Emeraude Africa. En utilisant nos services, vous acceptez sans réserve les présentes CGU/CGV."
+          ]
+        },
+        {
+          "title": "2. Accès aux services",
+          "paragraphs": [
+            "L'accès aux projets d'investissement nécessite la création d'un compte utilisateur et la fourniture de documents d'identité valides (processus KYC - Know Your Customer), conformément à la législation sur la lutte contre le blanchiment d'argent et le financement du terrorisme (LCB-FT). Un investissement ne peut être réalisé qu'une fois l'identité vérifiée par notre équipe. Le porteur d'un projet ne peut pas investir dans son propre projet."
+          ]
+        },
+        {
+          "title": "3. Paiements et sécurisation des fonds",
+          "paragraphs": [
+            "Les paiements en ligne sont assurés par des prestataires agréés : CinetPay, Wave, PayDunya et Flutterwave (Mobile Money, portefeuilles électroniques et cartes), et Stripe (cartes internationales). Selon le moyen de paiement choisi, la plateforme sélectionne automatiquement un prestataire disponible ; l'investisseur peut aussi indiquer son prestataire préféré. Un virement ou un transfert manuel reste possible : l'investissement est alors validé par notre équipe à réception des fonds.",
+            "Un investissement n'est validé qu'après confirmation du paiement directement auprès du prestataire, pour un montant et une devise identiques à ceux de la souscription. Un paiement non finalisé dans un délai de 24 heures expire et l'investissement correspondant est annulé, sans frais. Le montant minimum de souscription est celui indiqué sur la fiche de chaque projet, dans la limite du montant restant à financer.",
+            "Avant chaque investissement, l'investisseur accepte expressément les présentes conditions et l'avertissement sur les risques ; la date de cette acceptation est conservée. Les fonds investis sont cantonnés dans un compte dédié jusqu'à la clôture de la levée de fonds. Si l'objectif de collecte n'est pas atteint ou si le projet est annulé, les investisseurs sont intégralement remboursés, sans frais supplémentaires. Un paiement reçu en double est remboursé."
+          ]
+        },
+        {
+          "title": "4. Avertissement sur les risques",
+          "paragraphs": [
+            "L'investissement immobilier et le financement participatif comportent des risques inhérents :"
+          ],
+          "items": [
+            "Risque de perte en capital : vous pouvez perdre tout ou partie des fonds investis.",
+            "Risque d'illiquidité : les investissements sont bloqués pendant la durée du projet (généralement 12 à 36 mois). Il est très difficile, voire impossible, de revendre vos parts avant le terme."
+          ],
+          "after": [
+            "Nous vous conseillons de ne jamais investir des fonds dont vous pourriez avoir un besoin immédiat et de diversifier vos investissements."
+          ]
+        },
+        {
+          "title": "5. Propriété intellectuelle",
+          "paragraphs": [
+            "L'ensemble du contenu de la plateforme (textes, images, logos, architecture) est protégé par le droit d'auteur. Toute reproduction non autorisée est strictement interdite."
+          ]
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Politique de confidentialité",
+      "subtitle": "Protection de vos données personnelles et respect de votre vie privée.",
+      "sections": [
+        {
+          "title": "1. Collecte des données",
+          "paragraphs": [
+            "Lors de votre inscription, de vos investissements et de vos échanges avec nous, Emeraude Africa collecte les données suivantes :"
+          ],
+          "items": [
+            "Données d'identification : nom, prénom, adresse e-mail, numéro de téléphone.",
+            "Documents légaux (pièce d'identité, justificatif de domicile) dans le cadre de nos obligations de vérification (KYC). Ils sont stockés en accès restreint et consultables uniquement par notre équipe de conformité, via des liens temporaires.",
+            "Données de transaction : historique d'investissement, moyen de paiement choisi, prestataire utilisé, références et statuts des paiements, ainsi qu'un journal horodaté des échanges avec ce prestataire (traçabilité et lutte contre la fraude). Nous ne stockons jamais vos numéros de carte bancaire ni vos codes Mobile Money : ils sont saisis directement chez nos prestataires de paiement (CinetPay, Wave, PayDunya, Flutterwave, Stripe).",
+            "Preuves de consentement : date et heure d'acceptation des présentes conditions à l'inscription, et des Conditions Générales de Vente avant chaque investissement.",
+            "Formulaire de contact et lettre d'information : nom, adresse e-mail, téléphone (facultatif), contenu du message, page d'origine et date de votre consentement.",
+            "Mesure d'audience : pages consultées et informations techniques sur votre navigateur, uniquement si vous l'avez accepté dans le bandeau de cookies."
+          ]
+        },
+        {
+          "title": "2. Finalités du traitement",
+          "paragraphs": [
+            "Vos données sont utilisées exclusivement pour :"
+          ],
+          "items": [
+            "Gérer votre compte et vos investissements.",
+            "Générer vos attestations juridiques et fiscales.",
+            "Répondre à vos demandes et, si vous y avez consenti, vous envoyer notre lettre d'information.",
+            "Améliorer le site grâce à des statistiques de fréquentation, si vous y avez consenti.",
+            "Se conformer aux obligations légales (lutte contre la fraude et le blanchiment d'argent)."
+          ]
+        },
+        {
+          "title": "3. Partage des données",
+          "paragraphs": [
+            "Vos informations personnelles ne sont jamais vendues à des tiers à des fins commerciales. Elles peuvent être transmises uniquement aux autorités compétentes en cas de réquisition légale, et au prestataire de paiement retenu pour votre transaction (CinetPay, Wave, PayDunya, Flutterwave ou Stripe) : nom, prénom, adresse e-mail, téléphone, montant et référence de la transaction, dans la seule mesure nécessaire à son exécution. Nos sous-traitants techniques (hébergement, envoi d'e-mails, stockage de fichiers, mesure d'audience) n'y accèdent que pour fournir leur service. Certains de ces prestataires peuvent traiter les données hors de votre pays de résidence, avec des garanties de sécurité conformes à leurs obligations réglementaires."
+          ]
+        },
+        {
+          "title": "4. Durée de conservation",
+          "paragraphs": [
+            "Conformément à la réglementation financière, les données de compte et de transaction sont conservées pendant toute la durée de la relation commerciale, puis archivées pendant 5 ans à des fins de traçabilité et de preuve. Les demandes de contact sont conservées 3 ans après le dernier échange. L'inscription à la lettre d'information est conservée jusqu'à votre désinscription. Votre choix concernant les cookies est conservé 6 mois."
+          ]
+        },
+        {
+          "title": "5. Cookies",
+          "paragraphs": [
+            "Le site utilise des éléments de stockage strictement nécessaires à son fonctionnement (maintien de votre session). Les cookies de mesure d'audience ne sont déposés qu'après votre accord ; vous pouvez modifier votre choix à tout moment via le lien « Gérer les cookies » en bas de page."
+          ]
+        },
+        {
+          "title": "6. Vos droits",
+          "paragraphs": [
+            "Conformément aux lois sur la protection des données (notamment la loi sénégalaise n° 2008-12 et le RGPD pour les résidents européens), vous disposez d'un droit d'accès, de rectification, de suppression, d'opposition et de portabilité de vos données, ainsi que du droit de retirer votre consentement à tout moment. Pour exercer ces droits, contactez : privacy@emeraude-africa.com."
+          ]
+        }
+      ]
     }
   }
 }

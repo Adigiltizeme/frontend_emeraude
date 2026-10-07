@@ -4,9 +4,11 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle } from 'lucide-react';
 import ProjectForm from '../components/ProjectForm';
+import { usePageMeta } from '../hooks/usePageMeta';
 
 const Finance = () => {
   const { t } = useTranslation();
+  usePageMeta(t('finance.title'), t('finance.subtitle'));
   const { isAuthenticated, token } = useAuth();
   const navigate = useNavigate();
 

@@ -1,8 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { UserPlus, Search, CreditCard, BarChart2 } from 'lucide-react';
+import { usePageMeta } from '../hooks/usePageMeta';
 
 const HowItWorks = () => {
   const { t } = useTranslation();
+  usePageMeta(t('howItWorks.title'), t('howItWorks.subtitle'));
 
   const steps = [
     {

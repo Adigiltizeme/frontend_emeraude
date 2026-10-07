@@ -1,7 +1,9 @@
 import { useTranslation } from 'react-i18next';
+import { usePageMeta } from '../hooks/usePageMeta';
 
 const FAQ = () => {
   const { t } = useTranslation();
+  usePageMeta(t('faq.title'), t('faq.subtitle'));
 
   const faqs = [
     { question: t('faq.q1'), answer: t('faq.a1') },

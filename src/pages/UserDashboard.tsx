@@ -1,5 +1,8 @@
-﻿import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { API_URL, authHeaders, formatMoney } from '../config/api';
+import { useLiveRefresh } from '../hooks/useLiveRefresh';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
 import { Building2, FileText, Settings, Lightbulb, Clock, CheckCircle, XCircle, Headset } from 'lucide-react';
@@ -138,14 +141,30 @@ const UserDashboard = () => {
   const [loadingInvestments, setLoadingInvestments] = useState(true);
   const [loadingProjects, setLoadingProjects] = useState(true);
 
+  const { t, i18n } = useTranslation();
+
+  // Liste rechargée sans état de chargement (temps réel, retour sur l'onglet).
+  const refreshInvestments = useCallback(() => {
+    if (!token) return;
+    fetch(`${API_URL}/investments/my-investments`, { headers: authHeaders(token) })
+      .then(res => (res.ok ? res.json() : null))
+      .then(data => { if (Array.isArray(data)) setInvestments(data); })
+      .catch(err => console.error(err));
+  }, [token]);
+
   useEffect(() => {
     if (!socket) return;
-    const handleInvestmentUpdated = (updatedInv: any) => {
-      setInvestments(prev => prev.map(inv => inv.id === updatedInv.id ? { ...inv, status: updatedInv.status } : inv));
+    socket.on('investment.updated', refreshInvestments);
+    socket.on('payment.updated', refreshInvestments);
+    return () => {
+      socket.off('investment.updated', refreshInvestments);
+      socket.off('payment.updated', refreshInvestments);
     };
-    socket.on('investment.updated', handleInvestmentUpdated);
-    return () => { socket.off('investment.updated', handleInvestmentUpdated); };
-  }, [socket]);
+  }, [socket, refreshInvestments]);
+  useLiveRefresh(refreshInvestments);
+
+  // Investissements en attente dont le paiement en ligne n'a pas abouti : à reprendre.
+  const pendingPayments = investments.filter(inv => inv.status === 'PENDING' && inv.payments?.[0] && inv.payments[0].status !== 'SUCCEEDED');
 
   // L'utilisateur démarre sur l'onglet correspondant à son intention initiale, mais peut basculer
   const [activeTab, setActiveTab] = useState<'investments' | 'projects' | 'support'>(
@@ -468,6 +487,21 @@ const UserDashboard = () => {
                 <h3 style={{ color: 'var(--color-neutral-800)', margin: 0, fontSize: '1.5rem' }}>Mes Investissements</h3>
               </div>
 
+              {pendingPayments.length > 0 && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.5rem' }}>
+                  {pendingPayments.map(inv => (
+                    <div key={`pending-${inv.id}`} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', padding: '0.75rem 1rem', backgroundColor: '#fffbeb', border: '1px solid #fde68a', borderRadius: '8px' }}>
+                      <span style={{ color: '#92400e', fontSize: '0.9rem' }}>
+                        {t('payment.pendingBanner', { amount: formatMoney(inv.amount, i18n.language, inv.currency), project: inv.project?.title })}
+                      </span>
+                      <Link to={`/paiement/retour?ref=${inv.payments[0].reference}`} className="btn btn-primary" style={{ padding: '0.5rem 1rem' }}>
+                        {t('payment.return.resume')}
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               {loadingInvestments ? <p>Chargement...</p> : !hasInvestments ? (
                 <div>
                   <p style={{ color: 'var(--color-neutral-500)' }}>Vous n'avez pas encore d'investissement actif. Explorez nos projets pour commencer.</p>
@@ -486,7 +520,10 @@ const UserDashboard = () => {
                       };
                     }
                     acc[inv.projectId].transactions.push(inv);
-                    acc[inv.projectId].totalAmount += inv.amount;
+                    // Les investissements annulés ou refusés ne comptent pas dans le total engagé.
+                    if (inv.status !== 'CANCELLED' && inv.status !== 'REJECTED') {
+                      acc[inv.projectId].totalAmount += inv.amount;
+                    }
                     if (inv.status === 'VALIDATED' || inv.status === 'CONFIRMED') {
                       acc[inv.projectId].status = 'VALIDATED';
                     }

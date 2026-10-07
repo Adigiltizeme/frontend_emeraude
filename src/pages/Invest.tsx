@@ -4,9 +4,11 @@ import { Link } from 'react-router-dom';
 import { useSocket } from '../context/SocketContext';
 import { useLiveRefresh } from '../hooks/useLiveRefresh';
 import { API_URL } from '../config/api';
+import { usePageMeta } from '../hooks/usePageMeta';
 
 const Invest = () => {
   const { t } = useTranslation();
+  usePageMeta(t('invest.title'), t('invest.subtitle'));
   const [projects, setProjects] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 

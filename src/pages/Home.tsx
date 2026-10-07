@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useSiteSettings } from '../context/SettingsContext';
 import { Building2, ShieldCheck, TrendingUp, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { usePageMeta } from '../hooks/usePageMeta';
 
 const HERO_IMAGES = [
   'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2075&auto=format&fit=crop',
@@ -13,6 +14,7 @@ const HERO_IMAGES = [
 
 const Home = () => {
   const { t } = useTranslation();
+  usePageMeta(undefined, t('home.subtitle'));
   const { settings } = useSiteSettings();
   const cleanPhone = settings.contactPhone.replace(/\s+/g, '');
   const navigate = useNavigate();

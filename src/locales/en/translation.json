@@ -152,7 +152,16 @@
     "phoneLabel": "Phone (Support)",
     "phoneHours": "Monday - Friday, 9am - 6pm GMT",
     "officeLabel": "Office (Dakar)",
-    "officeAddress": "Plateau, Dakar<br />Senegal"
+    "officeAddress": "Plateau, Dakar<br />Senegal",
+    "labelPhone": "Phone (optional)",
+    "placeholderPhone": "+221 77 000 00 00",
+    "consent": "I agree that my data may be used to answer my request, in accordance with the <link>privacy policy</link>.",
+    "sending": "Sending…",
+    "success": "Thank you! Your message has been sent. We reply within 2 business days.",
+    "error": "Sending failed. Please try again or email us directly.",
+    "errorConsent": "Please accept the privacy policy.",
+    "errorMessage": "Your message must be at least 10 characters long.",
+    "sendAnother": "Send another message"
   },
   "legal": {
     "title": "Legal Notice",
@@ -168,7 +177,11 @@
     "section5Desc": "Real estate investment involves risks, including partial or total loss of invested capital, and illiquidity. Past performance is not indicative of future returns. Only invest money you do not immediately need."
   },
   "footer": {
-    "copyright": "© 2026 Emeraude Africa"
+    "copyright": "© 2026 Emeraude Africa",
+    "legalNotice": "Legal notice",
+    "terms": "Terms & Conditions",
+    "privacy": "Privacy",
+    "cookies": "Manage cookies"
   },
   "register": {
     "title": "Create an account",
@@ -341,6 +354,47 @@
       "priorityHint": "Comma-separated codes, e.g. CINETPAY,WAVE,PAYDUNYA,FLUTTERWAVE,STRIPE. Empty = server default.",
       "disabled": "Disabled providers",
       "disabledHint": "Comma-separated codes, e.g. STRIPE. Empty = none."
+    },
+    "nav": {
+      "overview": "Overview",
+      "investments": "Investments",
+      "projects": "Project owners",
+      "users": "Users",
+      "leads": "Requests and leads",
+      "profile": "My profile",
+      "support": "Customer support",
+      "settings": "Site settings"
+    },
+    "leads": {
+      "title": "Requests and leads",
+      "filterAll": "All",
+      "empty": "No requests yet.",
+      "loading": "Loading…",
+      "colDate": "Date",
+      "colType": "Type",
+      "colContact": "Contact",
+      "colRequest": "Request",
+      "colStatus": "Status",
+      "colActions": "Actions",
+      "markHandled": "Mark as handled",
+      "archive": "Archive",
+      "reopen": "Reopen",
+      "reply": "Reply",
+      "types": {
+        "CONTACT": "Contact",
+        "NEWSLETTER": "Newsletter"
+      },
+      "statuses": {
+        "NEW": "New",
+        "HANDLED": "Handled",
+        "ARCHIVED": "Archived"
+      },
+      "subjects": {
+        "INVEST": "Investment",
+        "PROJECT": "Project proposal",
+        "SUPPORT": "Technical support",
+        "OTHER": "Other"
+      }
     }
   },
   "payment": {
@@ -405,6 +459,173 @@
       "success": "Simulate a successful payment",
       "failure": "Simulate a failure",
       "cancel": "Abandon"
+    },
+    "pendingBanner": "Payment to complete: {{amount}} for \"{{project}}\""
+  },
+  "newsletter": {
+    "title": "Stay informed",
+    "desc": "Get new projects and our news, once or twice a month.",
+    "placeholder": "Your email address",
+    "button": "Subscribe",
+    "consent": "I agree to receive the Emeraude Africa newsletter. I can unsubscribe at any time.",
+    "success": "You are subscribed, thank you!",
+    "error": "Subscription failed. Please try again shortly.",
+    "errorConsent": "Please tick the consent box."
+  },
+  "cookies": {
+    "text": "We use audience measurement cookies to improve the site, only with your consent. Cookies required for the site to work (session) are always active.",
+    "accept": "Accept",
+    "refuse": "Decline",
+    "more": "Learn more"
+  },
+  "legalPages": {
+    "updated": "Last updated: {{date}}",
+    "notice": {
+      "title": "Legal notice",
+      "subtitle": "Legal information about the publisher and host of the platform.",
+      "sections": [
+        {
+          "title": "1. Platform publisher",
+          "items": [
+            "Company name: Emeraude Africa (fictitious company for MVP demo)",
+            "Legal form: Public limited company (SA)",
+            "Registered office: Dakar, Senegal",
+            "Share capital: 10,000,000 FCFA",
+            "Contact: {{email}}"
+          ]
+        },
+        {
+          "title": "2. Publication director",
+          "paragraphs": [
+            "The publication director is Mr Abdarrahman Samassa."
+          ]
+        },
+        {
+          "title": "3. Hosting",
+          "paragraphs": [
+            "The site is hosted by:"
+          ],
+          "items": [
+            "Website: Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, United States.",
+            "Server and database: Railway Corp., San Francisco, CA, United States.",
+            "Documents and images: Cloudinary Ltd. (identity documents stored with restricted access)."
+          ]
+        },
+        {
+          "title": "4. Licensing and regulation",
+          "paragraphs": [
+            "For its production launch, Emeraude Africa will be subject to approval by the regulatory authorities competent for crowdfunding (in particular the WAMU Financial Markets Authority)."
+          ]
+        },
+        {
+          "title": "5. Risk warning",
+          "paragraphs": [
+            "Real estate investment carries risks, including the partial or total loss of the capital invested and illiquidity. Past returns are no guarantee of future returns. Only invest money you do not need in the short term."
+          ]
+        }
+      ]
+    },
+    "terms": {
+      "title": "Terms and Conditions of Use and Sale",
+      "subtitle": "Rules for using the platform and the legal framework for investments.",
+      "sections": [
+        {
+          "title": "1. Purpose",
+          "paragraphs": [
+            "These Terms and Conditions govern access to and use of the Emeraude Africa real estate crowdfunding platform. By using our services, you accept these Terms and Conditions without reservation."
+          ]
+        },
+        {
+          "title": "2. Access to services",
+          "paragraphs": [
+            "Access to investment projects requires creating a user account and providing valid identity documents (KYC - Know Your Customer process), in accordance with anti-money laundering and counter-terrorist financing legislation (AML-CFT). An investment can only be made once your identity has been verified by our team. A project owner cannot invest in their own project."
+          ]
+        },
+        {
+          "title": "3. Payments and protection of funds",
+          "paragraphs": [
+            "Online payments are processed by licensed providers: CinetPay, Wave, PayDunya and Flutterwave (Mobile Money, e-wallets and cards), and Stripe (international cards). Depending on the payment method chosen, the platform automatically selects an available provider; investors may also indicate a preferred provider. A bank or manual money transfer is also possible: the investment is then validated by our team once the funds are received.",
+            "An investment is only validated after the payment has been confirmed directly with the provider, for an amount and currency identical to those of the subscription. A payment not completed within 24 hours expires and the corresponding investment is cancelled, free of charge. The minimum subscription amount is the one shown on each project page, up to the amount still to be raised.",
+            "Before each investment, the investor expressly accepts these terms and the risk warning; the date of this acceptance is recorded. Invested funds are held in a dedicated account until the fundraising closes. If the fundraising target is not reached or the project is cancelled, investors are refunded in full at no additional cost. A payment received twice is refunded."
+          ]
+        },
+        {
+          "title": "4. Risk warning",
+          "paragraphs": [
+            "Real estate investment and crowdfunding carry inherent risks:"
+          ],
+          "items": [
+            "Risk of capital loss: you may lose all or part of the funds invested.",
+            "Illiquidity risk: investments are locked in for the duration of the project (generally 12 to 36 months). It is very difficult, or even impossible, to sell your shares before maturity."
+          ],
+          "after": [
+            "We advise you never to invest money you may need in the short term and to diversify your investments."
+          ]
+        },
+        {
+          "title": "5. Intellectual property",
+          "paragraphs": [
+            "All content on the platform (texts, images, logos, architecture) is protected by copyright. Any unauthorised reproduction is strictly prohibited."
+          ]
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Privacy policy",
+      "subtitle": "Protecting your personal data and respecting your privacy.",
+      "sections": [
+        {
+          "title": "1. Data collected",
+          "paragraphs": [
+            "When you sign up, invest and contact us, Emeraude Africa collects the following data:"
+          ],
+          "items": [
+            "Identification data: last name, first name, email address, phone number.",
+            "Legal documents (ID document, proof of address) as part of our verification obligations (KYC). They are stored with restricted access and can only be viewed by our compliance team, through temporary links.",
+            "Transaction data: investment history, chosen payment method, provider used, payment references and statuses, and a time-stamped log of exchanges with that provider (traceability and fraud prevention). We never store your card numbers or Mobile Money codes: they are entered directly with our payment providers (CinetPay, Wave, PayDunya, Flutterwave, Stripe).",
+            "Proof of consent: date and time you accepted these terms when signing up, and the Terms and Conditions of Sale before each investment.",
+            "Contact form and newsletter: name, email address, phone (optional), message content, page of origin and date of your consent.",
+            "Audience measurement: pages viewed and technical information about your browser, only if you accepted it in the cookie banner."
+          ]
+        },
+        {
+          "title": "2. Purposes of processing",
+          "paragraphs": [
+            "Your data is used exclusively to:"
+          ],
+          "items": [
+            "Manage your account and investments.",
+            "Generate your legal and tax certificates.",
+            "Answer your requests and, if you agreed, send you our newsletter.",
+            "Improve the site with traffic statistics, if you agreed.",
+            "Comply with legal obligations (fraud and money laundering prevention)."
+          ]
+        },
+        {
+          "title": "3. Data sharing",
+          "paragraphs": [
+            "Your personal information is never sold to third parties for commercial purposes. It may only be shared with the competent authorities in the event of a legal requisition, and with the payment provider used for your transaction (CinetPay, Wave, PayDunya, Flutterwave or Stripe): last name, first name, email address, phone, amount and transaction reference, only to the extent necessary to process it. Our technical subcontractors (hosting, email delivery, file storage, audience measurement) only access it to provide their service. Some of these providers may process data outside your country of residence, with security safeguards consistent with their regulatory obligations."
+          ]
+        },
+        {
+          "title": "4. Retention period",
+          "paragraphs": [
+            "In accordance with financial regulations, account and transaction data is kept for the entire duration of the business relationship, then archived for 5 years for traceability and evidence purposes. Contact requests are kept for 3 years after the last exchange. Newsletter subscriptions are kept until you unsubscribe. Your cookie choice is kept for 6 months."
+          ]
+        },
+        {
+          "title": "5. Cookies",
+          "paragraphs": [
+            "The site uses storage strictly necessary for it to work (keeping you signed in). Audience measurement cookies are only set after your consent; you can change your choice at any time via the \"Manage cookies\" link at the bottom of the page."
+          ]
+        },
+        {
+          "title": "6. Your rights",
+          "paragraphs": [
+            "Under data protection laws (in particular Senegalese law no. 2008-12 and the GDPR for European residents), you have the right to access, rectify, erase, object to and port your data, and the right to withdraw your consent at any time. To exercise these rights, contact: privacy@emeraude-africa.com."
+          ]
+        }
+      ]
     }
   }
 }

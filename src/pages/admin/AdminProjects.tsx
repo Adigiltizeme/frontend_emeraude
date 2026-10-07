@@ -16,7 +16,7 @@ const AdminDashboard = () => {
 
   const fetchProjects = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects`);
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects`, { headers: { 'Authorization': `Bearer ${token}` } });
       if (res.ok) {
         const data = await res.json();
         // Filtrer pour ne garder que les projets soumis par des utilisateurs (Porteurs de projets)

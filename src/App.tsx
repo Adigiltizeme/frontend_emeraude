@@ -1,4 +1,4 @@
-﻿import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AuthProvider } from './context/AuthContext';
 import { SocketProvider } from './context/SocketContext';
@@ -15,6 +15,7 @@ import TermsOfUse from './pages/TermsOfUse';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import ProjectDetails from './pages/ProjectDetails';
 import SimulatePayment from './pages/SimulatePayment';
+import PaymentReturn from './pages/PaymentReturn';
 
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminRoute from './components/AdminRoute';
@@ -62,6 +63,7 @@ function App() {
               <Route element={<UserRoute />}>
                 <Route path="/mon-compte" element={<UserDashboard />} />
                 <Route path="/mon-profil" element={<UserProfile />} />
+                <Route path="/paiement/retour" element={<PaymentReturn />} />
               </Route>
 
               <Route path="/investir" element={<Invest />} />

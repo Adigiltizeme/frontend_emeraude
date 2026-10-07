@@ -105,7 +105,11 @@
     "timelineTitle": "Calendrier Prévisionnel",
     "statusFunded": "Financement clôturé",
     "mapTitle": "Localisation (Zone du projet)",
-    "mapDisclaimer": "Par mesure de confidentialité, l'emplacement exact est masqué."
+    "mapDisclaimer": "Par mesure de confidentialité, l'emplacement exact est masqué.",
+    "notOpen": "Projet non ouvert",
+    "months": "{{count}} mois",
+    "loading": "Chargement du projet...",
+    "notFound": "Projet introuvable"
   },
   "finance": {
     "title": "Financer votre projet immobilier",
@@ -191,7 +195,8 @@
     "readyTitle": "Prêt à passer à l'action ?",
     "readyDesc": "Maintenant que votre compte est créé, nos agents sont à votre entière disposition pour vous guider dans vos premiers pas. Contactez-nous !",
     "call": "Appel Téléphonique",
-    "chat": "Chattez avec un conseiller"
+    "chat": "Chattez avec un conseiller",
+    "passwordHint": "8 caractères minimum"
   },
   "admin": {
     "login": {
@@ -285,9 +290,11 @@
       "FUNDED": "Financé",
       "COMPLETED": "Terminé",
       "SUBMITTED": "En attente",
-      "CANCELLED": "Refusé/Annulé",
+      "CANCELLED": "Annulé",
       "PENDING": "En attente",
-      "CONFIRMED": "Validé"
+      "CONFIRMED": "Validé",
+      "VALIDATED": "Validé",
+      "REJECTED": "Refusé"
     },
     "manageUsers": {
       "title": "Gestion des Utilisateurs / Investisseurs",
@@ -299,6 +306,105 @@
       "colDate": "Date d'inscription",
       "notProvided": "Non renseigné",
       "noUsers": "Aucun utilisateur inscrit pour le moment."
+    },
+    "investments": {
+      "title": "Gestion des investissements",
+      "loading": "Chargement des données...",
+      "empty": "Aucun investissement trouvé.",
+      "colInvestor": "Investisseur",
+      "colProject": "Projet",
+      "colAmount": "Montant",
+      "colDate": "Date",
+      "colPayment": "Paiement",
+      "colStatus": "Statut",
+      "colActions": "Actions",
+      "validate": "Valider",
+      "reject": "Refuser",
+      "confirmValidate": "Confirmer la réception des fonds pour cet investissement ? Le montant sera ajouté au montant levé du projet.",
+      "confirmReject": "Refuser cet investissement ?",
+      "manual": "Virement manuel",
+      "error": "La mise à jour a échoué."
+    },
+    "payment": {
+      "PENDING": "En attente",
+      "SUCCEEDED": "Payé",
+      "FAILED": "Échoué",
+      "CANCELLED": "Abandonné",
+      "EXPIRED": "Expiré"
+    },
+    "settings": {
+      "paymentsTitle": "Paiements et conformité",
+      "paymentsDesc": "Règles appliquées par le serveur à chaque investissement.",
+      "requireKyc": "Exiger une identité vérifiée (KYC) pour investir",
+      "requireKycHint": "Recommandé : les CGU prévoient la vérification d'identité avant tout investissement.",
+      "priority": "Ordre de préférence des prestataires",
+      "priorityHint": "Codes séparés par des virgules, ex. : CINETPAY,WAVE,PAYDUNYA,FLUTTERWAVE,STRIPE. Vide = valeur du serveur.",
+      "disabled": "Prestataires désactivés",
+      "disabledHint": "Codes séparés par des virgules, ex. : STRIPE. Vide = aucun."
+    }
+  },
+  "payment": {
+    "title": "Finaliser l'investissement",
+    "amountLabel": "Montant ({{currency}})",
+    "amountPlaceholder": "Min. {{min}}",
+    "remaining": "Reste à financer : {{amount}}",
+    "methodLabel": "Moyen de paiement",
+    "methods": {
+      "MOBILE_MONEY": "Mobile Money",
+      "WALLET": "Wave",
+      "CARD": "Carte bancaire",
+      "BANK_TRANSFER": "Virement ou transfert manuel"
+    },
+    "methodsDesc": {
+      "MOBILE_MONEY": "Orange Money, MTN, Moov, Free Money…",
+      "WALLET": "Paiement depuis votre application Wave",
+      "CARD": "Visa, Mastercard — idéal depuis l'étranger",
+      "BANK_TRANSFER": "Virement bancaire, Taptap Send, Remitly… Notre équipe vous envoie les instructions."
+    },
+    "providerLabel": "Prestataire",
+    "providerAuto": "Automatique (recommandé)",
+    "noOnline": "Le paiement en ligne n'est pas encore disponible. Vous pouvez investir par virement.",
+    "loadingOptions": "Chargement des moyens de paiement…",
+    "riskWarning": "Investir comporte un risque de perte en capital et d'illiquidité. N'investissez que des sommes dont vous n'avez pas besoin à court terme.",
+    "acceptTerms": "J'accepte les <link>Conditions Générales de Vente</link> et j'ai pris connaissance des risques.",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "processing": "Redirection vers le paiement…",
+    "errors": {
+      "terms": "Veuillez accepter les Conditions Générales de Vente.",
+      "min": "Le montant minimum est de {{min}}.",
+      "max": "Le montant maximum disponible est de {{max}}.",
+      "kyc": "Votre identité doit être vérifiée avant d'investir. Rendez-vous dans « Mon profil » pour envoyer vos documents.",
+      "generic": "Une erreur est survenue. Réessayez dans quelques instants."
+    },
+    "manualSuccessTitle": "Demande enregistrée !",
+    "manualSuccessDesc": "Notre équipe va vous contacter avec les instructions de paiement.",
+    "trackBtn": "Suivre mon investissement",
+    "return": {
+      "PENDING": "Paiement en cours de confirmation…",
+      "PENDING_desc": "Nous attendons la confirmation de {{provider}}. Cette page se met à jour automatiquement.",
+      "SUCCEEDED": "Paiement confirmé !",
+      "SUCCEEDED_desc": "Votre investissement de {{amount}} dans « {{project}} » est validé. Un e-mail de confirmation vous a été envoyé.",
+      "FAILED": "Le paiement n'a pas abouti",
+      "FAILED_desc": "Aucun montant n'a été validé. Vous pouvez réessayer avec le même moyen ou un autre.",
+      "CANCELLED": "Paiement abandonné",
+      "CANCELLED_desc": "Vous avez quitté la page de paiement. Votre investissement reste en attente : vous pouvez réessayer.",
+      "EXPIRED": "Paiement expiré",
+      "EXPIRED_desc": "Le délai de paiement est dépassé. Vous pouvez relancer un investissement depuis la fiche du projet.",
+      "notFound": "Paiement introuvable",
+      "loading": "Vérification du paiement…",
+      "resume": "Reprendre le paiement",
+      "retry": "Réessayer",
+      "dashboard": "Aller à mon tableau de bord",
+      "reference": "Référence : {{reference}}"
+    },
+    "sandbox": {
+      "title": "Simulation de paiement",
+      "desc": "Environnement de développement : aucun paiement réel n'est effectué.",
+      "reference": "Référence",
+      "success": "Simuler un paiement réussi",
+      "failure": "Simuler un échec",
+      "cancel": "Abandonner"
     }
   }
 }

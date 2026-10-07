@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
-import { Save, Settings as SettingsIcon, Mail, Phone, MapPin } from 'lucide-react';
+import { Save, Settings as SettingsIcon, Mail, Phone, MapPin, CreditCard } from 'lucide-react';
 
 const AdminSettings: React.FC = () => {
   const { token } = useAuth();
+  const { t } = useTranslation();
   
   const [formData, setFormData] = useState({
     contactEmail: '',
     contactPhone: '',
-    contactAddress: ''
+    contactAddress: '',
+    investmentRequiresKyc: 'true',
+    paymentProviderPriority: '',
+    paymentProvidersDisabled: ''
   });
   
   const [loading, setLoading] = useState(true);
@@ -24,7 +29,10 @@ const AdminSettings: React.FC = () => {
           setFormData({
             contactEmail: data.contactEmail || '',
             contactPhone: data.contactPhone || '',
-            contactAddress: data.contactAddress || ''
+            contactAddress: data.contactAddress || '',
+            investmentRequiresKyc: data.investmentRequiresKyc === 'false' ? 'false' : 'true',
+            paymentProviderPriority: data.paymentProviderPriority || '',
+            paymentProvidersDisabled: data.paymentProvidersDisabled || ''
           });
         }
       } catch (err) {
@@ -120,6 +128,37 @@ const AdminSettings: React.FC = () => {
               Adresse du siège / Bureaux
             </label>
             <textarea name="contactAddress" value={formData.contactAddress} onChange={handleChange} style={{ ...inputStyle, minHeight: '100px', resize: 'vertical' }} placeholder="123 Avenue des Champs-Elysées..." />
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', margin: '1rem 0 1rem', paddingBottom: '1rem', borderBottom: '1px solid var(--color-neutral-100)' }}>
+          <CreditCard size={24} color="var(--color-primary-600)" />
+          <h2 style={{ fontSize: '1.25rem', color: 'var(--color-neutral-800)', margin: 0 }}>{t('admin.settings.paymentsTitle')}</h2>
+        </div>
+        <p style={{ color: 'var(--color-neutral-500)', fontSize: '0.875rem', marginBottom: '1.5rem' }}>{t('admin.settings.paymentsDesc')}</p>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem', marginBottom: '2rem' }}>
+          <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', cursor: 'pointer' }}>
+            <input
+              type="checkbox"
+              checked={formData.investmentRequiresKyc !== 'false'}
+              onChange={(e) => setFormData(prev => ({ ...prev, investmentRequiresKyc: e.target.checked ? 'true' : 'false' }))}
+              style={{ marginTop: '0.3rem', width: '1.1rem', height: '1.1rem' }}
+            />
+            <span>
+              <span style={{ fontWeight: 600, color: '#475569' }}>{t('admin.settings.requireKyc')}</span>
+              <span style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-neutral-500)' }}>{t('admin.settings.requireKycHint')}</span>
+            </span>
+          </label>
+          <div>
+            <label style={labelStyle}>{t('admin.settings.priority')}</label>
+            <input type="text" name="paymentProviderPriority" value={formData.paymentProviderPriority} onChange={handleChange} style={inputStyle} placeholder="CINETPAY,WAVE,PAYDUNYA,FLUTTERWAVE,STRIPE" />
+            <small style={{ color: 'var(--color-neutral-500)' }}>{t('admin.settings.priorityHint')}</small>
+          </div>
+          <div>
+            <label style={labelStyle}>{t('admin.settings.disabled')}</label>
+            <input type="text" name="paymentProvidersDisabled" value={formData.paymentProvidersDisabled} onChange={handleChange} style={inputStyle} placeholder="STRIPE" />
+            <small style={{ color: 'var(--color-neutral-500)' }}>{t('admin.settings.disabledHint')}</small>
           </div>
         </div>
 

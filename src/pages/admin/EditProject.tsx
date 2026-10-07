@@ -18,7 +18,7 @@ const EditProject = () => {
   const [previewData, setPreviewData] = useState<any>(null);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects/${id}`)
+    fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects/${id}`, { headers: { 'Authorization': `Bearer ${token}` } })
       .then(res => res.json())
       .then(data => {
         setInitialData(data);

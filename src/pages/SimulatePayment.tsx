@@ -1,74 +1,45 @@
-﻿import { useState } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ShieldAlert } from 'lucide-react';
+import { API_URL, authHeaders } from '../config/api';
+import { useAuth } from '../context/AuthContext';
 
+/**
+ * Page du prestataire fictif (développement uniquement : l'API renvoie 404 en production).
+ * L'issue choisie est enregistrée côté serveur, puis le flux normal de vérification s'applique.
+ */
 const SimulatePayment = () => {
-  const [searchParams] = useSearchParams();
+  const { t } = useTranslation();
+  const [params] = useSearchParams();
   const navigate = useNavigate();
+  const { token } = useAuth();
   const [loading, setLoading] = useState(false);
+  const reference = params.get('ref') || '';
 
-  const gateway = searchParams.get('gateway');
-  const amount = searchParams.get('amount');
-  const investmentId = searchParams.get('investmentId');
-
-  const handleSimulateSuccess = async () => {
+  const complete = async (outcome: 'SUCCEEDED' | 'FAILED' | 'CANCELLED') => {
     setLoading(true);
     try {
-      // In a real app, the webhook handles this. Since this is a pure simulation, we'll hit the webhook manually.
-      // Wait, since we are doing a simulation, we can just redirect to success. 
-      // The backend will remain PENDING unless we hit the webhook.
-      
-      // Hit the webhook manually to simulate the provider calling it
-      let webhookUrl = `${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/webhooks/${gateway?.toLowerCase()}`;
-      
-      let payload = {};
-      if (gateway === 'CINETPAY') {
-        payload = { cpm_trans_status: 'ACCEPTED', cpm_trans_id: 'SIM_CINET_' + investmentId };
-      } else if (gateway === 'PAYDUNYA') {
-        payload = { status: 'completed', hash: 'SIM_PAYDUNYA_' + investmentId };
-      } else if (gateway === 'Paymob') {
-        payload = { obj: { success: true, id: 'SIM_PAYMOB_' + investmentId } };
-      } else if (gateway === 'Stripe') {
-        payload = { type: 'checkout.session.completed', data: { object: { id: 'SIM_STRIPE_' + investmentId } } };
-      }
-
-      await fetch(webhookUrl, {
+      await fetch(`${API_URL}/payments/sandbox/${encodeURIComponent(reference)}/complete`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        headers: { ...authHeaders(token), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ outcome }),
       });
-
-      // Redirect to dashboard
-      navigate('/mon-compte?success=true&simulated=true');
-    } catch (err) {
-      console.error(err);
-      alert('Erreur lors de la simulation du webhook');
-      setLoading(false);
+    } finally {
+      navigate(`/paiement/retour?ref=${encodeURIComponent(reference)}`);
     }
   };
 
   return (
     <div style={{ maxWidth: '600px', margin: '4rem auto', padding: '2rem', backgroundColor: 'white', borderRadius: '12px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', textAlign: 'center' }}>
       <ShieldAlert size={48} color="var(--color-primary-600)" style={{ margin: '0 auto 1rem' }} />
-      <h1 style={{ color: 'var(--color-primary-900)', marginBottom: '0.5rem' }}>Simulation de Paiement : {gateway}</h1>
-      <p style={{ color: '#64748b', marginBottom: '2rem' }}>
-        Vous êtes en mode "Sandbox". Aucune clé API réelle n'est configurée pour {gateway}.
-      </p>
-
-      <div style={{ padding: '1.5rem', backgroundColor: '#f8fafc', borderRadius: '8px', marginBottom: '2rem', textAlign: 'left' }}>
-        <h3 style={{ marginTop: 0 }}>Détails de la transaction</h3>
-        <p><strong>Montant :</strong> {Number(amount).toLocaleString()} FCFA</p>
-        <p><strong>ID Investissement :</strong> {investmentId}</p>
-        <p><strong>Passerelle :</strong> {gateway}</p>
-      </div>
-
-      <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-        <button onClick={() => navigate('/mon-compte?canceled=true')} className="btn btn-outline" disabled={loading}>
-          Annuler le paiement
-        </button>
-        <button onClick={handleSimulateSuccess} className="btn btn-primary" disabled={loading}>
-          {loading ? 'Validation en cours...' : 'Simuler un succès'}
-        </button>
+      <h1 style={{ color: 'var(--color-primary-900)', marginBottom: '0.5rem' }}>{t('payment.sandbox.title')}</h1>
+      <p style={{ color: '#64748b', marginBottom: '2rem' }}>{t('payment.sandbox.desc')}</p>
+      <p style={{ marginBottom: '2rem' }}><strong>{t('payment.sandbox.reference')} :</strong> {reference}</p>
+      <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+        <button onClick={() => complete('CANCELLED')} className="btn btn-outline" disabled={loading}>{t('payment.sandbox.cancel')}</button>
+        <button onClick={() => complete('FAILED')} className="btn btn-outline" disabled={loading}>{t('payment.sandbox.failure')}</button>
+        <button onClick={() => complete('SUCCEEDED')} className="btn btn-primary" disabled={loading}>{t('payment.sandbox.success')}</button>
       </div>
     </div>
   );

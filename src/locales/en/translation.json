@@ -105,7 +105,11 @@
     "timelineTitle": "Project Timeline",
     "statusFunded": "Funding closed",
     "mapTitle": "Location (Project Area)",
-    "mapDisclaimer": "For privacy reasons, the exact location is hidden."
+    "mapDisclaimer": "For privacy reasons, the exact location is hidden.",
+    "notOpen": "Not open yet",
+    "months": "{{count}} months",
+    "loading": "Loading project...",
+    "notFound": "Project not found"
   },
   "finance": {
     "title": "Fund your real estate project",
@@ -191,7 +195,8 @@
     "readyTitle": "Ready to take action?",
     "readyDesc": "Now that your account is created, our agents are fully available to guide you through your first steps. Contact us!",
     "call": "Phone Call",
-    "chat": "Chat with an advisor"
+    "chat": "Chat with an advisor",
+    "passwordHint": "At least 8 characters"
   },
   "admin": {
     "login": {
@@ -283,7 +288,13 @@
       "DRAFT": "Draft",
       "COLLECTING": "Collecting",
       "FUNDED": "Funded",
-      "COMPLETED": "Completed"
+      "COMPLETED": "Completed",
+      "SUBMITTED": "Pending review",
+      "CANCELLED": "Cancelled",
+      "PENDING": "Pending",
+      "CONFIRMED": "Validated",
+      "VALIDATED": "Validated",
+      "REJECTED": "Rejected"
     },
     "manageUsers": {
       "title": "Users / Investors Management",
@@ -295,6 +306,105 @@
       "colDate": "Registration Date",
       "notProvided": "Not provided",
       "noUsers": "No registered users at the moment."
+    },
+    "investments": {
+      "title": "Investment management",
+      "loading": "Loading data...",
+      "empty": "No investments found.",
+      "colInvestor": "Investor",
+      "colProject": "Project",
+      "colAmount": "Amount",
+      "colDate": "Date",
+      "colPayment": "Payment",
+      "colStatus": "Status",
+      "colActions": "Actions",
+      "validate": "Validate",
+      "reject": "Reject",
+      "confirmValidate": "Confirm that the funds for this investment have been received? The amount will be added to the project's raised total.",
+      "confirmReject": "Reject this investment?",
+      "manual": "Manual transfer",
+      "error": "The update failed."
+    },
+    "payment": {
+      "PENDING": "Pending",
+      "SUCCEEDED": "Paid",
+      "FAILED": "Failed",
+      "CANCELLED": "Abandoned",
+      "EXPIRED": "Expired"
+    },
+    "settings": {
+      "paymentsTitle": "Payments and compliance",
+      "paymentsDesc": "Rules enforced by the server on every investment.",
+      "requireKyc": "Require a verified identity (KYC) to invest",
+      "requireKycHint": "Recommended: the Terms require identity verification before any investment.",
+      "priority": "Provider preference order",
+      "priorityHint": "Comma-separated codes, e.g. CINETPAY,WAVE,PAYDUNYA,FLUTTERWAVE,STRIPE. Empty = server default.",
+      "disabled": "Disabled providers",
+      "disabledHint": "Comma-separated codes, e.g. STRIPE. Empty = none."
+    }
+  },
+  "payment": {
+    "title": "Complete your investment",
+    "amountLabel": "Amount ({{currency}})",
+    "amountPlaceholder": "Min. {{min}}",
+    "remaining": "Still to raise: {{amount}}",
+    "methodLabel": "Payment method",
+    "methods": {
+      "MOBILE_MONEY": "Mobile Money",
+      "WALLET": "Wave",
+      "CARD": "Bank card",
+      "BANK_TRANSFER": "Bank or money transfer"
+    },
+    "methodsDesc": {
+      "MOBILE_MONEY": "Orange Money, MTN, Moov, Free Money…",
+      "WALLET": "Pay from your Wave app",
+      "CARD": "Visa, Mastercard — ideal from abroad",
+      "BANK_TRANSFER": "Bank transfer, Taptap Send, Remitly… Our team will send you the instructions."
+    },
+    "providerLabel": "Provider",
+    "providerAuto": "Automatic (recommended)",
+    "noOnline": "Online payment is not available yet. You can invest by transfer.",
+    "loadingOptions": "Loading payment methods…",
+    "riskWarning": "Investing carries a risk of capital loss and illiquidity. Only invest money you will not need in the short term.",
+    "acceptTerms": "I accept the <link>Terms and Conditions of Sale</link> and I have read the risk warning.",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "processing": "Redirecting to payment…",
+    "errors": {
+      "terms": "Please accept the Terms and Conditions of Sale.",
+      "min": "The minimum amount is {{min}}.",
+      "max": "The maximum available amount is {{max}}.",
+      "kyc": "Your identity must be verified before investing. Go to \"My profile\" to upload your documents.",
+      "generic": "Something went wrong. Please try again shortly."
+    },
+    "manualSuccessTitle": "Request received!",
+    "manualSuccessDesc": "Our team will contact you with the payment instructions.",
+    "trackBtn": "Track my investment",
+    "return": {
+      "PENDING": "Confirming your payment…",
+      "PENDING_desc": "We are waiting for confirmation from {{provider}}. This page updates automatically.",
+      "SUCCEEDED": "Payment confirmed!",
+      "SUCCEEDED_desc": "Your {{amount}} investment in \"{{project}}\" is validated. A confirmation email has been sent to you.",
+      "FAILED": "The payment did not go through",
+      "FAILED_desc": "No amount has been validated. You can try again with the same method or another one.",
+      "CANCELLED": "Payment abandoned",
+      "CANCELLED_desc": "You left the payment page. Your investment is still pending: you can try again.",
+      "EXPIRED": "Payment expired",
+      "EXPIRED_desc": "The payment window has passed. You can start a new investment from the project page.",
+      "notFound": "Payment not found",
+      "loading": "Checking payment…",
+      "resume": "Resume payment",
+      "retry": "Try again",
+      "dashboard": "Go to my dashboard",
+      "reference": "Reference: {{reference}}"
+    },
+    "sandbox": {
+      "title": "Payment simulation",
+      "desc": "Development environment: no real payment is made.",
+      "reference": "Reference",
+      "success": "Simulate a successful payment",
+      "failure": "Simulate a failure",
+      "cancel": "Abandon"
     }
   }
 }

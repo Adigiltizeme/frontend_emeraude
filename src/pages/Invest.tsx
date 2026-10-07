@@ -1,26 +1,40 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { useSocket } from '../context/SocketContext';
+import { useLiveRefresh } from '../hooks/useLiveRefresh';
+import { API_URL } from '../config/api';
 
 const Invest = () => {
   const { t } = useTranslation();
   const [projects, setProjects] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects`)
+  const { socket } = useSocket();
+
+  // L'API ne renvoie que les projets publiés (en collecte, financés, terminés).
+  const fetchProjects = useCallback(() => {
+    fetch(`${API_URL}/projects`)
       .then(res => res.json())
-      .then(data => {
-        // Ne pas afficher les brouillons sur la page publique
-        const publicProjects = data.filter((p: any) => p.status !== 'DRAFT');
-        setProjects(publicProjects);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error("Erreur lors de la récupération des projets", err);
-        setLoading(false);
-      });
+      .then(data => setProjects(Array.isArray(data) ? data : []))
+      .catch(err => console.error("Erreur lors de la récupération des projets", err))
+      .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]);
+
+  // Jauges à jour en temps réel, et au retour sur l'onglet.
+  useEffect(() => {
+    if (!socket) return;
+    const onProjectUpdated = (data: any) => {
+      setProjects(prev => prev.map(p => (p.id === data.projectId ? { ...p, raised: data.raised, status: data.status } : p)));
+    };
+    socket.on('project.updated', onProjectUpdated);
+    return () => { socket.off('project.updated', onProjectUpdated); };
+  }, [socket]);
+  useLiveRefresh(fetchProjects);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('fr-FR').format(amount) + ' FCFA';

@@ -39,12 +39,12 @@ const Register = () => {
       const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({ ...formData, acceptedTerms: acceptedCGU })
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Erreur lors de la création du compte');
+        throw new Error(Array.isArray(errorData.message) ? errorData.message.join(' ') : errorData.message || 'Erreur lors de la création du compte');
       }
 
       const data = await response.json();
@@ -110,7 +110,8 @@ const Register = () => {
 
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: 'var(--color-neutral-800)' }}>{t('register.password')}</label>
-            <input type="password" name="password" value={formData.password} onChange={handleChange} required style={inputStyle} />
+            <input type="password" name="password" value={formData.password} onChange={handleChange} required minLength={8} style={inputStyle} />
+            <small style={{ color: 'var(--color-neutral-600)' }}>{t('register.passwordHint')}</small>
           </div>
 
           <div>

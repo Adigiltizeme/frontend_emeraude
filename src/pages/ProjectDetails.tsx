@@ -1,42 +1,35 @@
-﻿import { useState, useEffect } from 'react';
+﻿import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useSocket } from '../context/SocketContext';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, MapPin, TrendingUp, Clock, AlertTriangle, FileText, Download, CheckCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import ProjectMap from '../components/ProjectMap';
+import InvestModal from '../components/InvestModal';
+import { API_URL, authHeaders, formatMoney } from '../config/api';
+import { useLiveRefresh } from '../hooks/useLiveRefresh';
 
 
 const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
   const { id } = useParams();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [project, setProject] = useState<any>(previewData);
   const { socket } = useSocket();
-
-  // WebSocket : mise à jour temps réel des levées de fonds
-  useEffect(() => {
-    if (!socket || !project) return;
-    const handleProjectFunded = (data: any) => {
-      if (data.projectId === project.id) {
-        fetch(`/projects/`)
-          .then(res => res.json())
-          .then(data => setProject(data));
-      }
-    };
-    socket.on('project.funded', handleProjectFunded);
-    return () => { socket.off('project.funded', handleProjectFunded); };
-  }, [socket, project]);
   const [loading, setLoading] = useState(true);
   const { isAuthenticated, token } = useAuth();
   const [showInvestForm, setShowInvestForm] = useState(false);
-  const [investAmount, setInvestAmount] = useState<number | ''>('');
-  const [paymentMethod, setPaymentMethod] = useState('BANK_TRANSFER');
-  const [gateway, setGateway] = useState('CINETPAY');
-  const [investLoading, setInvestLoading] = useState(false);
-  const [acceptedCGU, setAcceptedCGU] = useState(false);
   const [investSuccess, setInvestSuccess] = useState(false);
   const [showInvestorsList, setShowInvestorsList] = useState(false);
+
+  const fetchProject = useCallback(() => {
+    if (isPreview || !id) return;
+    fetch(`${API_URL}/projects/${id}`, { headers: authHeaders(token) })
+      .then(res => (res.ok ? res.json() : null))
+      .then(data => setProject(data))
+      .catch(err => console.error('Erreur de chargement du projet', err))
+      .finally(() => setLoading(false));
+  }, [id, isPreview, token]);
 
   useEffect(() => {
     if (isPreview && previewData) {
@@ -44,38 +37,36 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
       setLoading(false);
       return;
     }
+    fetchProject();
+  }, [fetchProject, isPreview, previewData]);
 
-    if (id) {
-      fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects/${id}`)
-        .then(res => res.json())
-        .then(data => {
-          setProject(data);
+  // Temps réel : montant levé et statut mis à jour dès qu'un investissement est validé.
+  useEffect(() => {
+    if (!socket || !id || isPreview) return;
+    const handleProjectUpdated = (data: any) => {
+      if (data.projectId === id) {
+        setProject((prev: any) => (prev ? { ...prev, raised: data.raised, status: data.status } : prev));
+      }
+    };
+    socket.on('project.updated', handleProjectUpdated);
+    return () => { socket.off('project.updated', handleProjectUpdated); };
+  }, [socket, id, isPreview]);
 
+  // Retour sur l'onglet + rafraîchissement périodique de la jauge (liste : 15 s).
+  useLiveRefresh(fetchProject, 15_000, !isPreview);
 
-          setLoading(false);
-        })
-        .catch(err => {
-          console.error("Erreur de chargement du projet", err);
-          setLoading(false);
-        });
-    }
-  }, [id, isPreview, previewData]);
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('fr-FR').format(amount) + ' FCFA';
-  };
+  const formatCurrency = (amount: number) => formatMoney(amount, i18n.language);
 
   if (loading) {
-    return <div style={{ padding: '4rem', textAlign: 'center', minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', color: '#475569' }}>Chargement du projet...</div>;
+    return <div style={{ padding: '4rem', textAlign: 'center', minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', color: '#475569' }}>{t('projectDetails.loading')}</div>;
   }
 
   if (!project) {
-    return <div style={{ padding: '4rem', textAlign: 'center', minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', color: '#991b1b' }}>Projet introuvable</div>;
+    return <div style={{ padding: '4rem', textAlign: 'center', minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', color: '#991b1b' }}>{t('projectDetails.notFound')}</div>;
   }
 
-  // Calcul du pourcentage de levée (simulé pour l'instant si non géré en base)
   const targetNum = project.target || 1;
-  const raisedNum = 0; // À remplacer par project.raised si implémenté
+  const raisedNum = project.raised || 0;
   const progressPercent = Math.min(100, Math.round((raisedNum / targetNum) * 100));
 
   return (
@@ -162,7 +153,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
           <div style={{ backgroundColor: 'var(--color-white)', padding: '2rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', position: 'sticky', top: '2rem' }}>
             <div style={{ marginBottom: '1.5rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'end', marginBottom: '0.5rem' }}>
-                <span style={{ fontSize: '1.5rem', fontWeight: '700', color: 'var(--color-primary-900)' }}>{formatCurrency(0)}</span>
+                <span style={{ fontSize: '1.5rem', fontWeight: '700', color: 'var(--color-primary-900)' }}>{formatCurrency(raisedNum)}</span>
                 <span style={{ color: 'var(--color-neutral-600)', fontSize: '0.875rem' }}>{t('projectDetails.raised')} {formatCurrency(project.target)}</span>
               </div>
               <div style={{ width: '100%', backgroundColor: 'var(--color-neutral-200)', height: '8px', borderRadius: '4px', overflow: 'hidden' }}>
@@ -177,7 +168,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--color-neutral-100)', paddingBottom: '0.5rem' }}>
                 <span style={{ color: 'var(--color-neutral-600)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Clock size={16} /> {t('invest.labelDuration')}</span>
-                <span style={{ fontWeight: '600' }}>{project.duration} mois</span>
+                <span style={{ fontWeight: '600' }}>{t('projectDetails.months', { count: project.duration })}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--color-neutral-100)', paddingBottom: '0.5rem' }}>
                 <span style={{ color: 'var(--color-neutral-600)' }}>{t('projectDetails.minTicket')}</span>
@@ -210,10 +201,10 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                     }}
                     className="btn btn-primary"
                     style={{ width: '100%', padding: '1rem', fontSize: '1.1rem', fontWeight: 'bold' }}
-                    disabled={project.status === 'FUNDED' || project.status === 'COMPLETED' || project.status === 'SUBMITTED' || project.status === 'DRAFT'}
+                    disabled={project.status !== 'COLLECTING'}
                   >
                     {project.status === 'FUNDED' || project.status === 'COMPLETED' ? t('projectDetails.statusFunded') :
-                      project.status === 'SUBMITTED' || project.status === 'DRAFT' ? 'Projet non ouvert' : 'Investir maintenant'}
+                      project.status !== 'COLLECTING' ? t('projectDetails.notOpen') : t('projectDetails.investBtn')}
                   </button>
                 )}
               </>
@@ -292,188 +283,22 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
             )}
 
             {showInvestForm && !investSuccess && (
-              <div style={{ 
-                position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
-                backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 9999, 
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                padding: '1rem'
-              }}>
-                <div style={{ 
-                  backgroundColor: 'white', borderRadius: '12px', padding: '2rem', 
-                  maxWidth: '500px', width: '100%', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-                  position: 'relative'
-                }}>
-                  <button 
-                    onClick={() => setShowInvestForm(false)}
-                    style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.5rem', color: '#64748b' }}
-                  >
-                    &times;
-                  </button>
-                  <h3 style={{ margin: '0 0 1.5rem 0', color: 'var(--color-primary-900)', fontSize: '1.5rem' }}>Finaliser l'investissement</h3>
-                
-                  <div style={{ marginBottom: '1.5rem' }}>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '500' }}>Montant (FCFA)</label>
-                      <input
-                        type="number"
-                        min={project.minTicket}
-                        value={investAmount}
-                        onChange={e => setInvestAmount(Number(e.target.value))}
-                        style={{ width: '100%', padding: '0.75rem', borderRadius: '4px', border: '1px solid #cbd5e1' }}
-                        placeholder={`Min. ${project.minTicket.toLocaleString()} FCFA`}
-                      />
-                    </div>
-                    
-                    <div style={{ marginBottom: '2rem', padding: '1rem', backgroundColor: '#f8fafc', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
-                      <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', cursor: 'pointer' }}>
-                        <input 
-                          type="checkbox" 
-                          checked={acceptedCGU}
-                          onChange={(e) => setAcceptedCGU(e.target.checked)}
-                          style={{ marginTop: '0.25rem', width: '1.2rem', height: '1.2rem' }}
-                        />
-                        <span style={{ fontSize: '0.85rem', color: '#475569', lineHeight: '1.5' }}>
-                          J'accepte les <a href="/cgu-cgv" target="_blank" style={{ color: 'var(--color-primary-600)', textDecoration: 'underline' }}>Conditions Générales de Vente (CGV)</a>.
-                        </span>
-                      </label>
-                    </div>
-
-                    <div style={{ marginBottom: '2rem' }}>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '500' }}>Moyen de paiement</label>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem', border: gateway === 'STRIPE' ? '2px solid var(--color-primary-600)' : '1px solid #cbd5e1', borderRadius: '6px', cursor: 'pointer', backgroundColor: gateway === 'STRIPE' ? '#f0fdf4' : 'white' }}>
-                          <input type="radio" name="gateway" checked={gateway === 'STRIPE'} onChange={() => setGateway('STRIPE')} />
-                          <div>
-                            <strong>Carte Bancaire (Stripe)</strong>
-                            <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Visa, Mastercard, Paiement international</div>
-                          </div>
-                        </label>
-                        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem', border: gateway === 'CINETPAY' ? '2px solid var(--color-primary-600)' : '1px solid #cbd5e1', borderRadius: '6px', cursor: 'pointer', backgroundColor: gateway === 'CINETPAY' ? '#f0fdf4' : 'white' }}>
-                          <input type="radio" name="gateway" checked={gateway === 'CINETPAY'} onChange={() => setGateway('CINETPAY')} />
-                          <div>
-                            <strong>CinetPay</strong>
-                            <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Orange, Wave, MTN, Moov (Afrique)</div>
-                          </div>
-                        </label>
-                        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem', border: gateway === 'PAYMOB' ? '2px solid var(--color-primary-600)' : '1px solid #cbd5e1', borderRadius: '6px', cursor: 'pointer', backgroundColor: gateway === 'PAYMOB' ? '#f0fdf4' : 'white' }}>
-                          <input type="radio" name="gateway" checked={gateway === 'PAYMOB'} onChange={() => setGateway('PAYMOB')} />
-                          <div>
-                            <strong>Cartes & Wallets (Paymob)</strong>
-                            <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Moyen-Orient & Afrique du Nord</div>
-                          </div>
-                        </label>
-                      </div>
-                    </div>
-
-                  <div style={{ marginBottom: '1.5rem' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '500' }}>Méthode de Paiement</label>
-                    <select
-                      value={paymentMethod}
-                      onChange={(e) => {
-                          setPaymentMethod(e.target.value);
-                          if (e.target.value === 'BANK_TRANSFER') setGateway('MANUAL');
-                          else setGateway('CINETPAY');
-                      }}
-                      style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #e2e8f0', marginBottom: '1rem' }}
-                    >
-                      <option value="CREDIT_CARD">Paiement en ligne (Immédiat)</option>
-                      <option value="BANK_TRANSFER">Transfert manuel (Taptap Send, Remitly...)</option>
-                    </select>
-                    
-                    {paymentMethod === 'CREDIT_CARD' && (
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Passerelle de Paiement</label>
-                        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                          <div 
-                            onClick={() => setGateway('CINETPAY')}
-                            style={{ flex: '1 1 300px', minWidth: '150px', padding: '1rem', border: gateway === 'CINETPAY' ? '2px solid var(--color-primary-600)' : '1px solid #e2e8f0', borderRadius: '8px', cursor: 'pointer', backgroundColor: gateway === 'CINETPAY' ? 'var(--color-primary-50)' : 'white' }}
-                          >
-                            <div style={{ fontWeight: 'bold', color: 'var(--color-primary-700)' }}>CinetPay</div>
-                            <div style={{ fontSize: '0.75rem', color: 'var(--color-neutral-500)' }}>Wave, Orange, MTN, Cartes (Afrique Subsaharienne)</div>
-                          </div>
-                          <div 
-                            onClick={() => setGateway('PAYMOB')}
-                            style={{ flex: '1 1 300px', minWidth: '150px', padding: '1rem', border: gateway === 'PAYMOB' ? '2px solid var(--color-primary-600)' : '1px solid #e2e8f0', borderRadius: '8px', cursor: 'pointer', backgroundColor: gateway === 'PAYMOB' ? 'var(--color-primary-50)' : 'white' }}
-                          >
-                            <div style={{ fontWeight: 'bold', color: 'var(--color-primary-700)' }}>Paymob</div>
-                            <div style={{ fontSize: '0.75rem', color: 'var(--color-neutral-500)' }}>Vodafone Cash, InstaPay, Cartes (Égypte)</div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <button
-                      onClick={() => setShowInvestForm(false)}
-                      className="btn btn-outline"
-                      style={{ flex: '1 1 300px', padding: '0.75rem' }}
-                      disabled={investLoading}
-                    >
-                      Annuler
-                    </button>
-                    <button
-                      onClick={async () => {
-                        if (!acceptedCGU) {
-                            alert('Veuillez accepter les Conditions Générales de Vente.');
-                            return;
-                          }
-                          if (!acceptedCGU) { alert('Veuillez accepter les Conditions Générales de Vente.'); return; }
-                          if (!investAmount || investAmount < project.minTicket) {
-                          alert(`Le montant minimum est de ${project.minTicket} FCFA`);
-                          return;
-                        }
-                        setInvestLoading(true);
-                        try {
-                          const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/investments`, {
-                            method: 'POST',
-                            headers: {
-                              'Authorization': `Bearer ${token}`,
-                              'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                              projectId: project.id,
-                              amount: investAmount,
-                              paymentMethod,
-                              gateway
-                            })
-                          });
-                          if (res.ok) {
-                            const data = await res.json();
-                            if (data.checkoutUrl) {
-                              window.location.href = data.checkoutUrl;
-                            } else {
-                              setInvestSuccess(true);
-                            }
-                          } else {
-                            const err = await res.json();
-                            alert(err.message || 'Erreur lors de la création');
-                          }
-                        } catch (error) {
-                          alert('Erreur serveur');
-                        } finally {
-                          setInvestLoading(false);
-                        }
-                      }}
-                      className="btn btn-primary"
-                      style={{ flex: '1 1 300px', padding: '0.75rem' }}
-                      disabled={investLoading}
-                    >
-                      {investLoading ? 'Validation...' : 'Confirmer'}
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <InvestModal
+                project={project}
+                onClose={() => setShowInvestForm(false)}
+                onManualSuccess={() => { setShowInvestForm(false); setInvestSuccess(true); }}
+              />
             )}
 
             {investSuccess && (
               <div style={{ marginTop: '1rem', padding: '1.5rem', backgroundColor: '#dcfce7', borderRadius: '8px', border: '1px solid #16a34a', textAlign: 'center' }}>
                 <CheckCircle size={32} color="#16a34a" style={{ margin: '0 auto 0.5rem' }} />
-                <h4 style={{ margin: '0 0 0.5rem 0', color: '#16a34a' }}>Demande enregistrée !</h4>
+                <h4 style={{ margin: '0 0 0.5rem 0', color: '#16a34a' }}>{t('payment.manualSuccessTitle')}</h4>
                 <p style={{ fontSize: '0.9rem', color: '#15803d', marginBottom: '1rem' }}>
-                  Notre équipe va vous contacter avec les instructions de paiement.
+                  {t('payment.manualSuccessDesc')}
                 </p>
                 <button onClick={() => navigate('/mon-compte')} className="btn btn-primary" style={{ width: '100%' }}>
-                  Suivre mon investissement
+                  {t('payment.trackBtn')}
                 </button>
               </div>
             )}

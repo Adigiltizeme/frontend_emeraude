@@ -143,7 +143,14 @@
     "returnType": {
       "FIXED": "Fixed return",
       "VARIABLE": "Target return (not guaranteed)"
-    }
+    },
+    "deadline": "Fundraising closes on {{date}}",
+    "daysLeft_one": "{{count}} day left",
+    "daysLeft_other": "{{count}} days left",
+    "closedOn": "Fundraising closed on {{date}}",
+    "deadlinePassed": "Deadline reached: closing in progress",
+    "noDocument": "Coming soon",
+    "openDocument": "Open the document"
   },
   "finance": {
     "title": "Fund your real estate project",
@@ -338,7 +345,12 @@
       "chooseFile": "Choose a file",
       "noFileChosen": "No file chosen",
       "returnType": "Return type",
-      "returnTypeDefault": "Platform default"
+      "returnTypeDefault": "Platform default",
+      "fundingDeadline": "Fundraising deadline",
+      "fundingDeadlineHint": "Empty: default duration from the settings, applied when fundraising opens.",
+      "brochure": "Presentation brochure (PDF or image)",
+      "legalDoc": "Legal documentation (PDF or image)",
+      "currentFile": "Current document"
     },
     "status": {
       "DRAFT": "Draft",
@@ -350,7 +362,10 @@
       "PENDING": "Pending",
       "CONFIRMED": "Validated",
       "VALIDATED": "Validated",
-      "REJECTED": "Rejected"
+      "REJECTED": "Rejected",
+      "FAILED": "Not funded",
+      "REFUND_PENDING": "Refund in progress",
+      "REFUNDED": "Refunded"
     },
     "manageUsers": {
       "title": "Users / Investors Management",
@@ -379,7 +394,10 @@
       "confirmValidate": "Confirm that the funds for this investment have been received? The amount will be added to the project's raised total.",
       "confirmReject": "Reject this investment?",
       "manual": "Manual transfer",
-      "error": "The update failed."
+      "error": "The update failed.",
+      "refund": "Confirm refund",
+      "refundPrompt": "Refund reference (bank transfer, Mobile Money operation…):",
+      "refundDone": "Refund confirmed, the investor has been notified by email."
     },
     "payment": {
       "PENDING": "Pending",
@@ -391,7 +409,7 @@
     "nav": {
       "overview": "Overview",
       "investments": "Investments",
-      "projects": "Project owners",
+      "projects": "Projects",
       "users": "Users",
       "leads": "Requests and leads",
       "profile": "My profile",
@@ -629,8 +647,27 @@
         "notifyOwnerOnInvestment": {
           "label": "Notify the owner of each investment",
           "hint": "Email to the project owner (they can also turn it off in their profile)."
+        },
+        "defaultFundingDays": {
+          "label": "Default fundraising duration",
+          "hint": "Deadline set when a project without one opens for fundraising."
+        },
+        "successThresholdPercent": {
+          "label": "Fundraising success threshold",
+          "hint": "Percentage of the target to reach by the deadline; below it, the project is declared not funded and investors are refunded."
+        },
+        "requireEmailVerification": {
+          "label": "Confirmed email required",
+          "hint": "To invest and submit a project. Recommended: prevents fake accounts and lost emails."
         }
       }
+    },
+    "projects": {
+      "close": "Close fundraising",
+      "confirmClose": "Close the fundraising now? If the success threshold is not reached, the project will be declared not funded and investors refunded.",
+      "reject": "Reject",
+      "deadline": "Closes: {{date}}",
+      "error": "The action failed."
     }
   },
   "payment": {
@@ -666,7 +703,8 @@
       "max": "The maximum available amount is {{max}}.",
       "kyc": "Your identity must be verified before investing. Go to \"My profile\" to upload your documents.",
       "generic": "Something went wrong. Please try again shortly.",
-      "maxAmount": "The maximum amount per investment is {{max}}."
+      "maxAmount": "The maximum amount per investment is {{max}}.",
+      "emailNotVerified": "Please confirm your email address first: a link was sent when you signed up. You can resend it from your account."
     },
     "manualSuccessTitle": "Request received!",
     "manualSuccessDesc": "Our team will contact you with the payment instructions.",
@@ -779,7 +817,7 @@
         {
           "title": "2. Access to services",
           "paragraphs": [
-            "Access to investment projects requires creating a user account and, when required by the platform, providing valid identity documents (KYC - Know Your Customer process), in accordance with anti-money laundering and counter-terrorist financing legislation (AML-CFT). A project owner cannot invest in their own project."
+            "Access to investment projects requires creating a user account and, when required by the platform, providing valid identity documents (KYC - Know Your Customer process), in accordance with anti-money laundering and counter-terrorist financing legislation (AML-CFT). A project owner cannot invest in their own project. To invest or submit a project, the account's email address must have been confirmed through the link sent at sign-up."
           ]
         },
         {
@@ -787,7 +825,7 @@
           "paragraphs": [
             "Online payments are processed by licensed providers: CinetPay, Wave, PayDunya and Flutterwave (Mobile Money, e-wallets and cards), and Stripe (international cards). Depending on the payment method chosen, the platform automatically selects an available provider; investors may also indicate a preferred provider. When offered, a bank or manual money transfer is also possible: the investment is then validated by our team once the funds are received.",
             "An investment is only validated after the payment has been confirmed directly with the provider, for an amount and currency identical to those of the subscription. A payment not completed within {{expiryHours}} hours expires and the corresponding investment is cancelled, free of charge. The minimum subscription amount is the one shown on each project page, up to the amount still to be raised and, where applicable, the per-investment cap set by the platform.",
-            "Before each investment, the investor expressly accepts these terms and the risk warning; the date of this acceptance is recorded. Invested funds are held in a dedicated account until the fundraising closes. If the fundraising target is not reached or the project is cancelled, investors are refunded in full at no additional cost. A payment received twice is refunded."
+            "Before each investment, the investor expressly accepts these terms and the risk warning; the date of this acceptance is recorded. Invested funds are held in a dedicated account until the fundraising closes. If the fundraising target is not reached or the project is cancelled, investors are refunded in full at no additional cost. A payment received twice is refunded. Each project has a fundraising deadline, shown on its page. On that date, if the amount raised reaches {{threshold}}% of the target, the fundraising succeeds; otherwise the project is declared not funded: pending investments are cancelled and paid investments are refunded in full, at no cost, the investor being informed by email when the refund starts and when it is completed."
           ]
         },
         {
@@ -836,7 +874,7 @@
             "When you sign up, invest and contact us, {{companyName}} collects the following data:"
           ],
           "items": [
-            "Identification data: last name, first name, email address, phone number.",
+            "Identification data: last name, first name, email address, phone number. Date on which the email address was confirmed.",
             "Legal documents (ID document, proof of address) as part of our verification obligations (KYC). They are stored with restricted access and can only be viewed by our compliance team, through temporary links.",
             "Transaction data: investment history, chosen payment method, provider used, payment references and statuses, and a time-stamped log of exchanges with that provider (traceability and fraud prevention). We never store your card numbers or Mobile Money codes: they are entered directly with our payment providers (CinetPay, Wave, PayDunya, Flutterwave, Stripe).",
             "Proof of consent: date and time you accepted these terms when signing up, and the Terms and Conditions of Sale before each investment.",
@@ -966,5 +1004,22 @@
     "language": "Preferred language",
     "saved": "Preferences saved.",
     "error": "Saving failed."
+  },
+  "emailVerification": {
+    "banner": "Confirm your email address to be able to invest and submit a project. A link was sent to {{email}}.",
+    "resend": "Resend the link",
+    "resent": "New link sent. Remember to check your spam folder.",
+    "resendError": "Unable to send right now. Please try again in a minute.",
+    "pageTitle": "Email address confirmation",
+    "verifying": "Verifying…",
+    "success": "Email address confirmed, thank you! You can now invest.",
+    "error": "This link is invalid or has expired. Request a new link from your account.",
+    "toDashboard": "Go to my account"
+  },
+  "profileSecurity": {
+    "currentPassword": "Current password",
+    "currentPasswordHint": "Required to change your email address or password.",
+    "currentPasswordRequired": "Enter your current password to change your email address or password.",
+    "emailChanged": "Email address changed: please confirm it with the link we just sent you."
   }
 }

@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Save, User as UserIcon, Lock } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { EMAIL_CHANGED_EVENT } from '../../components/EmailVerificationBanner';
 
 const Profile: React.FC = () => {
   const { token, user } = useAuth();
+  const { t } = useTranslation();
   
   const [formData, setFormData] = useState({
     firstName: '',
@@ -11,7 +14,8 @@ const Profile: React.FC = () => {
     phone: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    currentPassword: ''
   });
   
   const [loading, setLoading] = useState(true);
@@ -71,6 +75,16 @@ const Profile: React.FC = () => {
     if (formData.password) {
       payload.password = formData.password;
     }
+    // Changer d'e-mail ou de mot de passe exige le mot de passe actuel (vérifié par le serveur).
+    const emailChanged = !!user?.email && formData.email.trim().toLowerCase() !== user.email.toLowerCase();
+    if (formData.password || emailChanged) {
+      if (!formData.currentPassword) {
+        setMessage({ type: 'error', text: t('profileSecurity.currentPasswordRequired') });
+        setSaving(false);
+        return;
+      }
+      payload.currentPassword = formData.currentPassword;
+    }
 
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/auth/users/${user?.id}`, {
@@ -84,9 +98,15 @@ const Profile: React.FC = () => {
 
       if (res.ok) {
         setMessage({ type: 'success', text: 'Profil mis à jour avec succès !' });
-        setFormData(prev => ({ ...prev, password: '', confirmPassword: '' }));
+        setFormData(prev => ({ ...prev, password: '', confirmPassword: '', currentPassword: '' }));
+        if (emailChanged) {
+          setMessage({ type: 'success', text: t('profileSecurity.emailChanged') });
+          window.dispatchEvent(new Event(EMAIL_CHANGED_EVENT));
+        }
       } else {
-        setMessage({ type: 'error', text: 'Erreur lors de la mise à jour du profil.' });
+        const data = await res.json().catch(() => ({}));
+        const detail = Array.isArray(data?.message) ? data.message.join(' ') : data?.message;
+        setMessage({ type: 'error', text: detail || 'Erreur lors de la mise à jour du profil.' });
       }
     } catch (err) {
       setMessage({ type: 'error', text: 'Erreur réseau.' });
@@ -160,6 +180,11 @@ const Profile: React.FC = () => {
             <div>
               <label style={labelStyle}>Confirmer le mot de passe</label>
               <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} style={inputStyle} placeholder="••••••••" />
+            </div>
+            <div>
+              <label style={labelStyle} htmlFor="current-password">{t('profileSecurity.currentPassword')}</label>
+              <input id="current-password" type="password" name="currentPassword" autoComplete="current-password" value={formData.currentPassword} onChange={handleChange} style={inputStyle} placeholder="••••••••" />
+              <small style={{ display: 'block', color: 'var(--color-neutral-500)', marginTop: '0.25rem' }}>{t('profileSecurity.currentPasswordHint')}</small>
             </div>
           </div>
 

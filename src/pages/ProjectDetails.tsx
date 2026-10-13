@@ -59,6 +59,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
   useLiveRefresh(fetchProject, 15_000, !isPreview);
 
   const formatCurrency = (amount: number) => formatMoney(amount, i18n.language);
+  const formatDate = (iso: string) => new Date(iso).toLocaleDateString(i18n.language, { day: 'numeric', month: 'long', year: 'numeric' });
 
   if (loading) {
     return <div style={{ padding: '4rem', textAlign: 'center', minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', color: '#475569' }}>{t('projectDetails.loading')}</div>;
@@ -68,6 +69,17 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
     return <div style={{ padding: '4rem', textAlign: 'center', minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', color: '#991b1b' }}>{t('projectDetails.notFound')}</div>;
   }
 
+  // Date limite de collecte : jours restants, ou date de clôture.
+  const deadlineMs = project.fundingDeadline ? new Date(project.fundingDeadline).getTime() : null;
+  const daysLeft = deadlineMs ? Math.ceil((deadlineMs - Date.now()) / 86_400_000) : null;
+  const deadlineOpen = project.status === 'COLLECTING' && (daysLeft === null || daysLeft > 0);
+  const deadlineText = project.closedAt
+    ? t('projectDetails.closedOn', { date: formatDate(project.closedAt) })
+    : project.status === 'COLLECTING' && deadlineMs
+      ? daysLeft !== null && daysLeft > 0
+        ? `${t('projectDetails.deadline', { date: formatDate(project.fundingDeadline) })} · ${t('projectDetails.daysLeft', { count: daysLeft })}`
+        : t('projectDetails.deadlinePassed')
+      : null;
   const targetNum = project.target || 1;
   const raisedNum = project.raised || 0;
   const progressPercent = Math.min(100, Math.round((raisedNum / targetNum) * 100));
@@ -121,24 +133,24 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
           <div style={{ backgroundColor: 'var(--color-surface)', padding: '2rem', borderRadius: 'var(--radius-lg)' }}>
             <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem' }}>{t('projectDetails.documentsTitle')}</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', border: '1px solid var(--color-neutral-300)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-white)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <FileText color="var(--color-primary-600)" />
-                  <span style={{ fontWeight: '500' }}>{t('projectDetails.docBrochure')}</span>
+              {[
+                { label: t('projectDetails.docBrochure'), url: project.brochureUrl },
+                { label: t('projectDetails.docLegal'), url: project.legalUrl },
+              ].map((doc) => (
+                <div key={doc.label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', padding: '1rem', border: '1px solid var(--color-neutral-300)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-white)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <FileText color="var(--color-primary-600)" />
+                    <span style={{ fontWeight: '500' }}>{doc.label}</span>
+                  </div>
+                  {doc.url ? (
+                    <a href={doc.url} target="_blank" rel="noopener noreferrer" className="btn btn-outline" aria-label={`${t('projectDetails.openDocument')} : ${doc.label}`} title={t('projectDetails.openDocument')} style={{ padding: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Download size={18} />
+                    </a>
+                  ) : (
+                    <span style={{ fontSize: '0.85rem', color: 'var(--color-neutral-500)' }}>{t('projectDetails.noDocument')}</span>
+                  )}
                 </div>
-                <button className="btn btn-outline" style={{ padding: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Download size={18} />
-                </button>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', border: '1px solid var(--color-neutral-300)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-white)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <FileText color="var(--color-primary-600)" />
-                  <span style={{ fontWeight: '500' }}>{t('projectDetails.docLegal')}</span>
-                </div>
-                <button className="btn btn-outline" style={{ padding: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Download size={18} />
-                </button>
-              </div>
+              ))}
             </div>
           </div>
 
@@ -162,6 +174,11 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
               <div style={{ width: '100%', backgroundColor: 'var(--color-neutral-200)', height: '8px', borderRadius: '4px', overflow: 'hidden' }}>
                 <div style={{ width: `${progressPercent}%`, backgroundColor: 'var(--color-primary-500)', height: '100%' }}></div>
               </div>
+              {deadlineText && (
+                <p style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', margin: '0.6rem 0 0', fontSize: '0.85rem', color: 'var(--color-neutral-600)' }}>
+                  <Clock size={14} /> {deadlineText}
+                </p>
+              )}
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
@@ -207,7 +224,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                     }}
                     className="btn btn-primary"
                     style={{ width: '100%', padding: '1rem', fontSize: '1.1rem', fontWeight: 'bold' }}
-                    disabled={project.status !== 'COLLECTING'}
+                    disabled={!deadlineOpen}
                   >
                     {project.status === 'FUNDED' || project.status === 'COMPLETED' ? t('projectDetails.statusFunded') :
                       project.status !== 'COLLECTING' ? t('projectDetails.notOpen') : t('projectDetails.investBtn')}

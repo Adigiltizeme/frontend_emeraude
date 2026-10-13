@@ -17,6 +17,8 @@ import ProjectDetails from './pages/ProjectDetails';
 import SimulatePayment from './pages/SimulatePayment';
 import PaymentReturn from './pages/PaymentReturn';
 import WhyEmeraude from './pages/WhyEmeraude';
+import VerifyEmail from './pages/VerifyEmail';
+import EmailVerificationBanner from './components/EmailVerificationBanner';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import AdminPosts from './pages/admin/AdminPosts';
@@ -59,6 +61,7 @@ function App() {
           <InteractiveBackground />
           <AnnouncementBanner />
           <Header />
+          <EmailVerificationBanner />
 
           <main>
             <Routes>
@@ -68,6 +71,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/verifier-email" element={<VerifyEmail />} />
               
               <Route element={<UserRoute />}>
                 <Route path="/mon-compte" element={<UserDashboard />} />

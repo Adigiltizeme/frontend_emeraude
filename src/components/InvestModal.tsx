@@ -94,7 +94,8 @@ const InvestModal = ({ project, onClose, onManualSuccess }: Props) => {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         if (res.status === 409) refreshSettings();
-        if (res.status === 403 && String(data?.message || '').includes('KYC')) setError(t('payment.errors.kyc'));
+        if (res.status === 403 && String(data?.message || '').startsWith('EMAIL_NOT_VERIFIED')) setError(t('payment.errors.emailNotVerified'));
+        else if (res.status === 403 && String(data?.message || '').includes('KYC')) setError(t('payment.errors.kyc'));
         else setError(Array.isArray(data?.message) ? data.message.join(' ') : data?.message || t('payment.errors.generic'));
         setSubmitting(false);
         return;

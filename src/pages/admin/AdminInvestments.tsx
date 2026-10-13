@@ -12,6 +12,8 @@ const STATUS_STYLES: Record<string, { bg: string; color: string }> = {
   CONFIRMED: { bg: '#dcfce7', color: '#16a34a' },
   REJECTED: { bg: '#fee2e2', color: '#dc2626' },
   CANCELLED: { bg: '#f1f5f9', color: '#475569' },
+  REFUND_PENDING: { bg: '#ffedd5', color: '#c2410c' },
+  REFUNDED: { bg: '#e0e7ff', color: '#4338ca' },
 };
 
 const AdminInvestments = () => {
@@ -63,6 +65,19 @@ const AdminInvestments = () => {
       console.error(err);
       alert(t('admin.investments.error'));
     }
+  };
+
+  /** Remboursement effectué hors plateforme (virement, Mobile Money) : l'admin en saisit la référence. */
+  const confirmRefund = async (id: string) => {
+    const reference = window.prompt(t('admin.investments.refundPrompt'))?.trim();
+    if (!reference) return;
+    const res = await fetch(`${API_URL}/investments/${id}/refund`, {
+      method: 'PUT',
+      headers: { ...authHeaders(token), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reference }),
+    });
+    alert(res.ok ? t('admin.investments.refundDone') : t('admin.investments.error'));
+    fetchInvestments();
   };
 
   const renderStatus = (status: string) => {
@@ -125,6 +140,14 @@ const AdminInvestments = () => {
                     <td style={{ padding: '1rem' }}>{renderPayment(inv)}</td>
                     <td style={{ padding: '1rem' }}>{renderStatus(inv.status)}</td>
                     <td style={{ padding: '1rem', textAlign: 'right' }}>
+                      {inv.status === 'REFUND_PENDING' && (
+                        <button onClick={() => confirmRefund(inv.id)} className="btn btn-outline" style={{ padding: '0.5rem 1rem', fontWeight: 'bold' }}>
+                          {t('admin.investments.refund')}
+                        </button>
+                      )}
+                      {inv.status === 'REFUNDED' && inv.refundReference && (
+                        <span style={{ fontSize: '0.8rem', color: '#64748b' }}>{inv.refundReference}</span>
+                      )}
                       {inv.status === 'PENDING' && !inv.payments?.length && (
                         <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                           <button

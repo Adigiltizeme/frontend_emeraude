@@ -30,6 +30,8 @@ export interface SiteSettings {
   projectSubmissionFee: number;
   paymentExpiryHours: number;
   bankTransferEnabled: boolean;
+  successThresholdPercent: number;
+  requireEmailVerification: boolean;
 }
 
 /** Chiffres publics calculés à partir des projets (ticket le plus accessible, collecte…). */
@@ -68,6 +70,8 @@ const defaultSettings: SiteSettings = {
   projectSubmissionFee: 0,
   paymentExpiryHours: 24,
   bankTransferEnabled: true,
+  successThresholdPercent: 100,
+  requireEmailVerification: true,
 };
 
 interface SettingsContextType {

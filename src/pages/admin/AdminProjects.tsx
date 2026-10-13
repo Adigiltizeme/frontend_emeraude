@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Edit, Trash2, CheckCircle, XCircle, Eye, X } from 'lucide-react';
+import { Edit, Trash2, CheckCircle, XCircle, Eye, X, Lock } from 'lucide-react';
+import { API_URL, authHeaders } from '../../config/api';
 import ProjectDetails from '../ProjectDetails';
 
 const AdminDashboard = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { token } = useAuth();
   const navigate = useNavigate();
   const [projects, setProjects] = useState<any[]>([]);
@@ -19,9 +20,8 @@ const AdminDashboard = () => {
       const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects`, { headers: { 'Authorization': `Bearer ${token}` } });
       if (res.ok) {
         const data = await res.json();
-        // Filtrer pour ne garder que les projets soumis par des utilisateurs (Porteurs de projets)
-        const userProjects = data.filter((p: any) => p.owner !== null && p.owner !== undefined);
-        setProjects(userProjects);
+        // Tous les projets : soumis par des porteurs et créés par l'équipe.
+        setProjects(Array.isArray(data) ? data : []);
       }
     } catch (err) {
       console.error(err);
@@ -68,6 +68,13 @@ const AdminDashboard = () => {
     }
   };
 
+  const closeFundraising = async (id: string) => {
+    if (!window.confirm(t('admin.projects.confirmClose'))) return;
+    const res = await fetch(`${API_URL}/projects/${id}/close`, { method: 'POST', headers: authHeaders(token) });
+    if (!res.ok) alert(t('admin.projects.error'));
+    fetchProjects();
+  };
+
   const renderStatus = (status: string) => {
     switch (status) {
       case 'DRAFT': return <span style={{ padding: '4px 8px', borderRadius: '4px', backgroundColor: '#f1f5f9', color: '#64748b', fontSize: '0.85rem', fontWeight: 'bold' }}>Brouillon</span>;
@@ -76,7 +83,7 @@ const AdminDashboard = () => {
       case 'FUNDED': return <span style={{ padding: '4px 8px', borderRadius: '4px', backgroundColor: '#dbeafe', color: '#2563eb', fontSize: '0.85rem', fontWeight: 'bold' }}>Financé</span>;
       case 'COMPLETED': return <span style={{ padding: '4px 8px', borderRadius: '4px', backgroundColor: '#f3e8ff', color: '#9333ea', fontSize: '0.85rem', fontWeight: 'bold' }}>Terminé</span>;
       case 'CANCELLED': return <span style={{ padding: '4px 8px', borderRadius: '4px', backgroundColor: '#fee2e2', color: '#dc2626', fontSize: '0.85rem', fontWeight: 'bold' }}>Refusé</span>;
-      default: return <span>{status}</span>;
+      default: return <span style={{ padding: '4px 8px', borderRadius: '4px', backgroundColor: '#f1f5f9', color: '#475569', fontSize: '0.85rem', fontWeight: 'bold' }}>{t(`admin.status.${status}`, { defaultValue: status })}</span>;
     }
   };
 
@@ -131,7 +138,14 @@ const AdminDashboard = () => {
                       {new Date(project.createdAt).toLocaleDateString()}
                     </td>
                     
-                    <td style={{ padding: '1rem' }}>{renderStatus(project.status)}</td>
+                    <td style={{ padding: '1rem' }}>
+                      {renderStatus(project.status)}
+                      {project.status === 'COLLECTING' && project.fundingDeadline && (
+                        <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.35rem' }}>
+                          {t('admin.projects.deadline', { date: new Date(project.fundingDeadline).toLocaleDateString(i18n.language) })}
+                        </div>
+                      )}
+                    </td>
                     
                     <td style={{ padding: '1rem', textAlign: 'right' }}>
                       <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', alignItems: 'center' }}>
@@ -145,12 +159,21 @@ const AdminDashboard = () => {
                               <CheckCircle size={16} /> Valider
                             </button>
                             <button 
-                              onClick={() => updateStatus(project.id, 'CANCELLED')}
+                              onClick={() => updateStatus(project.id, 'REJECTED')}
                               title="Refuser le dossier"
                               style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', padding: '0.5rem 1rem', backgroundColor: '#dc2626', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
-                              <XCircle size={16} /> Refuser
+                              <XCircle size={16} /> {t('admin.projects.reject')}
                             </button>
                           </>
+                        )}
+
+                        {project.status === 'COLLECTING' && (
+                          <button
+                            onClick={() => closeFundraising(project.id)}
+                            title={t('admin.projects.close')}
+                            style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', padding: '0.5rem 0.75rem', backgroundColor: 'white', color: '#334155', border: '1px solid #cbd5e1', borderRadius: '4px', cursor: 'pointer', fontWeight: 600 }}>
+                            <Lock size={16} /> {t('admin.projects.close')}
+                          </button>
                         )}
                         
                         <button onClick={() => { setPreviewProject(project); setShowPreview(true); }} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', padding: '0.25rem' }} title="Aperçu public">

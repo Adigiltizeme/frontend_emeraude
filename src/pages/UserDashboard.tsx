@@ -345,6 +345,9 @@ const UserDashboard = () => {
       case 'SUBMITTED': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#d97706', fontSize: '0.875rem', fontWeight: '600' }}><Clock size={16} /> En cours d'étude</span>;
       case 'COLLECTING': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#2563eb', fontSize: '0.875rem', fontWeight: '600' }}><CheckCircle size={16} /> En collecte</span>;
       case 'FUNDED': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#16a34a', fontSize: '0.875rem', fontWeight: '600' }}><CheckCircle size={16} /> Financé</span>;
+      case 'REFUND_PENDING': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#c2410c', fontSize: '0.875rem', fontWeight: '600' }}><Clock size={16} /> {t('admin.status.REFUND_PENDING')}</span>;
+      case 'REFUNDED': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#4338ca', fontSize: '0.875rem', fontWeight: '600' }}><CheckCircle size={16} /> {t('admin.status.REFUNDED')}</span>;
+      case 'FAILED': return <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#dc2626', fontSize: '0.875rem', fontWeight: '600' }}><XCircle size={16} /> {t('admin.status.FAILED')}</span>;
       default: return <span>{status}</span>;
     }
   };
@@ -521,8 +524,12 @@ const UserDashboard = () => {
                     }
                     acc[inv.projectId].transactions.push(inv);
                     // Les investissements annulés ou refusés ne comptent pas dans le total engagé.
-                    if (inv.status !== 'CANCELLED' && inv.status !== 'REJECTED') {
+                    if (!['CANCELLED', 'REJECTED', 'REFUNDED'].includes(inv.status)) {
                       acc[inv.projectId].totalAmount += inv.amount;
+                    }
+                    // Projet non financé : le groupe affiche l'état du remboursement.
+                    if ((inv.status === 'REFUND_PENDING' || inv.status === 'REFUNDED') && acc[inv.projectId].status !== 'VALIDATED') {
+                      acc[inv.projectId].status = inv.status;
                     }
                     if (inv.status === 'VALIDATED' || inv.status === 'CONFIRMED') {
                       acc[inv.projectId].status = 'VALIDATED';

@@ -7,6 +7,8 @@ import ProjectForm from '../components/ProjectForm';
 import { usePageMeta } from '../hooks/usePageMeta';
 import { useSiteSettings } from '../context/SettingsContext';
 import { formatMoney } from '../config/api';
+import { uploadProjectDocuments } from '../lib/projectUploads';
+import type { ProjectDocuments } from '../components/ProjectForm';
 
 const Finance = () => {
   const { t, i18n } = useTranslation();
@@ -18,7 +20,7 @@ const Finance = () => {
   const [success, setSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  const handleSubmit = async (projectData: any, imageFile: File | null) => {
+  const handleSubmit = async (projectData: any, imageFile: File | null, documents?: ProjectDocuments) => {
     if (!isAuthenticated) {
       alert("Vous devez être connecté pour soumettre un projet.");
       navigate('/login');
@@ -39,7 +41,7 @@ const Finance = () => {
       
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.message || 'Erreur lors de la création du projet');
+        throw new Error(String(err.message || '').startsWith('EMAIL_NOT_VERIFIED') ? t('payment.errors.emailNotVerified') : err.message || 'Erreur lors de la création du projet');
       }
       
       const createdProject = await res.json();
@@ -59,6 +61,8 @@ const Finance = () => {
         }
       }
 
+      // Brochure et documentation légale (facultatives).
+      await uploadProjectDocuments(createdProject.id, token, documents);
       setSuccess(true);
     } catch (error: any) {
       setErrorMsg(error.message || 'Erreur de connexion au serveur');

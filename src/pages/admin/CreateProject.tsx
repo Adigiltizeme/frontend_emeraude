@@ -5,6 +5,8 @@ import { useAuth } from '../../context/AuthContext';
 import ProjectForm from '../../components/ProjectForm';
 import ProjectDetails from '../ProjectDetails';
 import { X } from 'lucide-react';
+import { uploadProjectDocuments } from '../../lib/projectUploads';
+import type { ProjectDocuments } from '../../components/ProjectForm';
 
 const CreateProject = () => {
   const { t } = useTranslation();
@@ -14,7 +16,7 @@ const CreateProject = () => {
   const [showPreview, setShowPreview] = useState(false);
   const [previewData, setPreviewData] = useState<any>(null);
 
-  const handleSubmit = async (projectData: any, imageFile: File | null) => {
+  const handleSubmit = async (projectData: any, imageFile: File | null, documents?: ProjectDocuments) => {
     setError('');
 
     try {
@@ -44,6 +46,8 @@ const CreateProject = () => {
         if (!imageResponse.ok) throw new Error('Erreur image');
       }
 
+      // Brochure et documentation légale (facultatives).
+      await uploadProjectDocuments(newProject.id, token, documents);
       navigate('/admin');
     } catch (err: any) {
       setError(err.message);

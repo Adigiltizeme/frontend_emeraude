@@ -143,7 +143,14 @@
     "returnType": {
       "FIXED": "Rendement fixe",
       "VARIABLE": "Rendement cible (non garanti)"
-    }
+    },
+    "deadline": "Clôture de la collecte le {{date}}",
+    "daysLeft_one": "Plus que {{count}} jour",
+    "daysLeft_other": "Plus que {{count}} jours",
+    "closedOn": "Collecte clôturée le {{date}}",
+    "deadlinePassed": "Date limite atteinte : clôture en cours",
+    "noDocument": "Bientôt disponible",
+    "openDocument": "Ouvrir le document"
   },
   "finance": {
     "title": "Financer votre projet immobilier",
@@ -338,7 +345,12 @@
       "chooseFile": "Choisir un fichier",
       "noFileChosen": "Aucun fichier choisi",
       "returnType": "Type de rendement",
-      "returnTypeDefault": "Valeur par défaut de la plateforme"
+      "returnTypeDefault": "Valeur par défaut de la plateforme",
+      "fundingDeadline": "Date limite de collecte",
+      "fundingDeadlineHint": "Vide : durée par défaut des paramètres, appliquée à la mise en collecte.",
+      "brochure": "Brochure de présentation (PDF ou image)",
+      "legalDoc": "Documentation légale (PDF ou image)",
+      "currentFile": "Document actuel"
     },
     "status": {
       "DRAFT": "Brouillon",
@@ -350,7 +362,10 @@
       "PENDING": "En attente",
       "CONFIRMED": "Validé",
       "VALIDATED": "Validé",
-      "REJECTED": "Refusé"
+      "REJECTED": "Refusé",
+      "FAILED": "Non financé",
+      "REFUND_PENDING": "Remboursement en cours",
+      "REFUNDED": "Remboursé"
     },
     "manageUsers": {
       "title": "Gestion des Utilisateurs / Investisseurs",
@@ -379,7 +394,10 @@
       "confirmValidate": "Confirmer la réception des fonds pour cet investissement ? Le montant sera ajouté au montant levé du projet.",
       "confirmReject": "Refuser cet investissement ?",
       "manual": "Virement manuel",
-      "error": "La mise à jour a échoué."
+      "error": "La mise à jour a échoué.",
+      "refund": "Confirmer le remboursement",
+      "refundPrompt": "Référence du remboursement (virement, opération Mobile Money…) :",
+      "refundDone": "Remboursement confirmé, l'investisseur est prévenu par e-mail."
     },
     "payment": {
       "PENDING": "En attente",
@@ -391,7 +409,7 @@
     "nav": {
       "overview": "Vue d'ensemble",
       "investments": "Investissements",
-      "projects": "Porteurs de projets",
+      "projects": "Projets",
       "users": "Utilisateurs",
       "leads": "Demandes et prospects",
       "profile": "Mon profil",
@@ -629,8 +647,27 @@
         "notifyOwnerOnInvestment": {
           "label": "Prévenir le porteur à chaque investissement",
           "hint": "E-mail au porteur de projet (il peut aussi le désactiver dans son profil)."
+        },
+        "defaultFundingDays": {
+          "label": "Durée de collecte par défaut",
+          "hint": "Date limite fixée à la mise en collecte d'un projet qui n'en a pas."
+        },
+        "successThresholdPercent": {
+          "label": "Seuil de réussite d'une collecte",
+          "hint": "Pourcentage de l'objectif à atteindre à la date limite ; en dessous, le projet est déclaré non financé et les investisseurs remboursés."
+        },
+        "requireEmailVerification": {
+          "label": "Adresse e-mail confirmée obligatoire",
+          "hint": "Pour investir et déposer un projet. Recommandé : évite les comptes fictifs et les e-mails perdus."
         }
       }
+    },
+    "projects": {
+      "close": "Clôturer la collecte",
+      "confirmClose": "Clôturer la collecte maintenant ? Si le seuil de réussite n'est pas atteint, le projet sera déclaré non financé et les investisseurs remboursés.",
+      "reject": "Refuser",
+      "deadline": "Clôture : {{date}}",
+      "error": "L'action a échoué."
     }
   },
   "payment": {
@@ -666,7 +703,8 @@
       "max": "Le montant maximum disponible est de {{max}}.",
       "kyc": "Votre identité doit être vérifiée avant d'investir. Rendez-vous dans « Mon profil » pour envoyer vos documents.",
       "generic": "Une erreur est survenue. Réessayez dans quelques instants.",
-      "maxAmount": "Le montant maximum par investissement est de {{max}}."
+      "maxAmount": "Le montant maximum par investissement est de {{max}}.",
+      "emailNotVerified": "Confirmez d'abord votre adresse e-mail : un lien vous a été envoyé à l'inscription. Vous pouvez le renvoyer depuis votre espace."
     },
     "manualSuccessTitle": "Demande enregistrée !",
     "manualSuccessDesc": "Notre équipe va vous contacter avec les instructions de paiement.",
@@ -779,7 +817,7 @@
         {
           "title": "2. Accès aux services",
           "paragraphs": [
-            "L'accès aux projets d'investissement nécessite la création d'un compte utilisateur et, lorsque la plateforme l'exige, la fourniture de documents d'identité valides (processus KYC - Know Your Customer), conformément à la législation sur la lutte contre le blanchiment d'argent et le financement du terrorisme (LCB-FT). Le porteur d'un projet ne peut pas investir dans son propre projet."
+            "L'accès aux projets d'investissement nécessite la création d'un compte utilisateur et, lorsque la plateforme l'exige, la fourniture de documents d'identité valides (processus KYC - Know Your Customer), conformément à la législation sur la lutte contre le blanchiment d'argent et le financement du terrorisme (LCB-FT). Le porteur d'un projet ne peut pas investir dans son propre projet. Pour investir ou déposer un projet, l'adresse e-mail du compte doit avoir été confirmée par le lien envoyé à l'inscription."
           ]
         },
         {
@@ -787,7 +825,7 @@
           "paragraphs": [
             "Les paiements en ligne sont assurés par des prestataires agréés : CinetPay, Wave, PayDunya et Flutterwave (Mobile Money, portefeuilles électroniques et cartes), et Stripe (cartes internationales). Selon le moyen de paiement choisi, la plateforme sélectionne automatiquement un prestataire disponible ; l'investisseur peut aussi indiquer son prestataire préféré. Lorsqu'il est proposé, un virement ou un transfert manuel reste possible : l'investissement est alors validé par notre équipe à réception des fonds.",
             "Un investissement n'est validé qu'après confirmation du paiement directement auprès du prestataire, pour un montant et une devise identiques à ceux de la souscription. Un paiement non finalisé dans un délai de {{expiryHours}} heures expire et l'investissement correspondant est annulé, sans frais. Le montant minimum de souscription est celui indiqué sur la fiche de chaque projet, dans la limite du montant restant à financer et, le cas échéant, du plafond par investissement fixé par la plateforme.",
-            "Avant chaque investissement, l'investisseur accepte expressément les présentes conditions et l'avertissement sur les risques ; la date de cette acceptation est conservée. Les fonds investis sont cantonnés dans un compte dédié jusqu'à la clôture de la levée de fonds. Si l'objectif de collecte n'est pas atteint ou si le projet est annulé, les investisseurs sont intégralement remboursés, sans frais supplémentaires. Un paiement reçu en double est remboursé."
+            "Avant chaque investissement, l'investisseur accepte expressément les présentes conditions et l'avertissement sur les risques ; la date de cette acceptation est conservée. Les fonds investis sont cantonnés dans un compte dédié jusqu'à la clôture de la levée de fonds. Si l'objectif de collecte n'est pas atteint ou si le projet est annulé, les investisseurs sont intégralement remboursés, sans frais supplémentaires. Un paiement reçu en double est remboursé. Chaque projet a une date limite de collecte, indiquée sur sa fiche. À cette date, si le montant levé atteint {{threshold}} % de l'objectif, la collecte est réussie ; sinon, le projet est déclaré non financé : les investissements en attente sont annulés et les investissements payés sont intégralement remboursés, sans frais, l'investisseur étant informé par e-mail de la mise en remboursement puis du remboursement effectué."
           ]
         },
         {
@@ -836,7 +874,7 @@
             "Lors de votre inscription, de vos investissements et de vos échanges avec nous, {{companyName}} collecte les données suivantes :"
           ],
           "items": [
-            "Données d'identification : nom, prénom, adresse e-mail, numéro de téléphone.",
+            "Données d'identification : nom, prénom, adresse e-mail, numéro de téléphone. Date de confirmation de l'adresse e-mail.",
             "Documents légaux (pièce d'identité, justificatif de domicile) dans le cadre de nos obligations de vérification (KYC). Ils sont stockés en accès restreint et consultables uniquement par notre équipe de conformité, via des liens temporaires.",
             "Données de transaction : historique d'investissement, moyen de paiement choisi, prestataire utilisé, références et statuts des paiements, ainsi qu'un journal horodaté des échanges avec ce prestataire (traçabilité et lutte contre la fraude). Nous ne stockons jamais vos numéros de carte bancaire ni vos codes Mobile Money : ils sont saisis directement chez nos prestataires de paiement (CinetPay, Wave, PayDunya, Flutterwave, Stripe).",
             "Preuves de consentement : date et heure d'acceptation des présentes conditions à l'inscription, et des Conditions Générales de Vente avant chaque investissement.",
@@ -966,5 +1004,22 @@
     "language": "Langue préférée",
     "saved": "Préférences enregistrées.",
     "error": "L'enregistrement a échoué."
+  },
+  "emailVerification": {
+    "banner": "Confirmez votre adresse e-mail pour pouvoir investir et déposer un projet. Un lien vous a été envoyé à {{email}}.",
+    "resend": "Renvoyer le lien",
+    "resent": "Nouveau lien envoyé. Pensez à vérifier vos courriers indésirables.",
+    "resendError": "Envoi impossible pour le moment. Réessayez dans une minute.",
+    "pageTitle": "Confirmation de l'adresse e-mail",
+    "verifying": "Vérification en cours…",
+    "success": "Adresse e-mail confirmée, merci ! Vous pouvez maintenant investir.",
+    "error": "Ce lien est invalide ou a expiré. Demandez un nouveau lien depuis votre espace.",
+    "toDashboard": "Aller à mon espace"
+  },
+  "profileSecurity": {
+    "currentPassword": "Mot de passe actuel",
+    "currentPasswordHint": "Obligatoire pour changer votre adresse e-mail ou votre mot de passe.",
+    "currentPasswordRequired": "Saisissez votre mot de passe actuel pour changer d'adresse e-mail ou de mot de passe.",
+    "emailChanged": "Adresse e-mail modifiée : confirmez-la grâce au lien que nous venons de vous envoyer."
   }
 }

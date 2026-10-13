@@ -2,9 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Upload } from 'lucide-react';
 
+/** Date ISO → « AAAA-MM-JJ » dans le fuseau de l'utilisateur (valeur d'un champ date). */
+const toLocalDateInput = (iso: string) => {
+  const d = new Date(iso);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+
+export interface ProjectDocuments {
+  brochure: File | null;
+  legal: File | null;
+}
+
 interface ProjectFormProps {
   initialData?: any;
-  onSubmit: (data: any, imageFile: File | null) => Promise<void>;
+  onSubmit: (data: any, imageFile: File | null, documents: ProjectDocuments) => Promise<void>;
   onPreview?: (data: any) => void;
   submitLabel: string;
   showStatus?: boolean; // Pour l'admin
@@ -29,8 +40,10 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSubmit, onPrev
     distribution: 'Trimestrielle',
     impact: '',
     status: 'DRAFT',
-    returnType: ''
+    returnType: '',
+    fundingDeadline: ''
   });
+  const [documents, setDocuments] = useState<ProjectDocuments>({ brochure: null, legal: null });
 
   const [customLocation, setCustomLocation] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -54,7 +67,8 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSubmit, onPrev
         distribution: initialData.distribution || 'Trimestrielle',
         impact: initialData.impact || '',
         status: initialData.status || 'DRAFT',
-        returnType: initialData.returnType || ''
+        returnType: initialData.returnType || '',
+        fundingDeadline: initialData.fundingDeadline ? toLocalDateInput(initialData.fundingDeadline) : ''
       });
       if (!['Sénégal', "Côte d'Ivoire"].includes(initialData.location)) {
         setCustomLocation(initialData.location || '');
@@ -87,10 +101,12 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSubmit, onPrev
       capitalGain: formData.capitalGain ? Number(formData.capitalGain) : null,
       // Vide = valeur par défaut de la plateforme (paramètre du back-office).
       returnType: formData.returnType || undefined,
+      // Date limite : fin de journée du jour choisi ; vide = durée par défaut à la mise en collecte.
+      fundingDeadline: formData.fundingDeadline ? new Date(`${formData.fundingDeadline}T23:59:59`).toISOString() : undefined,
     };
 
     try {
-      await onSubmit(finalData, imageFile);
+      await onSubmit(finalData, imageFile, documents);
     } finally {
       setLoading(false);
     }
@@ -230,6 +246,26 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSubmit, onPrev
             <label style={labelStyle}>Plus-value estimée (%)</label>
             <input type="number" step="0.1" name="capitalGain" value={formData.capitalGain} onChange={handleChange} placeholder="Ex: 2.5" style={inputStyle} />
           </div>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))', gap: '1.5rem' }}>
+          <div>
+            <label style={labelStyle} htmlFor="project-deadline">{t('admin.projectForm.fundingDeadline')}</label>
+            <input id="project-deadline" type="date" name="fundingDeadline" value={formData.fundingDeadline} onChange={handleChange} style={inputStyle} />
+            <small style={{ display: 'block', color: 'var(--color-neutral-500)', marginTop: '0.25rem' }}>{t('admin.projectForm.fundingDeadlineHint')}</small>
+          </div>
+          {(['brochure', 'legal'] as const).map((kind) => {
+            const current = kind === 'brochure' ? initialData?.brochureUrl : initialData?.legalUrl;
+            return (
+              <div key={kind}>
+                <label style={labelStyle} htmlFor={`project-doc-${kind}`}>{t(kind === 'brochure' ? 'admin.projectForm.brochure' : 'admin.projectForm.legalDoc')}</label>
+                <input id={`project-doc-${kind}`} type="file" accept="application/pdf,image/jpeg,image/png,image/webp" onChange={(e) => setDocuments((d) => ({ ...d, [kind]: e.target.files?.[0] || null }))} />
+                {current && !documents[kind] && (
+                  <a href={current} target="_blank" rel="noopener noreferrer" style={{ display: 'block', marginTop: '0.35rem', fontSize: '0.85rem', color: 'var(--color-primary-600)' }}>{t('admin.projectForm.currentFile')}</a>
+                )}
+              </div>
+            );
+          })}
         </div>
 
         <div>

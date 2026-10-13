@@ -35,10 +35,10 @@ export function usePageMeta(title?: string, description?: string, image?: string
       setMeta('property', 'og:description', text);
       setMeta('name', 'twitter:description', text);
     }
-    if (image) {
-      setMeta('property', 'og:image', image);
-      setMeta('name', 'twitter:image', image);
-    }
+    // Sans image propre à la page, retour à l'image de partage par défaut (pas celle de la page précédente).
+    const shareImage = image || `${window.location.origin}/og-image.png`;
+    setMeta('property', 'og:image', shareImage);
+    setMeta('name', 'twitter:image', shareImage);
     const url = window.location.origin + window.location.pathname;
     setMeta('property', 'og:url', url);
     setCanonical(url);

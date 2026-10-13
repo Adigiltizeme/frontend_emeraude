@@ -16,6 +16,10 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import ProjectDetails from './pages/ProjectDetails';
 import SimulatePayment from './pages/SimulatePayment';
 import PaymentReturn from './pages/PaymentReturn';
+import WhyEmeraude from './pages/WhyEmeraude';
+import Blog from './pages/Blog';
+import BlogPost from './pages/BlogPost';
+import AdminPosts from './pages/admin/AdminPosts';
 
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminRoute from './components/AdminRoute';
@@ -74,6 +78,9 @@ function App() {
               <Route path="/simulate-payment" element={<SimulatePayment />} />
               <Route path="/financer" element={<Finance />} />
               <Route path="/a-propos" element={<About />} />
+              <Route path="/pourquoi-emeraude" element={<WhyEmeraude />} />
+              <Route path="/actualites" element={<Blog />} />
+              <Route path="/actualites/:slug" element={<BlogPost />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/comment-ca-marche" element={<HowItWorks />} />
               <Route path="/contact" element={<Contact />} />
@@ -95,6 +102,7 @@ function App() {
                 <Route path="settings" element={<AdminSettings />} />
                 <Route path="support" element={<AdminSupportPage />} />
                 <Route path="leads" element={<AdminLeads />} />
+                <Route path="posts" element={<AdminPosts />} />
               </Route>
             </Routes>
           </main>
@@ -105,6 +113,8 @@ function App() {
               <p style={{ width: '100%' }}>{t('footer.copyright')}</p>
               <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center', width: '100%' }}>
                 <Link to="/a-propos">{t('nav.about')}</Link>
+                <Link to="/pourquoi-emeraude">{t('footer.why')}</Link>
+                <Link to="/actualites">{t('footer.blog')}</Link>
                 <Link to="/faq">{t('nav.faq')}</Link>
                 <Link to="/contact">{t('nav.contact')}</Link>
                 <Link to="/mentions-legales">{t('footer.legalNotice')}</Link>

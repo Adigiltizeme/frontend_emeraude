@@ -9,7 +9,9 @@
     "contact": "Contact",
     "legal": "Legal Notice",
     "register": "Register",
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "why": "Why us",
+    "blog": "News"
   },
   "home": {
     "title": "Build your real estate portfolio in Africa, from 10,000 FCFA.",
@@ -209,7 +211,9 @@
     "legalNotice": "Legal notice",
     "terms": "Terms & Conditions",
     "privacy": "Privacy",
-    "cookies": "Manage cookies"
+    "cookies": "Manage cookies",
+    "why": "Why Emeraude Africa",
+    "blog": "News"
   },
   "register": {
     "title": "Create an account",
@@ -391,7 +395,8 @@
       "leads": "Requests and leads",
       "profile": "My profile",
       "support": "Customer support",
-      "settings": "Site settings"
+      "settings": "Site settings",
+      "posts": "News"
     },
     "leads": {
       "title": "Requests and leads",
@@ -423,6 +428,43 @@
         "SUPPORT": "Technical support",
         "OTHER": "Other"
       }
+    },
+    "posts": {
+      "title": "News",
+      "new": "New article",
+      "edit": "Edit",
+      "delete": "Delete",
+      "confirmDelete": "Permanently delete this article?",
+      "view": "View online",
+      "empty": "No articles. Create the first one!",
+      "loading": "Loading…",
+      "colTitle": "Title",
+      "colLanguage": "Language",
+      "colStatus": "Status",
+      "colUpdated": "Updated",
+      "colActions": "Actions",
+      "statuses": {
+        "DRAFT": "Draft",
+        "PUBLISHED": "Published"
+      },
+      "languages": {
+        "fr": "Français",
+        "en": "English"
+      },
+      "fieldTitle": "Title",
+      "fieldSlug": "Page address",
+      "slugHint": "Leave empty to generate it from the title. Lowercase letters, numbers and hyphens.",
+      "fieldExcerpt": "Summary (shown in the list and on social networks)",
+      "fieldContent": "Content",
+      "contentHint": "Separate paragraphs with a blank line. Start a line with \"##\" for a subheading, \"-\" for a list item.",
+      "fieldLanguage": "Language",
+      "fieldStatus": "Status",
+      "fieldCover": "Cover image",
+      "save": "Save",
+      "saving": "Saving…",
+      "saved": "Article saved.",
+      "cancel": "Back to the list",
+      "error": "Saving failed."
     }
   },
   "payment": {
@@ -655,5 +697,72 @@
         }
       ]
     }
+  },
+  "why": {
+    "title": "Why Emeraude Africa?",
+    "subtitle": "A platform designed for investing in African real estate, from Africa and from the diaspora.",
+    "reasons": [
+      {
+        "title": "Accessible",
+        "desc": "Invest from the minimum ticket set for each project, without having to buy a whole property."
+      },
+      {
+        "title": "Local payments",
+        "desc": "Mobile Money, Wave or bank card through licensed providers (CinetPay, PayDunya, Flutterwave, Stripe), or by bank transfer."
+      },
+      {
+        "title": "Vetted projects",
+        "desc": "Every submitted project is reviewed by our team before publication: documents, owner identity, guarantees and financial structure."
+      },
+      {
+        "title": "Transparency",
+        "desc": "Amount raised updated in real time, project documents, tracking of your investments and certificates in your account."
+      },
+      {
+        "title": "Security",
+        "desc": "Verified identity for every investor, payments confirmed directly with the provider, ID documents stored with restricted access."
+      },
+      {
+        "title": "Built for the diaspora",
+        "desc": "Site in French and English, payment by international card or transfer: invest in your home country, wherever you live."
+      }
+    ],
+    "processTitle": "How a project reaches the platform",
+    "steps": [
+      {
+        "title": "Application",
+        "desc": "The project owner presents the operation and its documents."
+      },
+      {
+        "title": "Review",
+        "desc": "Our team checks the documents, guarantees and announced returns."
+      },
+      {
+        "title": "Approval",
+        "desc": "Only selected projects are published; the others are declined with an explanation."
+      },
+      {
+        "title": "Funding and follow-up",
+        "desc": "Investors fund the project and follow its progress from their account."
+      }
+    ],
+    "riskTitle": "Investing involves risks",
+    "riskDesc": "Like any real estate investment, a project may face delays or difficulties: you may lose all or part of the capital invested, and your money is locked in for the duration of the project. Diversify your investments and only invest money you do not need in the short term.",
+    "riskLink": "Read the full risk warning",
+    "ctaTitle": "Ready to start?",
+    "ctaInvest": "Discover the projects",
+    "ctaFinance": "Fund a project"
+  },
+  "blog": {
+    "title": "News",
+    "subtitle": "African real estate market, investment tips and platform news.",
+    "readMore": "Read the article",
+    "empty": "No article published yet. Come back soon!",
+    "otherLanguage": "No article in your language yet: here are those available in another language.",
+    "back": "All news",
+    "publishedOn": "Published on {{date}}",
+    "by": "by {{author}}",
+    "loading": "Loading…",
+    "notFound": "This article does not exist or is no longer online."
   }
 }

@@ -55,6 +55,7 @@ const Header: React.FC = () => {
       <nav className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
         <Link to="/">{t('nav.home')}</Link>
         <Link to="/comment-ca-marche">{t('nav.howItWorks')}</Link>
+        <Link to="/pourquoi-emeraude">{t('nav.why')}</Link>
         <Link to="/investir">{t('nav.invest')}</Link>
         <Link to="/financer">{t('nav.finance')}</Link>
 
@@ -134,6 +135,8 @@ const Header: React.FC = () => {
           <Link to="/comment-ca-marche" onClick={() => setIsMobileMenuOpen(false)}>{t('nav.howItWorks')}</Link>
           <Link to="/investir" onClick={() => setIsMobileMenuOpen(false)}>{t('nav.invest')}</Link>
           <Link to="/financer" onClick={() => setIsMobileMenuOpen(false)}>{t('nav.finance')}</Link>
+          <Link to="/pourquoi-emeraude" onClick={() => setIsMobileMenuOpen(false)}>{t('nav.why')}</Link>
+          <Link to="/actualites" onClick={() => setIsMobileMenuOpen(false)}>{t('nav.blog')}</Link>
           
           <div style={{ margin: '1rem 0', borderTop: '1px solid #e2e8f0' }}></div>
 

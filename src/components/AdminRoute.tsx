@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Navigate, Outlet, Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, Users, Settings, User, LogOut, Menu, X, Banknote, MessageSquare, Inbox } from 'lucide-react';
+import { LayoutDashboard, Users, Settings, User, LogOut, Menu, X, Banknote, MessageSquare, Inbox, Newspaper } from 'lucide-react';
 
 const AdminRoute = () => {
   const { isAuthenticated, isAdmin, logout } = useAuth();
@@ -42,6 +42,7 @@ const AdminRoute = () => {
     { path: '/admin/projects', icon: <LayoutDashboard size={20} />, label: t('admin.nav.projects') },
     { path: '/admin/users', icon: <Users size={20} />, label: t('admin.nav.users') },
     { path: '/admin/leads', icon: <Inbox size={20} />, label: t('admin.nav.leads') },
+    { path: '/admin/posts', icon: <Newspaper size={20} />, label: t('admin.nav.posts') },
     { path: '/admin/profile', icon: <User size={20} />, label: t('admin.nav.profile') },
     { path: '/admin/support', icon: <MessageSquare size={20} />, label: t('admin.nav.support') },
     { path: '/admin/settings', icon: <Settings size={20} />, label: t('admin.nav.settings') },

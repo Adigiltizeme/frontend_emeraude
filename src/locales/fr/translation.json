@@ -9,7 +9,9 @@
     "contact": "Contact",
     "legal": "Mentions Légales",
     "register": "Inscription",
-    "dashboard": "Tableau de Bord"
+    "dashboard": "Tableau de Bord",
+    "why": "Pourquoi nous",
+    "blog": "Actualités"
   },
   "home": {
     "title": "Bâtissez votre patrimoine immobilier en Afrique, à partir de 10 000 FCFA.",
@@ -209,7 +211,9 @@
     "legalNotice": "Mentions légales",
     "terms": "CGU & CGV",
     "privacy": "Confidentialité",
-    "cookies": "Gérer les cookies"
+    "cookies": "Gérer les cookies",
+    "why": "Pourquoi Emeraude Africa",
+    "blog": "Actualités"
   },
   "register": {
     "title": "Créer un compte",
@@ -391,7 +395,8 @@
       "leads": "Demandes et prospects",
       "profile": "Mon profil",
       "support": "Support client",
-      "settings": "Paramètres du site"
+      "settings": "Paramètres du site",
+      "posts": "Actualités"
     },
     "leads": {
       "title": "Demandes et prospects",
@@ -423,6 +428,43 @@
         "SUPPORT": "Support technique",
         "OTHER": "Autre"
       }
+    },
+    "posts": {
+      "title": "Actualités",
+      "new": "Nouvel article",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "confirmDelete": "Supprimer définitivement cet article ?",
+      "view": "Voir en ligne",
+      "empty": "Aucun article. Créez le premier !",
+      "loading": "Chargement…",
+      "colTitle": "Titre",
+      "colLanguage": "Langue",
+      "colStatus": "Statut",
+      "colUpdated": "Modifié le",
+      "colActions": "Actions",
+      "statuses": {
+        "DRAFT": "Brouillon",
+        "PUBLISHED": "Publié"
+      },
+      "languages": {
+        "fr": "Français",
+        "en": "English"
+      },
+      "fieldTitle": "Titre",
+      "fieldSlug": "Adresse de la page",
+      "slugHint": "Laisser vide pour la générer à partir du titre. Lettres minuscules, chiffres et tirets.",
+      "fieldExcerpt": "Résumé (affiché dans la liste et sur les réseaux sociaux)",
+      "fieldContent": "Contenu",
+      "contentHint": "Séparez les paragraphes par une ligne vide. « ## » en début de ligne pour un intertitre, « - » pour un élément de liste.",
+      "fieldLanguage": "Langue",
+      "fieldStatus": "Statut",
+      "fieldCover": "Image de couverture",
+      "save": "Enregistrer",
+      "saving": "Enregistrement…",
+      "saved": "Article enregistré.",
+      "cancel": "Retour à la liste",
+      "error": "L'enregistrement a échoué."
     }
   },
   "payment": {
@@ -655,5 +697,72 @@
         }
       ]
     }
+  },
+  "why": {
+    "title": "Pourquoi Emeraude Africa ?",
+    "subtitle": "Une plateforme pensée pour investir dans l'immobilier africain, depuis l'Afrique comme depuis la diaspora.",
+    "reasons": [
+      {
+        "title": "Accessible",
+        "desc": "Investissez à partir du ticket minimum fixé pour chaque projet, sans avoir à acheter un bien entier."
+      },
+      {
+        "title": "Paiements locaux",
+        "desc": "Mobile Money, Wave ou carte bancaire via des prestataires agréés (CinetPay, PayDunya, Flutterwave, Stripe), ou par virement."
+      },
+      {
+        "title": "Projets étudiés",
+        "desc": "Chaque projet soumis est analysé par notre équipe avant publication : documents, identité du porteur, garanties et montage financier."
+      },
+      {
+        "title": "Transparence",
+        "desc": "Montant levé mis à jour en temps réel, documents du projet, suivi de vos investissements et attestations dans votre espace."
+      },
+      {
+        "title": "Sécurité",
+        "desc": "Identité vérifiée pour chaque investisseur, paiements confirmés directement auprès du prestataire, pièces d'identité stockées en accès restreint."
+      },
+      {
+        "title": "Pensé pour la diaspora",
+        "desc": "Site en français et en anglais, paiement par carte internationale ou par transfert : investissez dans votre pays d'origine, où que vous soyez."
+      }
+    ],
+    "processTitle": "Comment un projet arrive sur la plateforme",
+    "steps": [
+      {
+        "title": "Dépôt du dossier",
+        "desc": "Le porteur de projet présente son opération et ses documents."
+      },
+      {
+        "title": "Analyse",
+        "desc": "Notre équipe vérifie les documents, les garanties et la rentabilité annoncée."
+      },
+      {
+        "title": "Validation",
+        "desc": "Seuls les dossiers retenus sont publiés ; les autres sont refusés avec explication."
+      },
+      {
+        "title": "Collecte et suivi",
+        "desc": "Les investisseurs financent le projet et suivent son avancement depuis leur espace."
+      }
+    ],
+    "riskTitle": "Investir comporte des risques",
+    "riskDesc": "Comme tout investissement immobilier, un projet peut connaître des retards ou des difficultés : vous pouvez perdre tout ou partie du capital investi, et votre argent reste immobilisé pendant la durée du projet. Diversifiez vos investissements et n'investissez que des sommes dont vous n'avez pas besoin à court terme.",
+    "riskLink": "Lire l'avertissement complet",
+    "ctaTitle": "Prêt à commencer ?",
+    "ctaInvest": "Découvrir les projets",
+    "ctaFinance": "Financer un projet"
+  },
+  "blog": {
+    "title": "Actualités",
+    "subtitle": "Marché immobilier africain, conseils d'investissement et nouvelles de la plateforme.",
+    "readMore": "Lire l'article",
+    "empty": "Aucun article publié pour le moment. Revenez bientôt !",
+    "otherLanguage": "Aucun article dans votre langue pour le moment : voici ceux disponibles dans une autre langue.",
+    "back": "Toutes les actualités",
+    "publishedOn": "Publié le {{date}}",
+    "by": "par {{author}}",
+    "loading": "Chargement…",
+    "notFound": "Cet article n'existe pas ou n'est plus en ligne."
   }
 }

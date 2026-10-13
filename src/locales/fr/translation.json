@@ -419,7 +419,17 @@
       "colRole": "Rôle",
       "colDate": "Date d'inscription",
       "notProvided": "Non renseigné",
-      "noUsers": "Aucun utilisateur inscrit pour le moment."
+      "noUsers": "Aucun utilisateur inscrit pour le moment.",
+      "kycReasonPrompt": "Motif du refus, communiqué à l'utilisateur (ex. : photo illisible, document expiré) :",
+      "profileDone": "Complété le {{date}}",
+      "profileOk": "Profil non fragile",
+      "profileFragile": "Profil fragile (avertissement renforcé)",
+      "profileMissing": "Profil investisseur non complété.",
+      "reasons": {
+        "KNOWLEDGE": "connaissances insuffisantes",
+        "CONCENTRATION": "épargne concentrée",
+        "LOSS_CAPACITY": "perte non supportable"
+      }
     },
     "investments": {
       "title": "Gestion des investissements",
@@ -706,6 +716,14 @@
         "reflectionPeriodDays": {
           "label": "Délai de rétractation",
           "hint": "Nombre de jours pendant lesquels l'investisseur peut annuler sans frais (pratique européenne : 4 jours). 0 = non proposé."
+        },
+        "investorProfileRequired": {
+          "label": "Profil investisseur obligatoire",
+          "hint": "Test de connaissances et de capacité à supporter une perte exigé avant d'investir. Un profil fragile impose un avertissement renforcé."
+        },
+        "investorProfileValidityMonths": {
+          "label": "Validité du profil investisseur",
+          "hint": "Au-delà, l'investisseur doit répondre de nouveau aux questions (pratique européenne : 24 mois)."
         }
       }
     },
@@ -751,7 +769,9 @@
       "kyc": "Votre identité doit être vérifiée avant d'investir. Rendez-vous dans « Mon profil » pour envoyer vos documents.",
       "generic": "Une erreur est survenue. Réessayez dans quelques instants.",
       "maxAmount": "Le montant maximum par investissement est de {{max}}.",
-      "emailNotVerified": "Confirmez d'abord votre adresse e-mail : un lien vous a été envoyé à l'inscription. Vous pouvez le renvoyer depuis votre espace."
+      "emailNotVerified": "Confirmez d'abord votre adresse e-mail : un lien vous a été envoyé à l'inscription. Vous pouvez le renvoyer depuis votre espace.",
+      "profile": "Complétez d'abord votre profil investisseur (quelques questions).",
+      "riskWarning": "Votre profil investisseur impose d'accepter l'avertissement renforcé avant d'investir."
     },
     "manualSuccessTitle": "Demande enregistrée !",
     "manualSuccessDesc": "Notre équipe va vous contacter avec les instructions de paiement.",
@@ -786,7 +806,17 @@
     "feeLine": "Frais d'entrée ({{percent}} %)",
     "totalLine": "Total à payer",
     "transferInstructionsTitle": "Instructions de virement",
-    "reflection": "Vous pourrez vous rétracter sans frais pendant {{count}} jours après votre souscription."
+    "reflection": "Vous pourrez vous rétracter sans frais pendant {{count}} jours après votre souscription.",
+    "profile": {
+      "title": "Une dernière étape avant d'investir",
+      "expiredTitle": "Votre profil investisseur est à mettre à jour",
+      "text": "Répondez à 7 questions courtes sur votre connaissance des risques et votre capacité à supporter une perte. Vous reviendrez ensuite directement à ce projet.",
+      "cta": "Compléter mon profil investisseur"
+    },
+    "reinforced": {
+      "title": "Avertissement renforcé : ce placement est risqué pour vous",
+      "accept": "J'ai lu cet avertissement. Je comprends que je peux perdre tout ou partie de la somme investie et je confirme vouloir investir."
+    }
   },
   "newsletter": {
     "title": "Restez informé",
@@ -892,7 +922,8 @@
           "items": [
             "Risque de perte en capital : vous pouvez perdre tout ou partie des fonds investis.",
             "Risque d'illiquidité : les investissements sont bloqués pendant la durée du projet (généralement 12 à 36 mois). Il est très difficile, voire impossible, de revendre vos parts avant le terme.",
-            "Rendement : un rendement « fixe » est contractuel ; un rendement « cible » est un objectif non garanti."
+            "Rendement : un rendement « fixe » est contractuel ; un rendement « cible » est un objectif non garanti.",
+            "Profil investisseur : avant d'investir, l'utilisateur répond à un court questionnaire sur sa connaissance des risques et sa capacité à supporter une perte (à renouveler tous les {{investorProfileValidityMonths}} mois). Si le résultat montre que l'investissement est particulièrement risqué pour lui, un avertissement renforcé lui est présenté et doit être accepté avant chaque investissement. Ce questionnaire ne constitue pas un conseil en investissement."
           ],
           "after": [
             "Nous vous conseillons de ne jamais investir des fonds dont vous pourriez avoir un besoin immédiat et de diversifier vos investissements."
@@ -924,6 +955,7 @@
           "items": [
             "Données d'identification : nom, prénom, adresse e-mail, numéro de téléphone. Date de confirmation de l'adresse e-mail.",
             "Documents légaux (pièce d'identité, justificatif de domicile) dans le cadre de nos obligations de vérification (KYC). Ils sont stockés en accès restreint et consultables uniquement par notre équipe de conformité, via des liens temporaires.",
+            "Profil investisseur : vos réponses au questionnaire de connaissances et de capacité à supporter une perte, leur résultat et leur date. Elles servent uniquement à adapter les avertissements sur les risques et ne sont jamais communiquées à des tiers. Motif d'un éventuel refus de vos pièces d'identité. Notifications de votre espace (100 dernières au maximum).",
             "Données de transaction : historique d'investissement, moyen de paiement choisi, prestataire utilisé, références et statuts des paiements, ainsi qu'un journal horodaté des échanges avec ce prestataire (traçabilité et lutte contre la fraude). Nous ne stockons jamais vos numéros de carte bancaire ni vos codes Mobile Money : ils sont saisis directement chez nos prestataires de paiement (CinetPay, Wave, PayDunya, Flutterwave, Stripe).",
             "Preuves de consentement : date et heure d'acceptation des présentes conditions à l'inscription, et des Conditions Générales de Vente avant chaque investissement.",
             "Préférences : langue et choix de communication (e-mails facultatifs, lettre d'information), modifiables à tout moment dans « Mon profil ».",
@@ -1076,5 +1108,165 @@
     "confirm": "Confirmer la rétractation ? L'investissement sera annulé et, s'il est déjà payé, intégralement remboursé sans frais.",
     "done": "Rétractation enregistrée. Un e-mail de confirmation vous a été envoyé.",
     "error": "La rétractation n'a pas pu être enregistrée."
+  },
+  "kyc": {
+    "reason": "Motif :",
+    "status": {
+      "UNVERIFIED": {
+        "label": "Identité non vérifiée",
+        "description": "Envoyez une pièce d'identité en cours de validité (passeport, ou carte d'identité recto et verso). La vérification prend en général moins de 48 heures ouvrées."
+      },
+      "PENDING": {
+        "label": "Vérification en cours",
+        "description": "Vos documents ont bien été reçus. Notre équipe les vérifie, en général sous 48 heures ouvrées : vous serez prévenu par e-mail et dans votre espace."
+      },
+      "VERIFIED": {
+        "label": "Identité vérifiée",
+        "description": "Vous pouvez investir dans tous les projets en collecte."
+      },
+      "REJECTED": {
+        "label": "Documents refusés",
+        "description": "Vos documents n'ont pas pu être validés. Corrigez le point indiqué puis envoyez de nouveaux documents."
+      }
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "open": "Ouvrir les notifications",
+    "markAll": "Tout marquer comme lu",
+    "empty": "Aucune notification pour le moment.",
+    "types": {
+      "INVESTMENT_VALIDATED": "Votre investissement de {{amount}} dans « {{project}} » est validé.",
+      "INVESTMENT_REJECTED": "Votre investissement de {{amount}} dans « {{project}} » n'a pas été validé.",
+      "INVESTMENT_CANCELLED": "Votre investissement de {{amount}} dans « {{project}} » a été annulé.",
+      "REFUND_PENDING": "{{amount}} vous seront remboursés pour « {{project}} ».",
+      "REFUNDED": "Remboursement de {{amount}} effectué pour « {{project}} ».",
+      "PAYMENT_FAILED": "Le paiement de {{amount}} pour « {{project}} » n'a pas abouti. Vous pouvez le reprendre depuis votre espace.",
+      "KYC_VERIFIED": "Votre identité est vérifiée : vous pouvez investir.",
+      "KYC_REJECTED": "Vos pièces d'identité n'ont pas été validées. Consultez le motif dans « Mon profil ».",
+      "PROJECT_STATUS": "Votre projet « {{project}} » est passé au statut « {{status}} ».",
+      "SUPPORT_REPLY": "L'équipe a répondu à votre demande « {{subject}} ».",
+      "DEFAULT": "Nouvelle notification."
+    },
+    "openUnread_one": "Ouvrir les notifications ({{count}} non lue)",
+    "openUnread_other": "Ouvrir les notifications ({{count}} non lues)"
+  },
+  "onboarding": {
+    "title": "Bien démarrer",
+    "progress": "{{done}} étape(s) sur {{total}}",
+    "done": "Étape terminée",
+    "profileExpired": "Votre profil investisseur date de plus de deux ans : merci de répondre de nouveau aux questions, votre situation a pu changer.",
+    "steps": {
+      "email": {
+        "title": "Confirmer votre adresse e-mail",
+        "description": "Cliquez sur le lien reçu à l'inscription (pensez aux courriers indésirables)."
+      },
+      "identity": {
+        "title": "Vérifier votre identité",
+        "description": "Obligatoire pour investir : une pièce d'identité suffit."
+      },
+      "profile": {
+        "title": "Compléter votre profil investisseur",
+        "description": "7 questions, 2 minutes : elles nous permettent de vous avertir si un investissement présente un risque élevé pour vous."
+      },
+      "invest": {
+        "title": "Réaliser votre premier investissement",
+        "description": "Parcourez les projets en collecte et investissez dès le ticket minimum."
+      }
+    },
+    "actions": {
+      "identity": "Envoyer mes documents",
+      "profile": "Répondre aux questions",
+      "profileRenew": "Mettre à jour mon profil",
+      "invest": "Découvrir les projets"
+    }
+  },
+  "investorProfile": {
+    "title": "Profil investisseur",
+    "intro": "Quelques questions pour vérifier que vous connaissez les risques du financement participatif et que vous pouvez supporter une perte. Il n'y a pas de piège : vos réponses servent à vous protéger.",
+    "validity_one": "Le profil est valable {{count}} mois.",
+    "validity_other": "Le profil est valable {{count}} mois.",
+    "incomplete": "Merci de répondre à toutes les questions.",
+    "error": "Vos réponses n'ont pas pu être enregistrées. Réessayez dans quelques instants.",
+    "privacy": "Vos réponses sont confidentielles : elles servent uniquement à adapter nos avertissements et sont conservées avec votre compte (voir la politique de confidentialité).",
+    "saving": "Enregistrement…",
+    "submit": "Enregistrer mes réponses",
+    "cancel": "Annuler",
+    "redo": "Répondre de nouveau",
+    "view": "Voir mon profil investisseur",
+    "summaryValid": "Profil à jour jusqu'au {{date}}.",
+    "backToProject": "Revenir au projet",
+    "toDashboard": "Aller à mon espace",
+    "result": {
+      "okTitle": "Profil complété",
+      "okText": "Vos réponses montrent une bonne compréhension des risques. Vous pouvez investir.",
+      "fragileTitle": "Profil complété : prudence recommandée",
+      "fragileIntro": "Vous pouvez investir, mais un avertissement renforcé vous sera présenté et devra être accepté avant chaque investissement, pour les raisons suivantes :",
+      "score": "Connaissances : {{score}}/{{max}}",
+      "dates": "Complété le {{completed}}, valable jusqu'au {{expires}}"
+    },
+    "reasons": {
+      "KNOWLEDGE": "Certaines réponses montrent que les risques (perte en capital, argent bloqué, rendement non garanti) ne sont pas encore bien connus : relisez la FAQ et l'avertissement sur les risques.",
+      "CONCENTRATION": "Vous envisagez d'y placer plus d'un quart de votre épargne : il est recommandé de diversifier.",
+      "LOSS_CAPACITY": "Une perte de ces sommes affecterait votre niveau de vie : n'investissez que de l'argent dont vous n'aurez pas besoin."
+    },
+    "questions": {
+      "experience": {
+        "label": "Avez-vous déjà réalisé des placements (actions, immobilier, tontine, financement participatif…) ?",
+        "options": {
+          "NONE": "Jamais",
+          "SOME": "Quelques fois",
+          "EXPERIENCED": "Régulièrement"
+        }
+      },
+      "canLoseCapital": {
+        "label": "En investissant dans un projet immobilier, pouvez-vous perdre tout ou partie de la somme investie ?",
+        "options": {
+          "YES": "Oui",
+          "NO": "Non",
+          "UNSURE": "Je ne sais pas"
+        }
+      },
+      "canWithdrawAnytime": {
+        "label": "Pouvez-vous récupérer votre argent à tout moment, avant la fin du projet ?",
+        "options": {
+          "YES": "Oui",
+          "NO": "Non",
+          "UNSURE": "Je ne sais pas"
+        }
+      },
+      "returnGuaranteed": {
+        "label": "Le rendement annoncé d'un projet est-il garanti dans tous les cas ?",
+        "options": {
+          "YES": "Oui",
+          "NO": "Non",
+          "UNSURE": "Je ne sais pas"
+        }
+      },
+      "diversify": {
+        "label": "Vaut-il mieux répartir son épargne entre plusieurs projets plutôt que tout placer dans un seul ?",
+        "options": {
+          "YES": "Oui",
+          "NO": "Non",
+          "UNSURE": "Je ne sais pas"
+        }
+      },
+      "savingsShare": {
+        "label": "Quelle part de votre épargne disponible envisagez-vous de placer sur la plateforme ?",
+        "options": {
+          "LT10": "Moins de 10 %",
+          "10TO25": "Entre 10 et 25 %",
+          "GT25": "Plus de 25 %"
+        }
+      },
+      "lossAffectsLiving": {
+        "label": "Si vous perdiez cette somme, votre niveau de vie (logement, dépenses courantes) en serait-il affecté ?",
+        "options": {
+          "YES": "Oui",
+          "NO": "Non"
+        }
+      }
+    },
+    "limit": "Vous avez déjà répondu plusieurs fois aujourd'hui. Vous pourrez répondre de nouveau demain."
   }
 }

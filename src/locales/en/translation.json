@@ -419,7 +419,17 @@
       "colRole": "Role",
       "colDate": "Registration Date",
       "notProvided": "Not provided",
-      "noUsers": "No registered users at the moment."
+      "noUsers": "No registered users at the moment.",
+      "kycReasonPrompt": "Reason for rejection, shown to the user (e.g. unreadable photo, expired document):",
+      "profileDone": "Completed on {{date}}",
+      "profileOk": "Not a vulnerable profile",
+      "profileFragile": "Vulnerable profile (stronger warning)",
+      "profileMissing": "Investor profile not completed.",
+      "reasons": {
+        "KNOWLEDGE": "insufficient knowledge",
+        "CONCENTRATION": "concentrated savings",
+        "LOSS_CAPACITY": "cannot bear a loss"
+      }
     },
     "investments": {
       "title": "Investment management",
@@ -706,6 +716,14 @@
         "reflectionPeriodDays": {
           "label": "Withdrawal period",
           "hint": "Number of days during which the investor can cancel at no cost (European practice: 4 days). 0 = not offered."
+        },
+        "investorProfileRequired": {
+          "label": "Investor profile required",
+          "hint": "Knowledge and loss-capacity test required before investing. A vulnerable profile triggers a stronger risk warning."
+        },
+        "investorProfileValidityMonths": {
+          "label": "Investor profile validity",
+          "hint": "After this, the investor must answer the questions again (European practice: 24 months)."
         }
       }
     },
@@ -751,7 +769,9 @@
       "kyc": "Your identity must be verified before investing. Go to \"My profile\" to upload your documents.",
       "generic": "Something went wrong. Please try again shortly.",
       "maxAmount": "The maximum amount per investment is {{max}}.",
-      "emailNotVerified": "Please confirm your email address first: a link was sent when you signed up. You can resend it from your account."
+      "emailNotVerified": "Please confirm your email address first: a link was sent when you signed up. You can resend it from your account.",
+      "profile": "Please complete your investor profile first (a few questions).",
+      "riskWarning": "Your investor profile requires you to accept the stronger risk warning before investing."
     },
     "manualSuccessTitle": "Request received!",
     "manualSuccessDesc": "Our team will contact you with the payment instructions.",
@@ -786,7 +806,17 @@
     "feeLine": "Entry fee ({{percent}}%)",
     "totalLine": "Total to pay",
     "transferInstructionsTitle": "Transfer instructions",
-    "reflection": "You can withdraw at no cost for {{count}} days after subscribing."
+    "reflection": "You can withdraw at no cost for {{count}} days after subscribing.",
+    "profile": {
+      "title": "One last step before investing",
+      "expiredTitle": "Your investor profile needs updating",
+      "text": "Answer 7 short questions about your understanding of the risks and your ability to bear a loss. You will then come straight back to this project.",
+      "cta": "Complete my investor profile"
+    },
+    "reinforced": {
+      "title": "Stronger warning: this investment is risky for you",
+      "accept": "I have read this warning. I understand I may lose some or all of the amount invested and I confirm I want to invest."
+    }
   },
   "newsletter": {
     "title": "Stay informed",
@@ -892,7 +922,8 @@
           "items": [
             "Risk of capital loss: you may lose all or part of the funds invested.",
             "Illiquidity risk: investments are locked in for the duration of the project (generally 12 to 36 months). It is very difficult, or even impossible, to sell your shares before maturity.",
-            "Return: a \"fixed\" return is contractual; a \"target\" return is an objective that is not guaranteed."
+            "Return: a \"fixed\" return is contractual; a \"target\" return is an objective that is not guaranteed.",
+            "Investor profile: before investing, users answer a short questionnaire about their understanding of the risks and their ability to bear a loss (to be renewed every {{investorProfileValidityMonths}} months). If the result shows the investment is particularly risky for them, a stronger warning is shown and must be accepted before each investment. This questionnaire does not constitute investment advice."
           ],
           "after": [
             "We advise you never to invest money you may need in the short term and to diversify your investments."
@@ -924,6 +955,7 @@
           "items": [
             "Identification data: last name, first name, email address, phone number. Date on which the email address was confirmed.",
             "Legal documents (ID document, proof of address) as part of our verification obligations (KYC). They are stored with restricted access and can only be viewed by our compliance team, through temporary links.",
+            "Investor profile: your answers to the knowledge and loss-capacity questionnaire, their result and date. They are only used to tailor risk warnings and are never shared with third parties. The reason your ID documents were rejected, if applicable. Notifications in your dashboard (the latest 100 at most).",
             "Transaction data: investment history, chosen payment method, provider used, payment references and statuses, and a time-stamped log of exchanges with that provider (traceability and fraud prevention). We never store your card numbers or Mobile Money codes: they are entered directly with our payment providers (CinetPay, Wave, PayDunya, Flutterwave, Stripe).",
             "Proof of consent: date and time you accepted these terms when signing up, and the Terms and Conditions of Sale before each investment.",
             "Preferences: language and communication choices (optional emails, newsletter), editable at any time in \"My profile\".",
@@ -1076,5 +1108,165 @@
     "confirm": "Confirm the withdrawal? The investment will be cancelled and, if already paid, refunded in full at no cost.",
     "done": "Withdrawal recorded. A confirmation email has been sent to you.",
     "error": "The withdrawal could not be recorded."
+  },
+  "kyc": {
+    "reason": "Reason:",
+    "status": {
+      "UNVERIFIED": {
+        "label": "Identity not verified",
+        "description": "Upload a valid ID document (passport, or ID card front and back). Verification usually takes less than 48 business hours."
+      },
+      "PENDING": {
+        "label": "Verification in progress",
+        "description": "We have received your documents. Our team is reviewing them, usually within 48 business hours: you will be notified by e-mail and in your dashboard."
+      },
+      "VERIFIED": {
+        "label": "Identity verified",
+        "description": "You can invest in every project currently raising funds."
+      },
+      "REJECTED": {
+        "label": "Documents rejected",
+        "description": "Your documents could not be approved. Fix the issue below and upload new documents."
+      }
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "open": "Open notifications",
+    "markAll": "Mark all as read",
+    "empty": "No notifications yet.",
+    "types": {
+      "INVESTMENT_VALIDATED": "Your {{amount}} investment in “{{project}}” has been confirmed.",
+      "INVESTMENT_REJECTED": "Your {{amount}} investment in “{{project}}” was not approved.",
+      "INVESTMENT_CANCELLED": "Your {{amount}} investment in “{{project}}” has been cancelled.",
+      "REFUND_PENDING": "{{amount}} will be refunded to you for “{{project}}”.",
+      "REFUNDED": "{{amount}} has been refunded for “{{project}}”.",
+      "PAYMENT_FAILED": "Your {{amount}} payment for “{{project}}” did not go through. You can resume it from your dashboard.",
+      "KYC_VERIFIED": "Your identity is verified: you can now invest.",
+      "KYC_REJECTED": "Your ID documents were not approved. See the reason in “My profile”.",
+      "PROJECT_STATUS": "Your project “{{project}}” is now “{{status}}”.",
+      "SUPPORT_REPLY": "Our team replied to your request “{{subject}}”.",
+      "DEFAULT": "New notification."
+    },
+    "openUnread_one": "Open notifications ({{count}} unread)",
+    "openUnread_other": "Open notifications ({{count}} unread)"
+  },
+  "onboarding": {
+    "title": "Getting started",
+    "progress": "{{done}} of {{total}} steps",
+    "done": "Step completed",
+    "profileExpired": "Your investor profile is more than two years old: please answer the questions again, as your situation may have changed.",
+    "steps": {
+      "email": {
+        "title": "Confirm your e-mail address",
+        "description": "Click the link we sent when you signed up (check your spam folder)."
+      },
+      "identity": {
+        "title": "Verify your identity",
+        "description": "Required to invest: one ID document is enough."
+      },
+      "profile": {
+        "title": "Complete your investor profile",
+        "description": "7 questions, 2 minutes: they let us warn you when an investment is high-risk for you."
+      },
+      "invest": {
+        "title": "Make your first investment",
+        "description": "Browse the projects raising funds and invest from the minimum ticket."
+      }
+    },
+    "actions": {
+      "identity": "Upload my documents",
+      "profile": "Answer the questions",
+      "profileRenew": "Update my profile",
+      "invest": "Browse projects"
+    }
+  },
+  "investorProfile": {
+    "title": "Investor profile",
+    "intro": "A few questions to check that you understand the risks of crowdfunding and can bear a loss. There are no trick questions: your answers are used to protect you.",
+    "validity_one": "The profile is valid for {{count}} month.",
+    "validity_other": "The profile is valid for {{count}} months.",
+    "incomplete": "Please answer every question.",
+    "error": "Your answers could not be saved. Please try again shortly.",
+    "privacy": "Your answers are confidential: they are only used to tailor our warnings and are kept with your account (see the privacy policy).",
+    "saving": "Saving…",
+    "submit": "Save my answers",
+    "cancel": "Cancel",
+    "redo": "Answer again",
+    "view": "View my investor profile",
+    "summaryValid": "Profile up to date until {{date}}.",
+    "backToProject": "Back to the project",
+    "toDashboard": "Go to my dashboard",
+    "result": {
+      "okTitle": "Profile completed",
+      "okText": "Your answers show a good understanding of the risks. You can invest.",
+      "fragileTitle": "Profile completed: caution advised",
+      "fragileIntro": "You can invest, but a stronger risk warning will be shown and must be accepted before each investment, for the following reasons:",
+      "score": "Knowledge: {{score}}/{{max}}",
+      "dates": "Completed on {{completed}}, valid until {{expires}}"
+    },
+    "reasons": {
+      "KNOWLEDGE": "Some answers show the risks (capital loss, locked-in money, non-guaranteed return) are not yet well understood: please read the FAQ and the risk warning.",
+      "CONCENTRATION": "You plan to invest more than a quarter of your savings: diversification is recommended.",
+      "LOSS_CAPACITY": "Losing this money would affect your standard of living: only invest money you will not need."
+    },
+    "questions": {
+      "experience": {
+        "label": "Have you invested before (shares, real estate, savings clubs, crowdfunding…)?",
+        "options": {
+          "NONE": "Never",
+          "SOME": "A few times",
+          "EXPERIENCED": "Regularly"
+        }
+      },
+      "canLoseCapital": {
+        "label": "When investing in a real estate project, can you lose some or all of the amount invested?",
+        "options": {
+          "YES": "Yes",
+          "NO": "No",
+          "UNSURE": "I don't know"
+        }
+      },
+      "canWithdrawAnytime": {
+        "label": "Can you get your money back at any time, before the project ends?",
+        "options": {
+          "YES": "Yes",
+          "NO": "No",
+          "UNSURE": "I don't know"
+        }
+      },
+      "returnGuaranteed": {
+        "label": "Is a project's announced return guaranteed in every case?",
+        "options": {
+          "YES": "Yes",
+          "NO": "No",
+          "UNSURE": "I don't know"
+        }
+      },
+      "diversify": {
+        "label": "Is it better to spread your savings across several projects rather than putting everything into one?",
+        "options": {
+          "YES": "Yes",
+          "NO": "No",
+          "UNSURE": "I don't know"
+        }
+      },
+      "savingsShare": {
+        "label": "What share of your available savings do you plan to invest on the platform?",
+        "options": {
+          "LT10": "Less than 10%",
+          "10TO25": "Between 10 and 25%",
+          "GT25": "More than 25%"
+        }
+      },
+      "lossAffectsLiving": {
+        "label": "If you lost this money, would your standard of living (housing, everyday expenses) be affected?",
+        "options": {
+          "YES": "Yes",
+          "NO": "No"
+        }
+      }
+    },
+    "limit": "You have already answered several times today. You can answer again tomorrow."
   }
 }

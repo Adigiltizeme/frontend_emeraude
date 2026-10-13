@@ -1,5 +1,5 @@
-﻿import { useState, useEffect, useCallback } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useSocket } from '../context/SocketContext';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, MapPin, TrendingUp, Clock, AlertTriangle, FileText, Download, CheckCircle } from 'lucide-react';
@@ -21,6 +21,13 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
   const [loading, setLoading] = useState(true);
   const { isAuthenticated, token } = useAuth();
   const [showInvestForm, setShowInvestForm] = useState(false);
+  // Retour du test de profil investisseur (?investir=1) : la fenêtre d'investissement se rouvre.
+  const [searchParams, setSearchParams] = useSearchParams();
+  useEffect(() => {
+    if (searchParams.get('investir') !== '1' || isPreview) return;
+    if (isAuthenticated) setShowInvestForm(true);
+    setSearchParams({}, { replace: true });
+  }, [searchParams, setSearchParams, isAuthenticated, isPreview]);
   const [investSuccess, setInvestSuccess] = useState(false);
   const [transferInstructions, setTransferInstructions] = useState('');
   const [showInvestorsList, setShowInvestorsList] = useState(false);

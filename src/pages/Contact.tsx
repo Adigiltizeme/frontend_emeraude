@@ -5,6 +5,7 @@ import { Mail, Phone, MapPin, CheckCircle } from 'lucide-react';
 import { useSiteSettings } from '../context/SettingsContext';
 import { API_URL } from '../config/api';
 import { usePageMeta } from '../hooks/usePageMeta';
+import { fieldStyle } from '../config/formStyles';
 
 const SUBJECTS = [
   { value: 'INVEST', label: 'contact.optInvest' },
@@ -57,7 +58,7 @@ const Contact = () => {
     }
   };
 
-  const inputStyle = { width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-neutral-400)' };
+  const inputStyle = fieldStyle;
   const labelStyle = { display: 'block', marginBottom: '0.5rem', fontWeight: 500 } as const;
 
   return (

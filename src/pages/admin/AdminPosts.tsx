@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { API_URL, authHeaders } from '../../config/api';
+import { fieldStyle } from '../../config/formStyles';
 
 interface Post {
   id: string;
@@ -96,7 +97,7 @@ const AdminPosts = () => {
     if (res.ok) setPosts((prev) => prev.filter((p) => p.id !== post.id));
   };
 
-  const field = { width: '100%', padding: '0.7rem', borderRadius: '8px', border: '1px solid var(--color-neutral-300)', fontSize: '0.95rem', fontFamily: 'inherit' };
+  const field = fieldStyle;
   const label = { display: 'block', fontWeight: 600, color: '#475569', marginBottom: '0.4rem' } as const;
   const hint = { display: 'block', fontSize: '0.8rem', color: 'var(--color-neutral-500)', marginTop: '0.25rem' } as const;
 

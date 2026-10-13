@@ -39,6 +39,7 @@ const LegalPage = ({ page }: { page: 'notice' | 'terms' | 'privacy' }) => {
     commission: settings.projectCommissionPercent,
     submissionFee: formatMoney(settings.projectSubmissionFee, i18n.language),
     threshold: settings.successThresholdPercent,
+    investorProfileValidityMonths: settings.investorProfileValidityMonths,
   };
   const sections = t(`legalPages.${page}.sections`, { returnObjects: true, ...values }) as LegalSection[];
   const revision = new Date(`${LEGAL_REVISION}T00:00:00`).toLocaleDateString(i18n.language, { day: 'numeric', month: 'long', year: 'numeric' });

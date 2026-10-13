@@ -33,6 +33,8 @@ export interface SiteSettings {
   successThresholdPercent: number;
   requireEmailVerification: boolean;
   reflectionPeriodDays: number;
+  investorProfileRequired: boolean;
+  investorProfileValidityMonths: number;
 }
 
 /** Chiffres publics calculés à partir des projets (ticket le plus accessible, collecte…). */
@@ -74,6 +76,8 @@ const defaultSettings: SiteSettings = {
   successThresholdPercent: 100,
   requireEmailVerification: true,
   reflectionPeriodDays: 4,
+  investorProfileRequired: true,
+  investorProfileValidityMonths: 24,
 };
 
 interface SettingsContextType {

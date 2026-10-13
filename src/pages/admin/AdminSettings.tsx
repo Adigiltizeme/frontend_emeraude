@@ -4,6 +4,7 @@ import { ArrowDown, ArrowUp, Save, Undo2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useSiteSettings } from '../../context/SettingsContext';
 import { API_URL, authHeaders } from '../../config/api';
+import { compactFieldStyle } from '../../config/formStyles';
 
 type Value = string | number | boolean | string[];
 
@@ -108,7 +109,7 @@ const AdminSettings = () => {
     }
   };
 
-  const field = { width: '100%', padding: '0.65rem 0.8rem', borderRadius: '8px', border: '1px solid var(--color-neutral-300)', fontSize: '0.95rem', fontFamily: 'inherit', backgroundColor: 'white' };
+  const field = compactFieldStyle;
 
   const renderInput = (def: Definition) => {
     const value = draft[def.key];

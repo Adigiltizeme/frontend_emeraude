@@ -47,6 +47,7 @@ import UserProfile from './pages/UserProfile';
 import UserRoute from './components/UserRoute';
 import Header from './components/Header';
 import InteractiveBackground from './components/InteractiveBackground';
+import InvestorProfile from './pages/InvestorProfile';
 
 function App() {
   const { t } = useTranslation();
@@ -77,6 +78,7 @@ function App() {
                 <Route path="/mon-compte" element={<UserDashboard />} />
                 <Route path="/mon-profil" element={<UserProfile />} />
                 <Route path="/paiement/retour" element={<PaymentReturn />} />
+                <Route path="/profil-investisseur" element={<InvestorProfile />} />
               </Route>
 
               <Route path="/investir" element={<Invest />} />

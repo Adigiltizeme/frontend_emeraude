@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { API_URL } from '../config/api';
+import { compactFieldStyle } from '../config/formStyles';
 
 /** Capture de prospects : inscription à la lettre d'information (consentement explicite). */
 const NewsletterSignup = () => {
@@ -57,7 +58,7 @@ const NewsletterSignup = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t('newsletter.placeholder')}
-              style={{ flex: '1 1 220px', padding: '0.6rem 0.75rem', borderRadius: '6px', border: '1px solid var(--color-neutral-300)', color: 'var(--color-neutral-800)' }}
+              style={{ ...compactFieldStyle, flex: '1 1 220px', width: 'auto' }}
             />
             <button type="submit" className="btn btn-primary" disabled={state === 'sending'} style={{ padding: '0.6rem 1.25rem' }}>
               {t('newsletter.button')}

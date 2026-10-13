@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Bell } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { API_URL, authHeaders } from '../config/api';
+import { compactFieldStyle } from '../config/formStyles';
 
 interface Preferences {
   emailSupportReplies: boolean;
@@ -68,7 +69,7 @@ const PreferencesPanel = () => {
         ))}
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
           <span style={{ fontWeight: 600 }}>{t('preferences.language')}</span>
-          <select value={prefs.locale} onChange={(e) => update({ locale: e.target.value as 'fr' | 'en' })} style={{ padding: '0.45rem 0.6rem', borderRadius: '6px', border: '1px solid var(--color-neutral-300)' }}>
+          <select value={prefs.locale} onChange={(e) => update({ locale: e.target.value as 'fr' | 'en' })} style={{ ...compactFieldStyle, width: 'auto' }}>
             <option value="fr">Français</option>
             <option value="en">English</option>
           </select>

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { LayoutDashboard, User, LogOut, ChevronDown } from 'lucide-react';
 import { Menu, X } from 'lucide-react';
+import NotificationBell from './NotificationBell';
 
 const Header: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -64,6 +65,8 @@ const Header: React.FC = () => {
             Espace Utilisateur
           </Link>
         )}
+
+        {token && user && !isMobileMenuOpen && <NotificationBell />}
 
         {token && user && (
           <div style={{ position: 'relative' }} ref={dropdownRef}>
@@ -139,6 +142,10 @@ const Header: React.FC = () => {
           <Link to="/actualites" onClick={() => setIsMobileMenuOpen(false)}>{t('nav.blog')}</Link>
           
           <div style={{ margin: '1rem 0', borderTop: '1px solid #e2e8f0' }}></div>
+
+          {token && user && isMobileMenuOpen && (
+            <div style={{ marginBottom: '0.75rem' }}><NotificationBell compact onNavigate={() => setIsMobileMenuOpen(false)} /></div>
+          )}
 
           {!token ? (
             <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="btn btn-primary" style={{ textAlign: 'center', padding: '0.75rem', color: 'white' }}>

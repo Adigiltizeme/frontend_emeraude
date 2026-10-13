@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { API_URL, authHeaders, formatMoney } from '../config/api';
 import { useLiveRefresh } from '../hooks/useLiveRefresh';
@@ -9,6 +9,7 @@ import { Building2, FileText, Settings, Lightbulb, Clock, CheckCircle, XCircle, 
 import { UserSupport } from '../components/support/UserSupport';
 import { jsPDF } from "jspdf";
 import { useSiteSettings } from '../context/SettingsContext';
+import OnboardingChecklist from '../components/OnboardingChecklist';
 
 
 const generatePDF = (inv: any, user: any) => {
@@ -185,9 +186,19 @@ const UserDashboard = () => {
   const pendingPayments = investments.filter(inv => inv.status === 'PENDING' && inv.payments?.[0] && inv.payments[0].status !== 'SUCCEEDED');
 
   // L'utilisateur démarre sur l'onglet correspondant à son intention initiale, mais peut basculer
+  const [searchParams, setSearchParams] = useSearchParams();
+  const requestedTab = searchParams.get('onglet');
   const [activeTab, setActiveTab] = useState<'investments' | 'projects' | 'support'>(
-    user?.intention === 'Porteur de projet' ? 'projects' : 'investments'
+    requestedTab === 'support' ? 'support' : requestedTab === 'projets' ? 'projects' : user?.intention === 'Porteur de projet' ? 'projects' : 'investments'
   );
+  // Lien d'une notification vers un autre onglet alors que l'espace est déjà ouvert.
+  useEffect(() => {
+    if (!requestedTab) return;
+    if (requestedTab === 'support') setActiveTab('support');
+    else if (requestedTab === 'projets') setActiveTab('projects');
+    // Retiré de l'adresse : un nouveau lien vers le même onglet rebasculera après un changement manuel.
+    setSearchParams({}, { replace: true });
+  }, [requestedTab, setSearchParams]);
 
   useEffect(() => {
     if (token) {
@@ -396,6 +407,10 @@ const UserDashboard = () => {
           Bienvenue sur votre espace personnel Emeraude Africa.
         </p>
       </div>
+
+      {showInvestorTab && !loadingInvestments && (
+        <OnboardingChecklist hasInvestment={investments.some(inv => ['VALIDATED', 'CONFIRMED'].includes(inv.status))} />
+      )}
 
       {/* TABS CONTROLLER (Uniquement si les deux sont pertinents) */}
       {showTabsHeader && (

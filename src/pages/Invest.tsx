@@ -7,6 +7,7 @@ import { useLiveRefresh } from '../hooks/useLiveRefresh';
 import { API_URL, formatMoney } from '../config/api';
 import { usePageMeta } from '../hooks/usePageMeta';
 import { useMinTicket } from '../hooks/useMinTicket';
+import { compactFieldStyle } from '../config/formStyles';
 import {
   CatalogFilters, CatalogProject, EMPTY_FILTERS, SORTS, activeFilterCount, countryOf, distinctValues,
   filterProjects, filtersFromParams, filtersToParams, progressOf,
@@ -77,7 +78,7 @@ const Invest = () => {
     return <div style={{ padding: '4rem', textAlign: 'center', minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', color: '#475569' }}>{t('invest.loading')}</div>;
   }
 
-  const field = { width: '100%', padding: '0.6rem 0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-neutral-300)', backgroundColor: 'white', fontSize: '0.9rem' };
+  const field = compactFieldStyle;
   const label = { display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-neutral-600)', marginBottom: '0.35rem' } as const;
 
   const select = (id: string, text: string, value: string, values: string[], onChange: (v: string) => void) => (

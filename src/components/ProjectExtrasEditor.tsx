@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Plus, Trash2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { API_URL, authHeaders } from '../config/api';
+import { fieldStyle } from '../config/formStyles';
 
 export interface ProjectExtras {
   videoUrl: string;
@@ -21,7 +22,7 @@ interface Props {
   onNewPhotos: (files: File[]) => void;
 }
 
-const field = { width: '100%', padding: '0.65rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-neutral-400)', backgroundColor: 'white', fontFamily: 'inherit' };
+const field = fieldStyle;
 const label = { display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: 'var(--color-neutral-800)' } as const;
 const smallButton = { display: 'inline-flex', alignItems: 'center', gap: '0.3rem', padding: '0.35rem 0.75rem', fontSize: '0.85rem' };
 

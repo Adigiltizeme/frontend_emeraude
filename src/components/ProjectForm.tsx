@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Upload } from 'lucide-react';
 import ProjectExtrasEditor, { ProjectExtras } from './ProjectExtrasEditor';
+import { fieldStyle } from '../config/formStyles';
 
 /** Date ISO → « AAAA-MM-JJ » dans le fuseau de l'utilisateur (valeur d'un champ date). */
 const toLocalDateInput = (iso: string) => {
@@ -127,7 +128,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSubmit, onPrev
     }
   };
 
-  const inputStyle = { width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-neutral-400)', backgroundColor: 'white' };
+  const inputStyle = fieldStyle;
   const labelStyle = { display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: 'var(--color-neutral-800)' };
 
   return (

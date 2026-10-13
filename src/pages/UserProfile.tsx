@@ -4,10 +4,13 @@ import { Save, User as UserIcon, Lock, ShieldCheck, Upload } from 'lucide-react'
 import PreferencesPanel from '../components/PreferencesPanel';
 import { useTranslation } from 'react-i18next';
 import { EMAIL_CHANGED_EVENT } from '../components/EmailVerificationBanner';
+import { Link, useLocation } from 'react-router-dom';
+import KycStatusNotice from '../components/KycStatusNotice';
+import { useInvestorProfile } from '../hooks/useInvestorProfile';
 
 const UserProfile: React.FC = () => {
   const { token, user, login } = useAuth();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   
   const [formData, setFormData] = useState({
     firstName: '',
@@ -20,7 +23,9 @@ const UserProfile: React.FC = () => {
   });
   
   const [loading, setLoading] = useState(true);
-  const [kycData, setKycData] = useState<{status: string, url: string | null}>({ status: 'UNVERIFIED', url: null });
+  const [kycData, setKycData] = useState<{status: string, url: string | null, reason?: string | null}>({ status: 'UNVERIFIED', url: null });
+  const { profile: investorProfile } = useInvestorProfile();
+  const location = useLocation();
   const [kycDocType, setKycDocType] = useState('PASSPORT');
   const [kycFile1, setKycFile1] = useState<File | null>(null);
   const [kycFile2, setKycFile2] = useState<File | null>(null);
@@ -44,7 +49,7 @@ const UserProfile: React.FC = () => {
               phone: me.phone || '',
               email: me.email || ''
             }));
-            setKycData({ status: me.kycStatus || 'UNVERIFIED', url: me.idDocumentUrl || null });
+            setKycData({ status: me.kycStatus || 'UNVERIFIED', url: me.idDocumentUrl || null, reason: me.kycRejectionReason });
           }
         }
       } catch (err) {
@@ -55,6 +60,11 @@ const UserProfile: React.FC = () => {
     };
     if (token) fetchProfile();
   }, [token, user]);
+
+  // Lien « #kyc » (liste de progression) : défilement vers la vérification d'identité une fois la page chargée.
+  useEffect(() => {
+    if (!loading && location.hash === '#kyc') document.getElementById('kyc')?.scrollIntoView({ behavior: 'smooth' });
+  }, [loading, location.hash]);
 
   const handleKycUpload = async () => {
     if (kycDocType === 'PASSPORT' && !kycFile1) return;
@@ -73,7 +83,7 @@ const UserProfile: React.FC = () => {
       });
       if (res.ok) {
         setMessage({ type: 'success', text: 'Document envoyé avec succès. En attente de validation.' });
-        const updatedUser = await res.json(); setKycData({ status: updatedUser.kycStatus, url: updatedUser.idDocumentUrl });
+        const updatedUser = await res.json(); setKycData({ status: updatedUser.kycStatus, url: updatedUser.idDocumentUrl, reason: updatedUser.kycRejectionReason });
         setKycFile1(null);
         setKycFile2(null);
       } else {
@@ -206,7 +216,7 @@ const UserProfile: React.FC = () => {
           </div>
 
           {/* KYC Section */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid var(--color-neutral-100)', marginTop: '3rem' }}>
+          <div id="kyc" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid var(--color-neutral-100)', marginTop: '3rem' }}>
             <ShieldCheck size={24} color="var(--color-primary-600)" />
             <h2 style={{ fontSize: '1.25rem', color: 'var(--color-neutral-800)', margin: 0 }}>Vérification d'identité (KYC)</h2>
           </div>
@@ -215,17 +225,9 @@ const UserProfile: React.FC = () => {
           </p>
           
           <div style={{ padding: '1.5rem', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '2rem' }}>
-            {kycData.status === 'VERIFIED' && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#16a34a', fontWeight: 'bold', marginBottom: '1rem' }}>
-                <ShieldCheck size={20} /> Votre identité est vérifiée.
-              </div>
-            )}
-            
-            {kycData.status === 'PENDING' && (
-              <div style={{ color: '#d97706', fontWeight: 'bold', marginBottom: '1rem' }}>
-                Votre document est en cours de vérification par notre équipe.
-              </div>
-            )}
+            <div style={{ marginBottom: '1rem' }}>
+              <KycStatusNotice status={kycData.status} reason={kycData.reason} />
+            </div>
 
             {(kycData.status === 'VERIFIED' || kycData.status === 'PENDING') && kycData.url && (
               <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
@@ -234,12 +236,6 @@ const UserProfile: React.FC = () => {
                     Voir doc {i + 1}
                   </a>
                 ))}
-              </div>
-            )}
-            
-            {kycData.status === 'REJECTED' && (
-              <div style={{ color: '#dc2626', fontWeight: 'bold', marginBottom: '1rem' }}>
-                Votre document a été refusé. Veuillez en soumettre un nouveau (Pièce d'identité ou Passeport lisible).
               </div>
             )}
             
@@ -307,6 +303,20 @@ const UserProfile: React.FC = () => {
             {saving ? 'Enregistrement...' : 'Enregistrer mon profil'}
           </button>
         </form>
+
+        {investorProfile && (
+          <section style={{ marginTop: '2rem', padding: '1.5rem', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+            <h2 style={{ fontSize: '1.25rem', color: 'var(--color-neutral-800)', margin: '0 0 0.5rem' }}>{t('investorProfile.title')}</h2>
+            <p style={{ color: 'var(--color-neutral-600)', margin: '0 0 1rem', fontSize: '0.95rem' }}>
+              {investorProfile.status === 'VALID' && investorProfile.expiresAt
+                ? t('investorProfile.summaryValid', { date: new Date(investorProfile.expiresAt).toLocaleDateString(i18n.language) })
+                : t(investorProfile.status === 'EXPIRED' ? 'onboarding.profileExpired' : 'onboarding.steps.profile.description')}
+            </p>
+            <Link to="/profil-investisseur" className="btn btn-outline">
+              {t(investorProfile.status === 'VALID' ? 'investorProfile.view' : investorProfile.status === 'EXPIRED' ? 'onboarding.actions.profileRenew' : 'onboarding.actions.profile')}
+            </Link>
+          </section>
+        )}
 
         <PreferencesPanel />
       </div>

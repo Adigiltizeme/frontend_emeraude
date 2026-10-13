@@ -14,7 +14,10 @@ interface UserData {
   role: string;
   createdAt: string;
   kycStatus?: string;
+  kycRejectionReason?: string | null;
   idDocumentUrl?: string;
+  investorProfile?: { fragile?: boolean; score?: number; maxScore?: number; reasons?: string[] } | null;
+  investorProfileAt?: string | null;
   _count?: {
     investments: number;
     ownedProjects: number;
@@ -24,7 +27,7 @@ interface UserData {
 }
 
 const ManageUsers: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { token, user } = useAuth();
   const [users, setUsers] = useState<UserData[]>([]);
@@ -60,6 +63,13 @@ const ManageUsers: React.FC = () => {
   }, [navigate, token, user]);
 
   const handleKycStatus = async (id: string, status: string) => {
+    // Refus : motif communiqué à l'utilisateur (e-mail, notification, page profil).
+    let reason: string | undefined;
+    if (status === 'REJECTED') {
+      const answer = window.prompt(t('admin.manageUsers.kycReasonPrompt'));
+      if (answer === null) return;
+      reason = answer.trim() || undefined;
+    }
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/auth/users/${id}/kyc`, {
         method: 'PATCH',
@@ -67,10 +77,11 @@ const ManageUsers: React.FC = () => {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ status })
+        body: JSON.stringify({ status, reason })
       });
       if (res.ok) {
-        setUsers(users.map(u => u.id === id ? { ...u, kycStatus: status } : u)); if (selectedUser && selectedUser.id === id) setSelectedUser({ ...selectedUser, kycStatus: status });
+        const kycRejectionReason = status === 'REJECTED' ? reason ?? null : null;
+        setUsers(users.map(u => u.id === id ? { ...u, kycStatus: status, kycRejectionReason } : u)); if (selectedUser && selectedUser.id === id) setSelectedUser({ ...selectedUser, kycStatus: status, kycRejectionReason });
       }
     } catch(err) {
       alert("Erreur réseau");
@@ -479,6 +490,23 @@ const ManageUsers: React.FC = () => {
             </div>
             
             <div style={{ marginTop: '2rem', backgroundColor: '#f8fafc', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+              <h3 style={{ fontSize: '1.1rem', color: 'var(--color-neutral-800)', marginTop: 0, marginBottom: '0.75rem' }}>{t('investorProfile.title')}</h3>
+              {selectedUser.investorProfile && selectedUser.investorProfileAt ? (
+                <div style={{ fontSize: '0.95rem', color: 'var(--color-neutral-700)', lineHeight: 1.6 }}>
+                  <div>
+                    {t('admin.manageUsers.profileDone', { date: new Date(selectedUser.investorProfileAt).toLocaleDateString(i18n.language) })} · {t('investorProfile.result.score', { score: selectedUser.investorProfile.score, max: selectedUser.investorProfile.maxScore })}
+                  </div>
+                  <div style={{ fontWeight: 600, color: selectedUser.investorProfile.fragile ? '#b45309' : '#166534' }}>
+                    {t(selectedUser.investorProfile.fragile ? 'admin.manageUsers.profileFragile' : 'admin.manageUsers.profileOk')}
+                    {selectedUser.investorProfile.fragile && !!selectedUser.investorProfile.reasons?.length && ` : ${selectedUser.investorProfile.reasons.map((r) => t(`admin.manageUsers.reasons.${r}`)).join(', ')}`}
+                  </div>
+                </div>
+              ) : (
+                <div style={{ fontSize: '0.95rem', color: 'var(--color-neutral-500)' }}>{t('admin.manageUsers.profileMissing')}</div>
+              )}
+            </div>
+
+            <div style={{ marginTop: '2rem', backgroundColor: '#f8fafc', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
               <h3 style={{ fontSize: '1.1rem', color: 'var(--color-neutral-800)', marginTop: 0, marginBottom: '1rem' }}>Statut KYC</h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
                 <div>
@@ -489,6 +517,9 @@ const ManageUsers: React.FC = () => {
                   {(!selectedUser.kycStatus || selectedUser.kycStatus === 'PENDING') && !selectedUser.idDocumentUrl && <span style={{ padding: '0.5rem 1rem', borderRadius: '4px', backgroundColor: '#fef3c7', color: '#d97706', fontWeight: 'bold' }}>En attente (sans document)</span>}
                 </div>
                 
+                {selectedUser.kycStatus === 'REJECTED' && selectedUser.kycRejectionReason && (
+                  <div style={{ fontSize: '0.9rem', color: '#991b1b' }}><strong>{t('kyc.reason')}</strong> {selectedUser.kycRejectionReason}</div>
+                )}
                 {selectedUser.idDocumentUrl && (
                   <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                     {selectedUser.idDocumentUrl.split(',').map((url, i) => (

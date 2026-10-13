@@ -643,3 +643,29 @@ img:hover {
     font-size: 0.95rem !important;
   }
 }
+
+/* Champs de formulaire : même apparence partout (référence : formulaires d'origine, voir src/config/formStyles.ts). */
+.form-control {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background-color: #f8fafc;
+  color: #0f172a;
+  font-size: 1rem;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+/* Filet de sécurité : un champ sans style garde une bordure (spécificité nulle, tout style explicite l'emporte). */
+:where(input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]):not([type="range"]), select, textarea) {
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-family: inherit;
+}
+.form-control:focus,
+:where(input:not([type="checkbox"]):not([type="radio"]):not([type="file"]), select, textarea):focus-visible {
+  outline: none;
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 3px rgba(16, 158, 97, 0.18);
+  background-color: #fff;
+}

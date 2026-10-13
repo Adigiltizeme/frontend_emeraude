@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Upload } from 'lucide-react';
+import ProjectExtrasEditor, { ProjectExtras } from './ProjectExtrasEditor';
 
 /** Date ISO → « AAAA-MM-JJ » dans le fuseau de l'utilisateur (valeur d'un champ date). */
 const toLocalDateInput = (iso: string) => {
@@ -11,6 +12,8 @@ const toLocalDateInput = (iso: string) => {
 export interface ProjectDocuments {
   brochure: File | null;
   legal: File | null;
+  /** Nouvelles photos de la galerie, envoyées après l'enregistrement. */
+  gallery: File[];
 }
 
 interface ProjectFormProps {
@@ -43,7 +46,8 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSubmit, onPrev
     returnType: '',
     fundingDeadline: ''
   });
-  const [documents, setDocuments] = useState<ProjectDocuments>({ brochure: null, legal: null });
+  const [documents, setDocuments] = useState<ProjectDocuments>({ brochure: null, legal: null, gallery: [] });
+  const [extras, setExtras] = useState<ProjectExtras>({ videoUrl: '', riskFactors: '', timeline: [], faq: [] });
 
   const [customLocation, setCustomLocation] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -69,6 +73,12 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSubmit, onPrev
         status: initialData.status || 'DRAFT',
         returnType: initialData.returnType || '',
         fundingDeadline: initialData.fundingDeadline ? toLocalDateInput(initialData.fundingDeadline) : ''
+      });
+      setExtras({
+        videoUrl: initialData.videoUrl || '',
+        riskFactors: initialData.riskFactors || '',
+        timeline: Array.isArray(initialData.timeline) ? initialData.timeline : [],
+        faq: Array.isArray(initialData.faq) ? initialData.faq : [],
       });
       if (!['Sénégal', "Côte d'Ivoire"].includes(initialData.location)) {
         setCustomLocation(initialData.location || '');
@@ -103,6 +113,11 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSubmit, onPrev
       returnType: formData.returnType || undefined,
       // Date limite : fin de journée du jour choisi ; vide = durée par défaut à la mise en collecte.
       fundingDeadline: formData.fundingDeadline ? new Date(`${formData.fundingDeadline}T23:59:59`).toISOString() : undefined,
+      // Vide = retiré (null) ; lignes incomplètes ignorées.
+      videoUrl: extras.videoUrl.trim() || null,
+      riskFactors: extras.riskFactors.trim() || null,
+      timeline: extras.timeline.filter((r) => r.date.trim() && r.title.trim()),
+      faq: extras.faq.filter((r) => r.question.trim() && r.answer.trim()),
     };
 
     try {
@@ -247,6 +262,15 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSubmit, onPrev
             <input type="number" step="0.1" name="capitalGain" value={formData.capitalGain} onChange={handleChange} placeholder="Ex: 2.5" style={inputStyle} />
           </div>
         </div>
+
+        <ProjectExtrasEditor
+          value={extras}
+          onChange={setExtras}
+          projectId={initialData?.id}
+          gallery={initialData?.gallery}
+          newPhotos={documents.gallery}
+          onNewPhotos={(files) => setDocuments((d) => ({ ...d, gallery: files }))}
+        />
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))', gap: '1.5rem' }}>
           <div>

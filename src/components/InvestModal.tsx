@@ -186,7 +186,10 @@ const InvestModal = ({ project, onClose, onManualSuccess }: Props) => {
 
         <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.8rem', color: '#92400e', backgroundColor: '#fffbeb', border: '1px solid #fde68a', padding: '0.75rem', borderRadius: '6px', marginBottom: '1rem' }}>
           <AlertTriangle size={18} style={{ flexShrink: 0 }} />
-          <span>{t('payment.riskWarning')}</span>
+          <span>
+            {t('payment.riskWarning')}
+            {settings.reflectionPeriodDays > 0 && <> {t('payment.reflection', { count: settings.reflectionPeriodDays })}</>}
+          </span>
         </div>
 
         <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', cursor: 'pointer', marginBottom: '1.5rem', fontSize: '0.85rem', color: '#475569', lineHeight: 1.5 }}>

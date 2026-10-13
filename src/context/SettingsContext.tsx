@@ -32,6 +32,7 @@ export interface SiteSettings {
   bankTransferEnabled: boolean;
   successThresholdPercent: number;
   requireEmailVerification: boolean;
+  reflectionPeriodDays: number;
 }
 
 /** Chiffres publics calculés à partir des projets (ticket le plus accessible, collecte…). */
@@ -72,6 +73,7 @@ const defaultSettings: SiteSettings = {
   bankTransferEnabled: true,
   successThresholdPercent: 100,
   requireEmailVerification: true,
+  reflectionPeriodDays: 4,
 };
 
 interface SettingsContextType {

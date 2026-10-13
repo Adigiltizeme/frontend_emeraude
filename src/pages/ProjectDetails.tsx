@@ -6,6 +6,7 @@ import { ArrowLeft, MapPin, TrendingUp, Clock, AlertTriangle, FileText, Download
 import { useAuth } from '../context/AuthContext';
 import ProjectMap from '../components/ProjectMap';
 import InvestModal from '../components/InvestModal';
+import { KeyInformation, ProjectFaq, ProjectGallery, ProjectTimeline, ProjectVideo } from '../components/ProjectSections';
 import { API_URL, authHeaders, formatMoney } from '../config/api';
 import { useLiveRefresh } from '../hooks/useLiveRefresh';
 import { usePageMeta } from '../hooks/usePageMeta';
@@ -161,6 +162,12 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
             </div>
             <ProjectMap location={project.location} />
           </div>
+
+          <ProjectVideo url={project.videoUrl} />
+          <ProjectGallery photos={project.gallery} />
+          <ProjectTimeline items={project.timeline} />
+          <ProjectFaq items={project.faq} />
+          <KeyInformation project={project} />
         </div>
 
         {/* Colonne Latérale (Investissement) */}

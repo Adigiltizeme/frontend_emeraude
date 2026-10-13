@@ -8,6 +8,7 @@ import { useSocket } from '../context/SocketContext';
 import { Building2, FileText, Settings, Lightbulb, Clock, CheckCircle, XCircle, Headset } from 'lucide-react';
 import { UserSupport } from '../components/support/UserSupport';
 import { jsPDF } from "jspdf";
+import { useSiteSettings } from '../context/SettingsContext';
 
 
 const generatePDF = (inv: any, user: any) => {
@@ -162,6 +163,23 @@ const UserDashboard = () => {
     };
   }, [socket, refreshInvestments]);
   useLiveRefresh(refreshInvestments);
+
+  // Délai de réflexion : investissements encore rétractables (paramètre « reflectionPeriodDays »).
+  const { settings } = useSiteSettings();
+  const reflectionMs = settings.reflectionPeriodDays * 86_400_000;
+  const withdrawable = reflectionMs > 0
+    ? investments.filter(inv =>
+        !inv.withdrawnAt &&
+        ['PENDING', 'VALIDATED', 'CONFIRMED'].includes(inv.status) &&
+        ['COLLECTING', 'FUNDED'].includes(inv.project?.status) &&
+        new Date(inv.createdAt).getTime() + reflectionMs > Date.now())
+    : [];
+  const withdraw = async (id: string) => {
+    if (!window.confirm(t('withdrawal.confirm'))) return;
+    const res = await fetch(`${API_URL}/investments/${id}/withdraw`, { method: 'POST', headers: authHeaders(token) });
+    alert(res.ok ? t('withdrawal.done') : t('withdrawal.error'));
+    refreshInvestments();
+  };
 
   // Investissements en attente dont le paiement en ligne n'a pas abouti : à reprendre.
   const pendingPayments = investments.filter(inv => inv.status === 'PENDING' && inv.payments?.[0] && inv.payments[0].status !== 'SUCCEEDED');
@@ -489,6 +507,25 @@ const UserDashboard = () => {
                 <Building2 size={32} color="var(--color-primary-500)" />
                 <h3 style={{ color: 'var(--color-neutral-800)', margin: 0, fontSize: '1.5rem' }}>Mes Investissements</h3>
               </div>
+
+              {withdrawable.length > 0 && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1rem' }}>
+                  {withdrawable.map(inv => (
+                    <div key={`withdraw-${inv.id}`} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', padding: '0.75rem 1rem', backgroundColor: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: '8px' }}>
+                      <span style={{ color: '#075985', fontSize: '0.9rem' }}>
+                        {t('withdrawal.banner', {
+                          amount: formatMoney(inv.amount, i18n.language, inv.currency),
+                          project: inv.project?.title,
+                          date: new Date(new Date(inv.createdAt).getTime() + reflectionMs).toLocaleDateString(i18n.language),
+                        })}
+                      </span>
+                      <button type="button" onClick={() => withdraw(inv.id)} className="btn btn-outline" style={{ padding: '0.4rem 0.9rem' }}>
+                        {t('withdrawal.button')}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
 
               {pendingPayments.length > 0 && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.5rem' }}>

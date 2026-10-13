@@ -150,7 +150,36 @@
     "closedOn": "Fundraising closed on {{date}}",
     "deadlinePassed": "Deadline reached: closing in progress",
     "noDocument": "Coming soon",
-    "openDocument": "Open the document"
+    "openDocument": "Open the document",
+    "videoTitle": "Presentation video",
+    "galleryTitle": "Project photos",
+    "photo": "Project photo {{n}}",
+    "close": "Close",
+    "previous": "Previous photo",
+    "next": "Next photo",
+    "faqTitle": "Frequently asked questions about this project",
+    "keyInfo": {
+      "title": "Key investment information",
+      "subtitle": "What you need to know before investing, in plain language.",
+      "asset": "Asset and location",
+      "target": "Fundraising target",
+      "minTicket": "Minimum ticket",
+      "return": "Announced return",
+      "duration": "Investment duration",
+      "deadline": "Fundraising deadline",
+      "noDeadline": "Set when fundraising opens",
+      "success": "If the target is not reached",
+      "successValue": "Success threshold: {{percent}}% of the target. Below it, full refund at no cost.",
+      "fees": "Investor fees",
+      "feesValue": "Entry fee of {{percent}}% of the amount invested, shown before payment.",
+      "noFees": "No entry fee.",
+      "reflection": "Withdrawal period",
+      "reflectionValue": "{{count}} days after subscribing, at no cost and without justification.",
+      "noReflection": "Not offered at the moment.",
+      "risks": "Main risks",
+      "genericRisks": "Partial or total loss of capital; money locked in for the whole project duration; possible delays; a target return is not guaranteed.",
+      "readTerms": "Read the full terms and conditions"
+    }
   },
   "finance": {
     "title": "Fund your real estate project",
@@ -350,7 +379,21 @@
       "fundingDeadlineHint": "Empty: default duration from the settings, applied when fundraising opens.",
       "brochure": "Presentation brochure (PDF or image)",
       "legalDoc": "Legal documentation (PDF or image)",
-      "currentFile": "Current document"
+      "currentFile": "Current document",
+      "video": "Presentation video (YouTube or Vimeo link)",
+      "gallery": "Additional photos (12 maximum)",
+      "galleryRemove": "Remove this photo",
+      "galleryPending": "{{count}} photo(s) to upload on save",
+      "timeline": "Provisional timeline",
+      "timelineDate": "Date or period",
+      "timelineStep": "Step",
+      "faq": "Project FAQ",
+      "faqQuestion": "Question",
+      "faqAnswer": "Answer",
+      "addRow": "Add",
+      "removeRow": "Remove",
+      "riskFactors": "Project-specific risks",
+      "riskFactorsHint": "Shown in the key investment information, in addition to the general risks."
     },
     "status": {
       "DRAFT": "Draft",
@@ -659,6 +702,10 @@
         "requireEmailVerification": {
           "label": "Confirmed email required",
           "hint": "To invest and submit a project. Recommended: prevents fake accounts and lost emails."
+        },
+        "reflectionPeriodDays": {
+          "label": "Withdrawal period",
+          "hint": "Number of days during which the investor can cancel at no cost (European practice: 4 days). 0 = not offered."
         }
       }
     },
@@ -738,7 +785,8 @@
     "pendingBanner": "Payment to complete: {{amount}} for \"{{project}}\"",
     "feeLine": "Entry fee ({{percent}}%)",
     "totalLine": "Total to pay",
-    "transferInstructionsTitle": "Transfer instructions"
+    "transferInstructionsTitle": "Transfer instructions",
+    "reflection": "You can withdraw at no cost for {{count}} days after subscribing."
   },
   "newsletter": {
     "title": "Stay informed",
@@ -825,7 +873,7 @@
           "paragraphs": [
             "Online payments are processed by licensed providers: CinetPay, Wave, PayDunya and Flutterwave (Mobile Money, e-wallets and cards), and Stripe (international cards). Depending on the payment method chosen, the platform automatically selects an available provider; investors may also indicate a preferred provider. When offered, a bank or manual money transfer is also possible: the investment is then validated by our team once the funds are received.",
             "An investment is only validated after the payment has been confirmed directly with the provider, for an amount and currency identical to those of the subscription. A payment not completed within {{expiryHours}} hours expires and the corresponding investment is cancelled, free of charge. The minimum subscription amount is the one shown on each project page, up to the amount still to be raised and, where applicable, the per-investment cap set by the platform.",
-            "Before each investment, the investor expressly accepts these terms and the risk warning; the date of this acceptance is recorded. Invested funds are held in a dedicated account until the fundraising closes. If the fundraising target is not reached or the project is cancelled, investors are refunded in full at no additional cost. A payment received twice is refunded. Each project has a fundraising deadline, shown on its page. On that date, if the amount raised reaches {{threshold}}% of the target, the fundraising succeeds; otherwise the project is declared not funded: pending investments are cancelled and paid investments are refunded in full, at no cost, the investor being informed by email when the refund starts and when it is completed."
+            "Before each investment, the investor expressly accepts these terms and the risk warning; the date of this acceptance is recorded. Invested funds are held in a dedicated account until the fundraising closes. If the fundraising target is not reached or the project is cancelled, investors are refunded in full at no additional cost. A payment received twice is refunded. Each project has a fundraising deadline, shown on its page. On that date, if the amount raised reaches {{threshold}}% of the target, the fundraising succeeds; otherwise the project is declared not funded: pending investments are cancelled and paid investments are refunded in full, at no cost, the investor being informed by email when the refund starts and when it is completed. Investors have a withdrawal period, whose length is shown in each project's key investment information and in the investment window: during this period, and as long as the fundraising is not closed, they can cancel their investment from their account, at no cost and without justification; the amount paid, fees included, is then refunded in full."
           ]
         },
         {
@@ -1021,5 +1069,12 @@
     "currentPasswordHint": "Required to change your email address or password.",
     "currentPasswordRequired": "Enter your current password to change your email address or password.",
     "emailChanged": "Email address changed: please confirm it with the link we just sent you."
+  },
+  "withdrawal": {
+    "banner": "{{amount}} in \"{{project}}\": you can withdraw until {{date}}.",
+    "button": "Withdraw",
+    "confirm": "Confirm the withdrawal? The investment will be cancelled and, if already paid, refunded in full at no cost.",
+    "done": "Withdrawal recorded. A confirmation email has been sent to you.",
+    "error": "The withdrawal could not be recorded."
   }
 }

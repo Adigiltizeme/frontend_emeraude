@@ -150,7 +150,36 @@
     "closedOn": "Collecte clôturée le {{date}}",
     "deadlinePassed": "Date limite atteinte : clôture en cours",
     "noDocument": "Bientôt disponible",
-    "openDocument": "Ouvrir le document"
+    "openDocument": "Ouvrir le document",
+    "videoTitle": "Vidéo de présentation",
+    "galleryTitle": "Photos du projet",
+    "photo": "Photo {{n}} du projet",
+    "close": "Fermer",
+    "previous": "Photo précédente",
+    "next": "Photo suivante",
+    "faqTitle": "Questions fréquentes sur ce projet",
+    "keyInfo": {
+      "title": "Fiche d'informations clés",
+      "subtitle": "L'essentiel à savoir avant d'investir, en langage simple.",
+      "asset": "Actif et localisation",
+      "target": "Objectif de collecte",
+      "minTicket": "Ticket minimum",
+      "return": "Rendement annoncé",
+      "duration": "Durée de l'investissement",
+      "deadline": "Date limite de collecte",
+      "noDeadline": "Fixée à l'ouverture de la collecte",
+      "success": "Si l'objectif n'est pas atteint",
+      "successValue": "Seuil de réussite : {{percent}} % de l'objectif. En dessous, remboursement intégral sans frais.",
+      "fees": "Frais pour l'investisseur",
+      "feesValue": "Frais d'entrée de {{percent}} % du montant investi, affichés avant le paiement.",
+      "noFees": "Aucun frais d'entrée.",
+      "reflection": "Délai de rétractation",
+      "reflectionValue": "{{count}} jours après la souscription, sans frais ni justification.",
+      "noReflection": "Non proposé pour le moment.",
+      "risks": "Principaux risques",
+      "genericRisks": "Perte partielle ou totale du capital ; argent immobilisé pendant toute la durée du projet ; retards possibles ; un rendement cible n'est pas garanti.",
+      "readTerms": "Lire les conditions complètes (CGU/CGV)"
+    }
   },
   "finance": {
     "title": "Financer votre projet immobilier",
@@ -350,7 +379,21 @@
       "fundingDeadlineHint": "Vide : durée par défaut des paramètres, appliquée à la mise en collecte.",
       "brochure": "Brochure de présentation (PDF ou image)",
       "legalDoc": "Documentation légale (PDF ou image)",
-      "currentFile": "Document actuel"
+      "currentFile": "Document actuel",
+      "video": "Vidéo de présentation (lien YouTube ou Vimeo)",
+      "gallery": "Photos supplémentaires (12 au maximum)",
+      "galleryRemove": "Retirer cette photo",
+      "galleryPending": "{{count}} photo(s) à envoyer à l'enregistrement",
+      "timeline": "Calendrier prévisionnel",
+      "timelineDate": "Date ou période",
+      "timelineStep": "Étape",
+      "faq": "FAQ du projet",
+      "faqQuestion": "Question",
+      "faqAnswer": "Réponse",
+      "addRow": "Ajouter",
+      "removeRow": "Supprimer",
+      "riskFactors": "Risques propres au projet",
+      "riskFactorsHint": "Affichés dans la fiche d'informations clés, en plus des risques généraux."
     },
     "status": {
       "DRAFT": "Brouillon",
@@ -659,6 +702,10 @@
         "requireEmailVerification": {
           "label": "Adresse e-mail confirmée obligatoire",
           "hint": "Pour investir et déposer un projet. Recommandé : évite les comptes fictifs et les e-mails perdus."
+        },
+        "reflectionPeriodDays": {
+          "label": "Délai de rétractation",
+          "hint": "Nombre de jours pendant lesquels l'investisseur peut annuler sans frais (pratique européenne : 4 jours). 0 = non proposé."
         }
       }
     },
@@ -738,7 +785,8 @@
     "pendingBanner": "Paiement à finaliser : {{amount}} pour « {{project}} »",
     "feeLine": "Frais d'entrée ({{percent}} %)",
     "totalLine": "Total à payer",
-    "transferInstructionsTitle": "Instructions de virement"
+    "transferInstructionsTitle": "Instructions de virement",
+    "reflection": "Vous pourrez vous rétracter sans frais pendant {{count}} jours après votre souscription."
   },
   "newsletter": {
     "title": "Restez informé",
@@ -825,7 +873,7 @@
           "paragraphs": [
             "Les paiements en ligne sont assurés par des prestataires agréés : CinetPay, Wave, PayDunya et Flutterwave (Mobile Money, portefeuilles électroniques et cartes), et Stripe (cartes internationales). Selon le moyen de paiement choisi, la plateforme sélectionne automatiquement un prestataire disponible ; l'investisseur peut aussi indiquer son prestataire préféré. Lorsqu'il est proposé, un virement ou un transfert manuel reste possible : l'investissement est alors validé par notre équipe à réception des fonds.",
             "Un investissement n'est validé qu'après confirmation du paiement directement auprès du prestataire, pour un montant et une devise identiques à ceux de la souscription. Un paiement non finalisé dans un délai de {{expiryHours}} heures expire et l'investissement correspondant est annulé, sans frais. Le montant minimum de souscription est celui indiqué sur la fiche de chaque projet, dans la limite du montant restant à financer et, le cas échéant, du plafond par investissement fixé par la plateforme.",
-            "Avant chaque investissement, l'investisseur accepte expressément les présentes conditions et l'avertissement sur les risques ; la date de cette acceptation est conservée. Les fonds investis sont cantonnés dans un compte dédié jusqu'à la clôture de la levée de fonds. Si l'objectif de collecte n'est pas atteint ou si le projet est annulé, les investisseurs sont intégralement remboursés, sans frais supplémentaires. Un paiement reçu en double est remboursé. Chaque projet a une date limite de collecte, indiquée sur sa fiche. À cette date, si le montant levé atteint {{threshold}} % de l'objectif, la collecte est réussie ; sinon, le projet est déclaré non financé : les investissements en attente sont annulés et les investissements payés sont intégralement remboursés, sans frais, l'investisseur étant informé par e-mail de la mise en remboursement puis du remboursement effectué."
+            "Avant chaque investissement, l'investisseur accepte expressément les présentes conditions et l'avertissement sur les risques ; la date de cette acceptation est conservée. Les fonds investis sont cantonnés dans un compte dédié jusqu'à la clôture de la levée de fonds. Si l'objectif de collecte n'est pas atteint ou si le projet est annulé, les investisseurs sont intégralement remboursés, sans frais supplémentaires. Un paiement reçu en double est remboursé. Chaque projet a une date limite de collecte, indiquée sur sa fiche. À cette date, si le montant levé atteint {{threshold}} % de l'objectif, la collecte est réussie ; sinon, le projet est déclaré non financé : les investissements en attente sont annulés et les investissements payés sont intégralement remboursés, sans frais, l'investisseur étant informé par e-mail de la mise en remboursement puis du remboursement effectué. L'investisseur dispose d'un délai de rétractation dont la durée est indiquée dans la fiche d'informations clés de chaque projet et dans la fenêtre d'investissement : pendant ce délai, et tant que la collecte n'est pas close, il peut annuler son investissement depuis son espace, sans frais ni justification ; le montant payé, frais compris, lui est alors intégralement remboursé."
           ]
         },
         {
@@ -1021,5 +1069,12 @@
     "currentPasswordHint": "Obligatoire pour changer votre adresse e-mail ou votre mot de passe.",
     "currentPasswordRequired": "Saisissez votre mot de passe actuel pour changer d'adresse e-mail ou de mot de passe.",
     "emailChanged": "Adresse e-mail modifiée : confirmez-la grâce au lien que nous venons de vous envoyer."
+  },
+  "withdrawal": {
+    "banner": "{{amount}} dans « {{project}} » : rétractation possible jusqu'au {{date}}.",
+    "button": "Se rétracter",
+    "confirm": "Confirmer la rétractation ? L'investissement sera annulé et, s'il est déjà payé, intégralement remboursé sans frais.",
+    "done": "Rétractation enregistrée. Un e-mail de confirmation vous a été envoyé.",
+    "error": "La rétractation n'a pas pu être enregistrée."
   }
 }

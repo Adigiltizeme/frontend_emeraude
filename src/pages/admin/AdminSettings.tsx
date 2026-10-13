@@ -1,172 +1,264 @@
-import React, { useState, useEffect } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ArrowDown, ArrowUp, Save, Undo2 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { Save, Settings as SettingsIcon, Mail, Phone, MapPin, CreditCard } from 'lucide-react';
+import { useSiteSettings } from '../../context/SettingsContext';
+import { API_URL, authHeaders } from '../../config/api';
 
-const AdminSettings: React.FC = () => {
+type Value = string | number | boolean | string[];
+
+interface Definition {
+  key: string;
+  category: string;
+  type: 'string' | 'text' | 'email' | 'url' | 'phone' | 'number' | 'boolean' | 'select' | 'list';
+  default: Value;
+  public: boolean;
+  min?: number;
+  max?: number;
+  maxLength?: number;
+  options?: string[];
+  allowed?: string[];
+  unit?: string;
+}
+
+interface HistoryEntry {
+  id: string;
+  key: string;
+  oldValue: string | null;
+  newValue: string;
+  createdAt: string;
+  user: { firstName: string | null; lastName: string | null; email: string } | null;
+}
+
+/** Listes dont l'ordre compte (sinon : cases à cocher). */
+const ORDERED_LISTS = new Set(['paymentProviderPriority']);
+
+const same = (a: Value, b: Value) => JSON.stringify(a) === JSON.stringify(b);
+
+/**
+ * Paramètres de la plateforme : écran généré à partir du registre de l'API (settings.registry.ts).
+ * Ajouter un paramètre = le déclarer dans le registre + ses libellés dans admin.config.fields.
+ */
+const AdminSettings = () => {
+  const { t, i18n } = useTranslation();
   const { token } = useAuth();
-  const { t } = useTranslation();
-  
-  const [formData, setFormData] = useState({
-    contactEmail: '',
-    contactPhone: '',
-    contactAddress: '',
-    investmentRequiresKyc: 'true',
-    paymentProviderPriority: '',
-    paymentProvidersDisabled: ''
-  });
-  
+  const { refresh: refreshPublicSettings } = useSiteSettings();
+  const [definitions, setDefinitions] = useState<Definition[]>([]);
+  const [saved, setSaved] = useState<Record<string, Value>>({});
+  const [draft, setDraft] = useState<Record<string, Value>>({});
+  const [tab, setTab] = useState('general');
+  const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
+  const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
 
-  useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/settings`);
-        if (res.ok) {
-          const data = await res.json();
-          setFormData({
-            contactEmail: data.contactEmail || '',
-            contactPhone: data.contactPhone || '',
-            contactAddress: data.contactAddress || '',
-            investmentRequiresKyc: data.investmentRequiresKyc === 'false' ? 'false' : 'true',
-            paymentProviderPriority: data.paymentProviderPriority || '',
-            paymentProvidersDisabled: data.paymentProvidersDisabled || ''
-          });
-        }
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
+  const load = useCallback(async () => {
+    try {
+      const res = await fetch(`${API_URL}/settings/admin`, { headers: authHeaders(token) });
+      if (res.ok) {
+        const data = await res.json();
+        setDefinitions(data.definitions);
+        setSaved(data.values);
+        setDraft(data.values);
       }
-    };
-    fetchSettings();
-  }, []);
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+  const loadHistory = useCallback(async () => {
+    const res = await fetch(`${API_URL}/settings/history`, { headers: authHeaders(token) });
+    if (res.ok) setHistory(await res.json());
+  }, [token]);
+
+  useEffect(() => { load(); }, [load]);
+  useEffect(() => { if (tab === 'history') loadHistory(); }, [tab, loadHistory]);
+
+  const categories = useMemo(() => [...new Set(definitions.map((d) => d.category)), 'history'], [definitions]);
+  const changedKeys = definitions.filter((d) => !same(draft[d.key], saved[d.key])).map((d) => d.key);
+
+  const set = (key: string, value: Value) => {
+    setMessage(null);
+    setDraft((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setMessage(null);
+  const save = async () => {
     setSaving(true);
-
+    setMessage(null);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/settings`, {
+      const body = Object.fromEntries(changedKeys.map((k) => [k, draft[k]]));
+      const res = await fetch(`${API_URL}/settings`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(formData)
+        headers: { ...authHeaders(token), 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
       });
-
-      if (res.ok) {
-        setMessage({ type: 'success', text: 'Paramètres mis à jour avec succès !' });
-      } else {
-        setMessage({ type: 'error', text: 'Erreur lors de la mise à jour.' });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const detail = Array.isArray(data?.message) ? data.message.join(' · ') : data?.message;
+        throw new Error(detail || t('admin.config.error'));
       }
-    } catch (err) {
-      setMessage({ type: 'error', text: 'Erreur réseau.' });
+      setSaved(data.values);
+      setDraft(data.values);
+      setMessage({ ok: true, text: t('admin.config.saved') });
+      refreshPublicSettings();
+    } catch (err: any) {
+      setMessage({ ok: false, text: err?.message || t('admin.config.error') });
     } finally {
       setSaving(false);
     }
   };
 
-  if (loading) return <div style={{ padding: '2rem', textAlign: 'center' }}>Chargement...</div>;
+  const field = { width: '100%', padding: '0.65rem 0.8rem', borderRadius: '8px', border: '1px solid var(--color-neutral-300)', fontSize: '0.95rem', fontFamily: 'inherit', backgroundColor: 'white' };
 
-  const inputStyle = { width: '100%', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid var(--color-neutral-300)', fontSize: '1rem', outline: 'none', backgroundColor: '#f8fafc', color: 'var(--color-neutral-700)' };
-  const labelStyle = { display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#475569' };
+  const renderInput = (def: Definition) => {
+    const value = draft[def.key];
+    const id = `setting-${def.key}`;
+    switch (def.type) {
+      case 'boolean':
+        return (
+          <label style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer' }}>
+            <input id={id} type="checkbox" checked={value === true} onChange={(e) => set(def.key, e.target.checked)} style={{ width: '1.2rem', height: '1.2rem' }} />
+            <span style={{ fontWeight: 600, color: value ? 'var(--color-primary-700)' : 'var(--color-neutral-500)' }}>{value ? t('admin.config.yes') : t('admin.config.no')}</span>
+          </label>
+        );
+      case 'number':
+        return (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', maxWidth: '320px' }}>
+            <input id={id} type="number" min={def.min} max={def.max} step="any" value={String(value ?? '')} onChange={(e) => set(def.key, e.target.value === '' ? '' : Number(e.target.value))} style={field} />
+            {def.unit && <span style={{ color: 'var(--color-neutral-600)', fontWeight: 600 }}>{def.unit}</span>}
+          </div>
+        );
+      case 'text':
+        return <textarea id={id} rows={3} maxLength={def.maxLength} value={String(value ?? '')} onChange={(e) => set(def.key, e.target.value)} style={{ ...field, lineHeight: 1.5 }} />;
+      case 'select':
+        return (
+          <select id={id} value={String(value)} onChange={(e) => set(def.key, e.target.value)} style={{ ...field, maxWidth: '320px' }}>
+            {def.options?.map((o) => <option key={o} value={o}>{t(`admin.config.options.${o}`, { defaultValue: o })}</option>)}
+          </select>
+        );
+      case 'list': {
+        const list = Array.isArray(value) ? value : [];
+        if (ORDERED_LISTS.has(def.key)) {
+          const move = (index: number, delta: number) => {
+            const next = [...list];
+            const [item] = next.splice(index, 1);
+            next.splice(index + delta, 0, item);
+            set(def.key, next);
+          };
+          return (
+            <ol style={{ margin: 0, paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+              {list.map((item, i) => (
+                <li key={item}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <strong style={{ minWidth: '120px' }}>{item}</strong>
+                    <button type="button" onClick={() => move(i, -1)} disabled={i === 0} aria-label={`${t('admin.config.moveUp')} ${item}`} className="btn btn-outline" style={{ padding: '0.2rem 0.4rem' }}><ArrowUp size={14} /></button>
+                    <button type="button" onClick={() => move(i, 1)} disabled={i === list.length - 1} aria-label={`${t('admin.config.moveDown')} ${item}`} className="btn btn-outline" style={{ padding: '0.2rem 0.4rem' }}><ArrowDown size={14} /></button>
+                  </span>
+                </li>
+              ))}
+            </ol>
+          );
+        }
+        return (
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+            {def.allowed?.map((item) => (
+              <label key={item} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', cursor: 'pointer' }}>
+                <input type="checkbox" checked={list.includes(item)} onChange={(e) => set(def.key, e.target.checked ? [...list, item] : list.filter((v) => v !== item))} />
+                {item}
+              </label>
+            ))}
+          </div>
+        );
+      }
+      default:
+        return (
+          <input
+            id={id}
+            type={def.type === 'email' ? 'email' : def.type === 'url' ? 'url' : def.type === 'phone' ? 'tel' : 'text'}
+            maxLength={def.maxLength}
+            value={String(value ?? '')}
+            onChange={(e) => set(def.key, e.target.value)}
+            style={field}
+          />
+        );
+    }
+  };
+
+  if (loading) return <p style={{ padding: '2rem' }}>{t('admin.config.loading')}</p>;
+
+  const fmt = (v: string | null) => (v === null || v === '' ? '—' : v);
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <h1 style={{ fontSize: '2rem', marginBottom: '2rem', color: 'var(--color-neutral-800)', margin: '0 0 2rem 0' }}>Paramètres du site</h1>
+    <div style={{ maxWidth: '960px', margin: '0 auto', paddingBottom: changedKeys.length ? '5rem' : 0 }}>
+      <h1 style={{ margin: '0 0 0.5rem', color: 'var(--color-neutral-800)' }}>{t('admin.config.title')}</h1>
+      <p style={{ color: 'var(--color-neutral-500)', marginBottom: '1.5rem' }}>{t('admin.config.subtitle')}</p>
+
+      <div role="tablist" style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+        {categories.map((c) => (
+          <button key={c} role="tab" aria-selected={tab === c} onClick={() => setTab(c)} className={tab === c ? 'btn btn-primary' : 'btn btn-outline'} style={{ padding: '0.45rem 0.9rem', fontSize: '0.9rem' }}>
+            {t(`admin.config.categories.${c}`, { defaultValue: c })}
+            {c !== 'history' && definitions.some((d) => d.category === c && changedKeys.includes(d.key)) ? ' •' : ''}
+          </button>
+        ))}
+      </div>
 
       {message && (
-        <div style={{ 
-          padding: '1rem', 
-          marginBottom: '2rem', 
-          borderRadius: '8px', 
-          backgroundColor: message.type === 'success' ? '#dcfce7' : '#fee2e2',
-          color: message.type === 'success' ? '#166534' : '#991b1b',
-          fontWeight: '500'
-        }}>
-          {message.text}
+        <p role="status" style={{ padding: '0.75rem 1rem', borderRadius: '8px', marginBottom: '1rem', backgroundColor: message.ok ? '#dcfce7' : '#fef2f2', color: message.ok ? '#166534' : '#b91c1c' }}>{message.text}</p>
+      )}
+
+      {tab === 'history' ? (
+        history.length === 0 ? (
+          <p>{t('admin.config.historyEmpty')}</p>
+        ) : (
+          <div style={{ backgroundColor: 'white', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-neutral-200)', overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+              <thead>
+                <tr style={{ backgroundColor: '#f8fafc', textAlign: 'left' }}>
+                  {['colDate', 'colSetting', 'colOld', 'colNew', 'colBy'].map((c) => <th key={c} style={{ padding: '0.6rem 0.8rem' }}>{t(`admin.config.${c}`)}</th>)}
+                </tr>
+              </thead>
+              <tbody>
+                {history.map((h) => (
+                  <tr key={h.id} style={{ borderTop: '1px solid #e2e8f0', verticalAlign: 'top' }}>
+                    <td style={{ padding: '0.6rem 0.8rem', whiteSpace: 'nowrap' }}>{new Date(h.createdAt).toLocaleString(i18n.language)}</td>
+                    <td style={{ padding: '0.6rem 0.8rem' }}>{t(`admin.config.fields.${h.key}.label`, { defaultValue: h.key })}</td>
+                    <td style={{ padding: '0.6rem 0.8rem', color: '#64748b', maxWidth: '220px', wordBreak: 'break-word' }}>{fmt(h.oldValue)}</td>
+                    <td style={{ padding: '0.6rem 0.8rem', maxWidth: '220px', wordBreak: 'break-word' }}>{fmt(h.newValue)}</td>
+                    <td style={{ padding: '0.6rem 0.8rem' }}>{h.user ? [h.user.firstName, h.user.lastName].filter(Boolean).join(' ') || h.user.email : '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )
+      ) : (
+        <div style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          {definitions.filter((d) => d.category === tab).map((def) => (
+            <div key={def.key}>
+              <label htmlFor={`setting-${def.key}`} style={{ display: 'block', fontWeight: 600, color: '#334155', marginBottom: '0.35rem' }}>
+                {t(`admin.config.fields.${def.key}.label`, { defaultValue: def.key })}
+                {changedKeys.includes(def.key) && <span style={{ color: '#b45309', fontWeight: 500 }}> •</span>}
+              </label>
+              {renderInput(def)}
+              {t(`admin.config.fields.${def.key}.hint`, { defaultValue: '' }) && (
+                <small style={{ display: 'block', color: 'var(--color-neutral-500)', marginTop: '0.3rem' }}>{t(`admin.config.fields.${def.key}.hint`)}</small>
+              )}
+            </div>
+          ))}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} style={{ backgroundColor: 'var(--color-white)', padding: '2rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '2rem', paddingBottom: '1rem', borderBottom: '1px solid var(--color-neutral-100)' }}>
-          <SettingsIcon size={24} color="var(--color-primary-600)" />
-          <h2 style={{ fontSize: '1.25rem', color: 'var(--color-neutral-800)', margin: 0 }}>Coordonnées Publiques de l'Entreprise</h2>
+      {changedKeys.length > 0 && (
+        <div style={{ position: 'fixed', left: 0, right: 0, bottom: 0, zIndex: 50, backgroundColor: 'white', borderTop: '1px solid var(--color-neutral-200)', boxShadow: '0 -4px 12px rgba(0,0,0,0.08)', padding: '0.75rem 1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+          <span style={{ color: '#b45309', fontWeight: 600 }}>{t('admin.config.unsaved')} ({changedKeys.length})</span>
+          <button type="button" onClick={() => { setDraft(saved); setMessage(null); }} className="btn btn-outline" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+            <Undo2 size={16} /> {t('admin.config.cancel')}
+          </button>
+          <button type="button" onClick={save} disabled={saving} className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+            <Save size={16} /> {saving ? t('admin.config.saving') : t('admin.config.save')}
+          </button>
         </div>
-        <p style={{ color: 'var(--color-neutral-500)', fontSize: '0.875rem', marginBottom: '2rem' }}>
-          Ces informations seront affichées publiquement sur la page de contact et dans le pied de page du site web.
-        </p>
-
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem', marginBottom: '2rem' }}>
-          <div>
-            <label style={labelStyle}>
-              <Mail size={16} style={{ display: 'inline', marginRight: '0.5rem', verticalAlign: 'text-bottom' }} />
-              Email de contact public
-            </label>
-            <input type="email" name="contactEmail" value={formData.contactEmail} onChange={handleChange} style={inputStyle} placeholder="contact@emeraude-africa.com" />
-          </div>
-          <div>
-            <label style={labelStyle}>
-              <Phone size={16} style={{ display: 'inline', marginRight: '0.5rem', verticalAlign: 'text-bottom' }} />
-              Téléphone de contact public
-            </label>
-            <input type="text" name="contactPhone" value={formData.contactPhone} onChange={handleChange} style={inputStyle} placeholder="+33 6 12 34 56 78" />
-          </div>
-          <div>
-            <label style={labelStyle}>
-              <MapPin size={16} style={{ display: 'inline', marginRight: '0.5rem', verticalAlign: 'text-bottom' }} />
-              Adresse du siège / Bureaux
-            </label>
-            <textarea name="contactAddress" value={formData.contactAddress} onChange={handleChange} style={{ ...inputStyle, minHeight: '100px', resize: 'vertical' }} placeholder="123 Avenue des Champs-Elysées..." />
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', margin: '1rem 0 1rem', paddingBottom: '1rem', borderBottom: '1px solid var(--color-neutral-100)' }}>
-          <CreditCard size={24} color="var(--color-primary-600)" />
-          <h2 style={{ fontSize: '1.25rem', color: 'var(--color-neutral-800)', margin: 0 }}>{t('admin.settings.paymentsTitle')}</h2>
-        </div>
-        <p style={{ color: 'var(--color-neutral-500)', fontSize: '0.875rem', marginBottom: '1.5rem' }}>{t('admin.settings.paymentsDesc')}</p>
-
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem', marginBottom: '2rem' }}>
-          <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', cursor: 'pointer' }}>
-            <input
-              type="checkbox"
-              checked={formData.investmentRequiresKyc !== 'false'}
-              onChange={(e) => setFormData(prev => ({ ...prev, investmentRequiresKyc: e.target.checked ? 'true' : 'false' }))}
-              style={{ marginTop: '0.3rem', width: '1.1rem', height: '1.1rem' }}
-            />
-            <span>
-              <span style={{ fontWeight: 600, color: '#475569' }}>{t('admin.settings.requireKyc')}</span>
-              <span style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-neutral-500)' }}>{t('admin.settings.requireKycHint')}</span>
-            </span>
-          </label>
-          <div>
-            <label style={labelStyle}>{t('admin.settings.priority')}</label>
-            <input type="text" name="paymentProviderPriority" value={formData.paymentProviderPriority} onChange={handleChange} style={inputStyle} placeholder="CINETPAY,WAVE,PAYDUNYA,FLUTTERWAVE,STRIPE" />
-            <small style={{ color: 'var(--color-neutral-500)' }}>{t('admin.settings.priorityHint')}</small>
-          </div>
-          <div>
-            <label style={labelStyle}>{t('admin.settings.disabled')}</label>
-            <input type="text" name="paymentProvidersDisabled" value={formData.paymentProvidersDisabled} onChange={handleChange} style={inputStyle} placeholder="STRIPE" />
-            <small style={{ color: 'var(--color-neutral-500)' }}>{t('admin.settings.disabledHint')}</small>
-          </div>
-        </div>
-
-        <button type="submit" disabled={saving} className="btn btn-primary" style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', padding: '1rem', fontSize: '1.1rem' }}>
-          <Save size={20} />
-          {saving ? 'Enregistrement...' : 'Mettre à jour les coordonnées'}
-        </button>
-      </form>
+      )}
     </div>
   );
 };

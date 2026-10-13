@@ -32,7 +32,10 @@ const plain = (v, max = 160) => {
   const text = String(v ?? '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
   return text.length > max ? `${text.slice(0, max - 1).trimEnd()}…` : text;
 };
-const get = (path) => path.split('.').reduce((o, k) => o?.[k], fr);
+// Variables des textes ({{minTicket}}…) : valeurs de l'API si disponible, sinon valeurs par défaut du registre.
+const vars = { minTicket: '100 000 FCFA' };
+const fill = (text) => (typeof text === 'string' ? text.replace(/\{\{(\w+)\}\}/g, (m, k) => vars[k] ?? m) : text);
+const get = (path) => fill(path.split('.').reduce((o, k) => o?.[k], fr));
 
 /** Pages publiques fixes : [chemin, clé du titre, clé de la description]. */
 const STATIC_PAGES = [
@@ -113,6 +116,14 @@ async function fetchJson(path) {
 }
 
 let count = 0;
+if (API) {
+  try {
+    const stats = await fetchJson('/projects/stats/public');
+    if (stats?.minTicket) vars.minTicket = `${new Intl.NumberFormat('fr-FR').format(stats.minTicket)} FCFA`.replace(/ /g, ' ');
+  } catch {
+    // Valeur par défaut conservée.
+  }
+}
 try {
   for (const [path, titleKey, descKey] of STATIC_PAGES) {
     await write(path, render({

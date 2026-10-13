@@ -4,6 +4,7 @@ import { useSiteSettings } from '../context/SettingsContext';
 import { Building2, ShieldCheck, TrendingUp, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { usePageMeta } from '../hooks/usePageMeta';
+import { useMinTicket } from '../hooks/useMinTicket';
 
 const HERO_IMAGES = [
   'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2075&auto=format&fit=crop',
@@ -14,6 +15,7 @@ const HERO_IMAGES = [
 
 const Home = () => {
   const { t } = useTranslation();
+  const minTicket = useMinTicket();
   usePageMeta(undefined, t('home.subtitle'));
   const { settings } = useSiteSettings();
   const cleanPhone = settings.contactPhone.replace(/\s+/g, '');
@@ -131,7 +133,7 @@ const Home = () => {
 
         {/* Content */}
         <div className="container" style={{ position: 'relative', zIndex: 2, margin: '0 auto' }}>
-          <h1 style={{ color: 'white', fontSize: '3rem', textShadow: '0 2px 8px rgba(0,0,0,0.8)', marginBottom: '1rem' }}>{t('home.title')}</h1>
+          <h1 style={{ color: 'white', fontSize: '3rem', textShadow: '0 2px 8px rgba(0,0,0,0.8)', marginBottom: '1rem' }}>{t('home.title', { minTicket })}</h1>
           <p style={{ color: 'white', fontSize: '1.25rem', maxWidth: '800px', margin: '0 auto 2.5rem', textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>{t('home.subtitle')}</p>
           <div className="hero-buttons" style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
             <button onClick={() => navigate('/investir')} className="btn btn-secondary" style={{ padding: '1rem 2rem', fontSize: '1.1rem' }}>{t('home.btnInvest')}</button>
@@ -176,7 +178,7 @@ const Home = () => {
               <Building2 size={48} />
             </div>
             <h3>{t('home.feature1Title')}</h3>
-            <p>{t('home.feature1Desc')}</p>
+            <p>{t('home.feature1Desc', { minTicket })}</p>
           </div>
 
           <div className="feature-card" style={{ textAlign: 'center', padding: '2rem', backgroundColor: 'var(--color-surface)', borderRadius: 'var(--radius-lg)' }}>

@@ -14,13 +14,13 @@
     "blog": "Actualités"
   },
   "home": {
-    "title": "Bâtissez votre patrimoine immobilier en Afrique, à partir de 10 000 FCFA.",
+    "title": "Bâtissez votre patrimoine immobilier en Afrique, à partir de {{minTicket}}.",
     "subtitle": "La plateforme de financement participatif immobilier de confiance, pensée pour l'Afrique et sa diaspora.",
     "btnInvest": "Voir les opportunités",
     "btnFinance": "Financer un projet",
     "featuresTitle": "Pourquoi choisir Emeraude Africa ?",
     "feature1Title": "Accessible à tous",
-    "feature1Desc": "Commencez à bâtir votre patrimoine immobilier en Afrique à partir de 10 000 FCFA seulement (ou équivalent).",
+    "feature1Desc": "Commencez à bâtir votre patrimoine immobilier en Afrique à partir de {{minTicket}} seulement.",
     "feature2Title": "Sécurité & Transparence",
     "feature2Desc": "Tous nos projets sont rigoureusement audités. Suivez vos investissements en toute transparence.",
     "feature3Title": "Rendements attractifs",
@@ -42,7 +42,7 @@
     "title": "À Propos d'Emeraude Africa",
     "subtitle": "Démocratiser l'investissement immobilier en Afrique, pour tous.",
     "missionTitle": "Notre Mission",
-    "missionDesc": "Emeraude Africa est née d'une conviction forte : le développement urbain et économique de l'Afrique doit bénéficier à ceux qui y croient. Nous avons conçu cette plateforme pour permettre à la diaspora et aux résidents locaux d'investir facilement dans des projets immobiliers rentables et sécurisés, à partir de montants accessibles (dès 10 000 FCFA ou équivalent).",
+    "missionDesc": "Emeraude Africa est née d'une conviction forte : le développement urbain et économique de l'Afrique doit bénéficier à ceux qui y croient. Nous avons conçu cette plateforme pour permettre à la diaspora et aux résidents locaux d'investir facilement dans des projets immobiliers sélectionnés, à partir de montants accessibles (dès {{minTicket}}).",
     "transparencyTitle": "Transparence",
     "transparencyDesc": "Nous auditons chaque projet de manière indépendante. Vous avez accès à toutes les informations financières et juridiques avant d'investir.",
     "securityTitle": "Sécurité",
@@ -56,7 +56,7 @@
     "title": "Foire Aux Questions",
     "subtitle": "Vous avez des questions ? Nous avons les réponses.",
     "q1": "Qu'est-ce qu'Emeraude Africa ?",
-    "a1": "Emeraude Africa est une plateforme d'investissement participatif spécialisée dans l'immobilier en Afrique. Nous permettons aux particuliers d'investir dans des projets immobiliers présélectionnés à partir de 10 000 FCFA (ou équivalent).",
+    "a1": "Emeraude Africa est une plateforme d'investissement participatif spécialisée dans l'immobilier en Afrique. Nous permettons aux particuliers d'investir dans des projets immobiliers présélectionnés à partir de {{minTicket}}.",
     "q2": "Comment sont sélectionnés les projets ?",
     "a2": "Chaque projet soumis par un promoteur passe par un comité d'audit strict qui vérifie la viabilité financière, la conformité juridique (titres fonciers, permis), et l'historique du promoteur.",
     "q3": "Est-ce que mon investissement est garanti ?",
@@ -82,7 +82,7 @@
   },
   "invest": {
     "title": "Opportunités d'investissement",
-    "subtitle": "Découvrez nos projets immobiliers en cours de financement et participez à leur réalisation à partir de 10 000 FCFA (ou équivalent).",
+    "subtitle": "Découvrez nos projets immobiliers en cours de financement et participez à leur réalisation à partir de {{minTicket}}.",
     "labelTarget": "Montant recherché",
     "labelReturn": "Rendement cible",
     "labelDuration": "Durée cible",
@@ -139,7 +139,11 @@
     "notOpen": "Projet non ouvert",
     "months": "{{count}} mois",
     "loading": "Chargement du projet...",
-    "notFound": "Projet introuvable"
+    "notFound": "Projet introuvable",
+    "returnType": {
+      "FIXED": "Rendement fixe",
+      "VARIABLE": "Rendement cible (non garanti)"
+    }
   },
   "finance": {
     "title": "Financer votre projet immobilier",
@@ -159,7 +163,12 @@
     "placeholderTarget": "Ex: 327 000 000 FCFA / 500 000 €",
     "labelDesc": "Description synthétique du projet",
     "placeholderDesc": "Parlez-nous brièvement de votre projet...",
-    "btnSubmit": "Soumettre mon dossier"
+    "btnSubmit": "Soumettre mon dossier",
+    "feesTitle": "Frais pour le porteur de projet",
+    "feesSubmission": "Dépôt du dossier : {{fee}}.",
+    "feesSubmissionFree": "Dépôt du dossier : gratuit.",
+    "feesCommission": "Commission de la plateforme : {{percent}} % des fonds levés, prélevée à la clôture de la collecte.",
+    "feesNoCommission": "Aucune commission prélevée sur les fonds levés."
   },
   "contact": {
     "title": "Contactez-nous",
@@ -327,7 +336,9 @@
       "previewMode": "Mode Aperçu",
       "closePreview": "Fermer l'aperçu",
       "chooseFile": "Choisir un fichier",
-      "noFileChosen": "Aucun fichier choisi"
+      "noFileChosen": "Aucun fichier choisi",
+      "returnType": "Type de rendement",
+      "returnTypeDefault": "Valeur par défaut de la plateforme"
     },
     "status": {
       "DRAFT": "Brouillon",
@@ -376,16 +387,6 @@
       "FAILED": "Échoué",
       "CANCELLED": "Abandonné",
       "EXPIRED": "Expiré"
-    },
-    "settings": {
-      "paymentsTitle": "Paiements et conformité",
-      "paymentsDesc": "Règles appliquées par le serveur à chaque investissement.",
-      "requireKyc": "Exiger une identité vérifiée (KYC) pour investir",
-      "requireKycHint": "Recommandé : les CGU prévoient la vérification d'identité avant tout investissement.",
-      "priority": "Ordre de préférence des prestataires",
-      "priorityHint": "Codes séparés par des virgules, ex. : CINETPAY,WAVE,PAYDUNYA,FLUTTERWAVE,STRIPE. Vide = valeur du serveur.",
-      "disabled": "Prestataires désactivés",
-      "disabledHint": "Codes séparés par des virgules, ex. : STRIPE. Vide = aucun."
     },
     "nav": {
       "overview": "Vue d'ensemble",
@@ -465,6 +466,171 @@
       "saved": "Article enregistré.",
       "cancel": "Retour à la liste",
       "error": "L'enregistrement a échoué."
+    },
+    "config": {
+      "title": "Paramètres de la plateforme",
+      "subtitle": "Chaque modification est appliquée immédiatement sur le site et enregistrée dans l'historique.",
+      "categories": {
+        "general": "Site",
+        "contact": "Coordonnées",
+        "legal": "Informations légales",
+        "investment": "Investissement",
+        "fees": "Frais",
+        "payments": "Paiements",
+        "notifications": "Notifications",
+        "history": "Historique"
+      },
+      "save": "Enregistrer",
+      "saving": "Enregistrement…",
+      "saved": "Paramètres enregistrés.",
+      "error": "L'enregistrement a échoué.",
+      "unsaved": "Modifications non enregistrées",
+      "cancel": "Annuler les modifications",
+      "loading": "Chargement…",
+      "yes": "Activé",
+      "no": "Désactivé",
+      "moveUp": "Monter",
+      "moveDown": "Descendre",
+      "options": {
+        "FIXED": "Rendement fixe",
+        "VARIABLE": "Rendement cible (variable)"
+      },
+      "historyEmpty": "Aucune modification enregistrée.",
+      "colDate": "Date",
+      "colSetting": "Paramètre",
+      "colOld": "Ancienne valeur",
+      "colNew": "Nouvelle valeur",
+      "colBy": "Par",
+      "fields": {
+        "siteAnnouncement": {
+          "label": "Bandeau d'annonce",
+          "hint": "Message affiché en haut de toutes les pages (maintenance, nouveauté…). Vide = aucun bandeau."
+        },
+        "whatsappNumber": {
+          "label": "Numéro WhatsApp du support",
+          "hint": "Format international, ex. +221 77 000 00 00. Vide = pas de bouton WhatsApp."
+        },
+        "socialFacebook": {
+          "label": "Page Facebook",
+          "hint": "Adresse https complète. Vide = lien masqué."
+        },
+        "socialLinkedin": {
+          "label": "Page LinkedIn",
+          "hint": "Adresse https complète. Vide = lien masqué."
+        },
+        "socialInstagram": {
+          "label": "Compte Instagram",
+          "hint": "Adresse https complète. Vide = lien masqué."
+        },
+        "contactEmail": {
+          "label": "E-mail de contact public",
+          "hint": "Affiché sur la page Contact et dans les mentions légales."
+        },
+        "contactPhone": {
+          "label": "Téléphone de contact public",
+          "hint": ""
+        },
+        "contactAddress": {
+          "label": "Adresse des bureaux",
+          "hint": ""
+        },
+        "adminNotificationEmail": {
+          "label": "E-mail des alertes internes",
+          "hint": "Reçoit les messages du formulaire de contact. Vide = e-mail de contact public."
+        },
+        "legalIsDemo": {
+          "label": "Mode démonstration",
+          "hint": "Affiche un avertissement « plateforme de démonstration » dans les mentions légales. À désactiver au lancement officiel."
+        },
+        "legalCompanyName": {
+          "label": "Raison sociale",
+          "hint": ""
+        },
+        "legalForm": {
+          "label": "Forme juridique",
+          "hint": "Ex. Société Anonyme (SA), SAS, SARL."
+        },
+        "legalCapital": {
+          "label": "Capital social",
+          "hint": "Ex. 10 000 000 FCFA."
+        },
+        "legalRegistration": {
+          "label": "Immatriculation (RCCM, NINEA)",
+          "hint": "Vide = « en cours d'immatriculation »."
+        },
+        "legalAddress": {
+          "label": "Siège social",
+          "hint": ""
+        },
+        "legalDirector": {
+          "label": "Directeur de la publication",
+          "hint": ""
+        },
+        "legalRegulator": {
+          "label": "Autorité de régulation",
+          "hint": "Ex. AMF-UMOA. Vide = « agrément en cours »."
+        },
+        "legalLicense": {
+          "label": "Numéro d'agrément",
+          "hint": "Vide = « agrément en cours »."
+        },
+        "privacyEmail": {
+          "label": "E-mail données personnelles",
+          "hint": "Adresse pour exercer les droits sur les données (politique de confidentialité)."
+        },
+        "investmentRequiresKyc": {
+          "label": "Identité vérifiée obligatoire pour investir",
+          "hint": "Recommandé : prévu par les CGU (lutte contre le blanchiment)."
+        },
+        "defaultMinTicket": {
+          "label": "Ticket minimum par défaut",
+          "hint": "Proposé pour les nouveaux projets et affiché sur le site tant qu'aucun projet n'est ouvert."
+        },
+        "maxInvestmentAmount": {
+          "label": "Montant maximum par investissement",
+          "hint": "0 = pas de plafond."
+        },
+        "defaultReturnType": {
+          "label": "Type de rendement par défaut",
+          "hint": "Appliqué aux nouveaux projets ; modifiable projet par projet."
+        },
+        "investorFeePercent": {
+          "label": "Frais d'entrée investisseur",
+          "hint": "Pourcentage ajouté au montant investi lors du paiement. 0 = aucun frais."
+        },
+        "projectCommissionPercent": {
+          "label": "Commission sur les fonds levés",
+          "hint": "Prélevée sur le montant collecté, à la clôture. Affichée aux porteurs de projet et dans les CGU."
+        },
+        "projectSubmissionFee": {
+          "label": "Frais de dépôt d'un dossier",
+          "hint": "Montant fixe annoncé aux porteurs de projet. 0 = dépôt gratuit."
+        },
+        "paymentProviderPriority": {
+          "label": "Ordre de préférence des prestataires",
+          "hint": "Le premier prestataire disponible pour le moyen choisi est utilisé ; les suivants servent de relais."
+        },
+        "paymentProvidersDisabled": {
+          "label": "Prestataires désactivés",
+          "hint": "Un prestataire coché n'est plus proposé."
+        },
+        "paymentExpiryHours": {
+          "label": "Délai de paiement",
+          "hint": "Au-delà, un paiement en ligne non finalisé expire et l'investissement est annulé."
+        },
+        "bankTransferEnabled": {
+          "label": "Virement manuel proposé",
+          "hint": "Permet d'investir par virement ou transfert, validé par l'équipe à réception des fonds."
+        },
+        "bankTransferInstructions": {
+          "label": "Instructions de virement",
+          "hint": "Coordonnées bancaires ou de transfert affichées et envoyées par e-mail après une demande d'investissement."
+        },
+        "notifyOwnerOnInvestment": {
+          "label": "Prévenir le porteur à chaque investissement",
+          "hint": "E-mail au porteur de projet (il peut aussi le désactiver dans son profil)."
+        }
+      }
     }
   },
   "payment": {
@@ -499,7 +665,8 @@
       "min": "Le montant minimum est de {{min}}.",
       "max": "Le montant maximum disponible est de {{max}}.",
       "kyc": "Votre identité doit être vérifiée avant d'investir. Rendez-vous dans « Mon profil » pour envoyer vos documents.",
-      "generic": "Une erreur est survenue. Réessayez dans quelques instants."
+      "generic": "Une erreur est survenue. Réessayez dans quelques instants.",
+      "maxAmount": "Le montant maximum par investissement est de {{max}}."
     },
     "manualSuccessTitle": "Demande enregistrée !",
     "manualSuccessDesc": "Notre équipe va vous contacter avec les instructions de paiement.",
@@ -530,7 +697,10 @@
       "failure": "Simuler un échec",
       "cancel": "Abandonner"
     },
-    "pendingBanner": "Paiement à finaliser : {{amount}} pour « {{project}} »"
+    "pendingBanner": "Paiement à finaliser : {{amount}} pour « {{project}} »",
+    "feeLine": "Frais d'entrée ({{percent}} %)",
+    "totalLine": "Total à payer",
+    "transferInstructionsTitle": "Instructions de virement"
   },
   "newsletter": {
     "title": "Restez informé",
@@ -557,17 +727,18 @@
         {
           "title": "1. Éditeur de la plateforme",
           "items": [
-            "Nom de l'entreprise : Emeraude Africa (société fictive pour démo MVP)",
-            "Forme juridique : Société Anonyme (SA)",
-            "Siège social : Dakar, Sénégal",
-            "Capital social : 10 000 000 FCFA",
+            "Raison sociale : {{companyName}}",
+            "Forme juridique : {{legalForm}}",
+            "Capital social : {{capital}}",
+            "Immatriculation : {{registration}}",
+            "Siège social : {{address}}",
             "Contact : {{email}}"
           ]
         },
         {
           "title": "2. Directeur de la publication",
           "paragraphs": [
-            "Le directeur de la publication est M. Abdarrahman Samassa."
+            "Le directeur de la publication est {{director}}."
           ]
         },
         {
@@ -584,7 +755,7 @@
         {
           "title": "4. Agrément et régulation",
           "paragraphs": [
-            "Dans le cadre du lancement en production, Emeraude Africa sera soumise à l'agrément des autorités de régulation compétentes pour le financement participatif (notamment l'Autorité des Marchés Financiers de l'UMOA)."
+            "Autorité de régulation : {{regulator}}. Numéro d'agrément : {{license}}."
           ]
         },
         {
@@ -602,38 +773,53 @@
         {
           "title": "1. Objet",
           "paragraphs": [
-            "Les présentes Conditions Générales régissent l'accès et l'utilisation de la plateforme de financement participatif immobilier Emeraude Africa. En utilisant nos services, vous acceptez sans réserve les présentes CGU/CGV."
+            "Les présentes Conditions Générales régissent l'accès et l'utilisation de la plateforme de financement participatif immobilier exploitée par {{companyName}}. En utilisant nos services, vous acceptez sans réserve les présentes CGU/CGV."
           ]
         },
         {
           "title": "2. Accès aux services",
           "paragraphs": [
-            "L'accès aux projets d'investissement nécessite la création d'un compte utilisateur et la fourniture de documents d'identité valides (processus KYC - Know Your Customer), conformément à la législation sur la lutte contre le blanchiment d'argent et le financement du terrorisme (LCB-FT). Un investissement ne peut être réalisé qu'une fois l'identité vérifiée par notre équipe. Le porteur d'un projet ne peut pas investir dans son propre projet."
+            "L'accès aux projets d'investissement nécessite la création d'un compte utilisateur et, lorsque la plateforme l'exige, la fourniture de documents d'identité valides (processus KYC - Know Your Customer), conformément à la législation sur la lutte contre le blanchiment d'argent et le financement du terrorisme (LCB-FT). Le porteur d'un projet ne peut pas investir dans son propre projet."
           ]
         },
         {
           "title": "3. Paiements et sécurisation des fonds",
           "paragraphs": [
-            "Les paiements en ligne sont assurés par des prestataires agréés : CinetPay, Wave, PayDunya et Flutterwave (Mobile Money, portefeuilles électroniques et cartes), et Stripe (cartes internationales). Selon le moyen de paiement choisi, la plateforme sélectionne automatiquement un prestataire disponible ; l'investisseur peut aussi indiquer son prestataire préféré. Un virement ou un transfert manuel reste possible : l'investissement est alors validé par notre équipe à réception des fonds.",
-            "Un investissement n'est validé qu'après confirmation du paiement directement auprès du prestataire, pour un montant et une devise identiques à ceux de la souscription. Un paiement non finalisé dans un délai de 24 heures expire et l'investissement correspondant est annulé, sans frais. Le montant minimum de souscription est celui indiqué sur la fiche de chaque projet, dans la limite du montant restant à financer.",
+            "Les paiements en ligne sont assurés par des prestataires agréés : CinetPay, Wave, PayDunya et Flutterwave (Mobile Money, portefeuilles électroniques et cartes), et Stripe (cartes internationales). Selon le moyen de paiement choisi, la plateforme sélectionne automatiquement un prestataire disponible ; l'investisseur peut aussi indiquer son prestataire préféré. Lorsqu'il est proposé, un virement ou un transfert manuel reste possible : l'investissement est alors validé par notre équipe à réception des fonds.",
+            "Un investissement n'est validé qu'après confirmation du paiement directement auprès du prestataire, pour un montant et une devise identiques à ceux de la souscription. Un paiement non finalisé dans un délai de {{expiryHours}} heures expire et l'investissement correspondant est annulé, sans frais. Le montant minimum de souscription est celui indiqué sur la fiche de chaque projet, dans la limite du montant restant à financer et, le cas échéant, du plafond par investissement fixé par la plateforme.",
             "Avant chaque investissement, l'investisseur accepte expressément les présentes conditions et l'avertissement sur les risques ; la date de cette acceptation est conservée. Les fonds investis sont cantonnés dans un compte dédié jusqu'à la clôture de la levée de fonds. Si l'objectif de collecte n'est pas atteint ou si le projet est annulé, les investisseurs sont intégralement remboursés, sans frais supplémentaires. Un paiement reçu en double est remboursé."
           ]
         },
         {
-          "title": "4. Avertissement sur les risques",
+          "title": "4. Frais",
+          "items": [
+            "Investisseurs : frais d'entrée de {{investorFee}} % du montant investi, ajoutés au montant payé et affichés avant la confirmation (0 % = aucun frais).",
+            "Porteurs de projet : frais de dépôt de dossier de {{submissionFee}} et commission de {{commission}} % des fonds levés, prélevée à la clôture de la collecte.",
+            "Les frais applicables sont ceux en vigueur à la date de l'investissement ou du dépôt du dossier."
+          ]
+        },
+        {
+          "title": "5. Avertissement sur les risques",
           "paragraphs": [
             "L'investissement immobilier et le financement participatif comportent des risques inhérents :"
           ],
           "items": [
             "Risque de perte en capital : vous pouvez perdre tout ou partie des fonds investis.",
-            "Risque d'illiquidité : les investissements sont bloqués pendant la durée du projet (généralement 12 à 36 mois). Il est très difficile, voire impossible, de revendre vos parts avant le terme."
+            "Risque d'illiquidité : les investissements sont bloqués pendant la durée du projet (généralement 12 à 36 mois). Il est très difficile, voire impossible, de revendre vos parts avant le terme.",
+            "Rendement : un rendement « fixe » est contractuel ; un rendement « cible » est un objectif non garanti."
           ],
           "after": [
             "Nous vous conseillons de ne jamais investir des fonds dont vous pourriez avoir un besoin immédiat et de diversifier vos investissements."
           ]
         },
         {
-          "title": "5. Propriété intellectuelle",
+          "title": "6. Communications",
+          "paragraphs": [
+            "Les e-mails liés au compte, aux paiements et aux investissements sont toujours envoyés. Les autres communications (réponses du support par e-mail, avis aux porteurs de projet, lettre d'information) se règlent dans « Mon profil »."
+          ]
+        },
+        {
+          "title": "7. Propriété intellectuelle",
           "paragraphs": [
             "L'ensemble du contenu de la plateforme (textes, images, logos, architecture) est protégé par le droit d'auteur. Toute reproduction non autorisée est strictement interdite."
           ]
@@ -647,13 +833,14 @@
         {
           "title": "1. Collecte des données",
           "paragraphs": [
-            "Lors de votre inscription, de vos investissements et de vos échanges avec nous, Emeraude Africa collecte les données suivantes :"
+            "Lors de votre inscription, de vos investissements et de vos échanges avec nous, {{companyName}} collecte les données suivantes :"
           ],
           "items": [
             "Données d'identification : nom, prénom, adresse e-mail, numéro de téléphone.",
             "Documents légaux (pièce d'identité, justificatif de domicile) dans le cadre de nos obligations de vérification (KYC). Ils sont stockés en accès restreint et consultables uniquement par notre équipe de conformité, via des liens temporaires.",
             "Données de transaction : historique d'investissement, moyen de paiement choisi, prestataire utilisé, références et statuts des paiements, ainsi qu'un journal horodaté des échanges avec ce prestataire (traçabilité et lutte contre la fraude). Nous ne stockons jamais vos numéros de carte bancaire ni vos codes Mobile Money : ils sont saisis directement chez nos prestataires de paiement (CinetPay, Wave, PayDunya, Flutterwave, Stripe).",
             "Preuves de consentement : date et heure d'acceptation des présentes conditions à l'inscription, et des Conditions Générales de Vente avant chaque investissement.",
+            "Préférences : langue et choix de communication (e-mails facultatifs, lettre d'information), modifiables à tout moment dans « Mon profil ».",
             "Formulaire de contact et lettre d'information : nom, adresse e-mail, téléphone (facultatif), contenu du message, page d'origine et date de votre consentement.",
             "Mesure d'audience : pages consultées et informations techniques sur votre navigateur, uniquement si vous l'avez accepté dans le bandeau de cookies."
           ]
@@ -692,11 +879,13 @@
         {
           "title": "6. Vos droits",
           "paragraphs": [
-            "Conformément aux lois sur la protection des données (notamment la loi sénégalaise n° 2008-12 et le RGPD pour les résidents européens), vous disposez d'un droit d'accès, de rectification, de suppression, d'opposition et de portabilité de vos données, ainsi que du droit de retirer votre consentement à tout moment. Pour exercer ces droits, contactez : privacy@emeraude-africa.com."
+            "Conformément aux lois sur la protection des données (notamment la loi sénégalaise n° 2008-12 et le RGPD pour les résidents européens), vous disposez d'un droit d'accès, de rectification, de suppression, d'opposition et de portabilité de vos données, ainsi que du droit de retirer votre consentement à tout moment. Pour exercer ces droits, contactez : {{privacyEmail}}."
           ]
         }
       ]
-    }
+    },
+    "pending": "en cours",
+    "demoNotice": "Plateforme en phase de démonstration : les informations ci-dessous seront complétées lors du lancement officiel."
   },
   "why": {
     "title": "Pourquoi Emeraude Africa ?",
@@ -764,5 +953,18 @@
     "by": "par {{author}}",
     "loading": "Chargement…",
     "notFound": "Cet article n'existe pas ou n'est plus en ligne."
+  },
+  "whatsapp": {
+    "label": "Discuter avec nous sur WhatsApp"
+  },
+  "preferences": {
+    "title": "Préférences de communication",
+    "desc": "Les e-mails liés à votre compte, à vos paiements et à vos investissements sont toujours envoyés.",
+    "emailSupportReplies": "Recevoir un e-mail quand le support me répond",
+    "emailNewInvestmentOnMyProject": "Porteur de projet : recevoir un e-mail à chaque investissement validé sur mon projet",
+    "newsletter": "Recevoir la lettre d'information (nouveaux projets, actualités)",
+    "language": "Langue préférée",
+    "saved": "Préférences enregistrées.",
+    "error": "L'enregistrement a échoué."
   }
 }

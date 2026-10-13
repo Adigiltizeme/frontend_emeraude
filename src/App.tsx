@@ -35,6 +35,7 @@ import AdminProjects from './pages/admin/AdminProjects';
 import AdminLeads from './pages/admin/AdminLeads';
 import NewsletterSignup from './components/NewsletterSignup';
 import CookieConsent, { openCookieSettings } from './components/CookieConsent';
+import { AnnouncementBanner, SocialLinks, WhatsAppButton } from './components/SiteExtras';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPassword';
@@ -51,11 +52,12 @@ function App() {
   
   return (
     <AuthProvider>
-      <SettingsProvider>
       <SocketProvider>
+      <SettingsProvider>
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <div className="app-container">
           <InteractiveBackground />
+          <AnnouncementBanner />
           <Header />
 
           <main>
@@ -110,6 +112,7 @@ function App() {
           <footer>
             <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', textAlign: 'center' }}>
               <NewsletterSignup />
+              <SocialLinks />
               <p style={{ width: '100%' }}>{t('footer.copyright')}</p>
               <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center', width: '100%' }}>
                 <Link to="/a-propos">{t('nav.about')}</Link>
@@ -127,10 +130,11 @@ function App() {
             </div>
           </footer>
           <CookieConsent />
+          <WhatsAppButton />
         </div>
       </BrowserRouter>
-      </SocketProvider>
       </SettingsProvider>
+      </SocketProvider>
     </AuthProvider>
   );
 }

@@ -1,8 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '../hooks/usePageMeta';
+import { useMinTicket } from '../hooks/useMinTicket';
 
 const About = () => {
   const { t } = useTranslation();
+  const minTicket = useMinTicket();
   usePageMeta(t('about.title'), t('about.subtitle'));
 
   return (
@@ -17,7 +19,7 @@ const About = () => {
       <div style={{ marginBottom: '3rem' }}>
         <h2 style={{ color: 'var(--color-primary-800)', marginBottom: '1rem' }}>{t('about.missionTitle')}</h2>
         <p style={{ fontSize: '1.1rem', color: 'var(--color-neutral-800)', lineHeight: '1.8' }}>
-          {t('about.missionDesc')}
+          {t('about.missionDesc', { minTicket })}
         </p>
       </div>
 

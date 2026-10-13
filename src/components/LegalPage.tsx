@@ -4,6 +4,7 @@ import { ShieldCheck } from 'lucide-react';
 import { LEGAL_REVISION } from '../config/legal';
 import { useSiteSettings } from '../context/SettingsContext';
 import { usePageMeta } from '../hooks/usePageMeta';
+import { formatMoney } from '../config/api';
 
 interface LegalSection {
   title: string;
@@ -20,7 +21,25 @@ const LegalPage = ({ page }: { page: 'notice' | 'terms' | 'privacy' }) => {
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
-  const sections = t(`legalPages.${page}.sections`, { returnObjects: true, email: settings.contactEmail }) as LegalSection[];
+  // Informations légales, frais et délais : paramètres du back-office (aucune donnée écrite en dur).
+  const pending = t('legalPages.pending');
+  const values = {
+    email: settings.contactEmail,
+    companyName: settings.legalCompanyName,
+    legalForm: settings.legalForm,
+    capital: settings.legalCapital,
+    registration: settings.legalRegistration || pending,
+    address: settings.legalAddress,
+    director: settings.legalDirector,
+    regulator: settings.legalRegulator || pending,
+    license: settings.legalLicense || pending,
+    privacyEmail: settings.privacyEmail,
+    expiryHours: settings.paymentExpiryHours,
+    investorFee: settings.investorFeePercent,
+    commission: settings.projectCommissionPercent,
+    submissionFee: formatMoney(settings.projectSubmissionFee, i18n.language),
+  };
+  const sections = t(`legalPages.${page}.sections`, { returnObjects: true, ...values }) as LegalSection[];
   const revision = new Date(`${LEGAL_REVISION}T00:00:00`).toLocaleDateString(i18n.language, { day: 'numeric', month: 'long', year: 'numeric' });
 
   return (
@@ -31,6 +50,12 @@ const LegalPage = ({ page }: { page: 'notice' | 'terms' | 'privacy' }) => {
         <p style={{ color: 'var(--color-neutral-600)', fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto' }}>{t(`legalPages.${page}.subtitle`)}</p>
         <p style={{ color: 'var(--color-neutral-500)', fontSize: '0.9rem', marginTop: '0.5rem' }}>{t('legalPages.updated', { date: revision })}</p>
       </div>
+
+      {page === 'notice' && settings.legalIsDemo && (
+        <p role="note" style={{ backgroundColor: '#fffbeb', border: '1px solid #fde68a', color: '#92400e', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem' }}>
+          {t('legalPages.demoNotice')}
+        </p>
+      )}
 
       <section style={{ backgroundColor: 'white', padding: '2.5rem', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', color: 'var(--color-neutral-700)', lineHeight: 1.8 }}>
         {Array.isArray(sections) && sections.map((section) => (

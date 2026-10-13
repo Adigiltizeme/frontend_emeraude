@@ -3,6 +3,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { AlertTriangle, CreditCard, Landmark, Smartphone, Wallet } from 'lucide-react';
 import { API_URL, authHeaders, formatMoney } from '../config/api';
 import { useAuth } from '../context/AuthContext';
+import { useSiteSettings } from '../context/SettingsContext';
 
 interface PaymentOptions {
   currency: string;
@@ -13,7 +14,8 @@ interface PaymentOptions {
 interface Props {
   project: { id: string; minTicket: number; target: number; raised?: number };
   onClose: () => void;
-  onManualSuccess: () => void;
+  /** Virement : instructions configurées dans le back-office (vide si non renseignées). */
+  onManualSuccess: (instructions: string) => void;
 }
 
 const METHOD_ICONS: Record<string, JSX.Element> = {
@@ -26,6 +28,7 @@ const METHOD_ICONS: Record<string, JSX.Element> = {
 const InvestModal = ({ project, onClose, onManualSuccess }: Props) => {
   const { t, i18n } = useTranslation();
   const { token } = useAuth();
+  const { settings, refresh: refreshSettings } = useSiteSettings();
   const [options, setOptions] = useState<PaymentOptions | null>(null);
   const [amount, setAmount] = useState<number | ''>('');
   const [method, setMethod] = useState<string>('');
@@ -37,6 +40,9 @@ const InvestModal = ({ project, onClose, onManualSuccess }: Props) => {
   const currency = options?.currency || 'XOF';
   const remaining = Math.max(0, (project.target || 0) - (project.raised || 0));
   const money = (value: number) => formatMoney(value, i18n.language, currency);
+  // Frais d'entrée (paramètre du back-office) : calcul identique au serveur, affiché avant confirmation.
+  const feePercent = settings.investorFeePercent;
+  const feeAmount = amount ? Math.round((amount * feePercent) / 100) : 0;
 
   // Les moyens disponibles dépendent du montant (contraintes propres à chaque prestataire) : rechargés après la saisie.
   useEffect(() => {
@@ -67,6 +73,7 @@ const InvestModal = ({ project, onClose, onManualSuccess }: Props) => {
     if (!acceptedTerms) return setError(t('payment.errors.terms'));
     if (!amount || amount < project.minTicket) return setError(t('payment.errors.min', { min: money(project.minTicket) }));
     if (project.target > 0 && amount > remaining) return setError(t('payment.errors.max', { max: money(remaining) }));
+    if (settings.maxInvestmentAmount > 0 && amount > settings.maxInvestmentAmount) return setError(t('payment.errors.maxAmount', { max: money(settings.maxInvestmentAmount) }));
 
     setSubmitting(true);
     try {
@@ -79,11 +86,14 @@ const InvestModal = ({ project, onClose, onManualSuccess }: Props) => {
           paymentMethod: method,
           provider: provider || undefined,
           lang: i18n.language?.startsWith('en') ? 'en' : 'fr',
+          // Le serveur refuse si les frais ont changé depuis l'affichage de ce total.
+          expectedTotal: amount + feeAmount,
           acceptedTerms: true,
         }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
+        if (res.status === 409) refreshSettings();
         if (res.status === 403 && String(data?.message || '').includes('KYC')) setError(t('payment.errors.kyc'));
         else setError(Array.isArray(data?.message) ? data.message.join(' ') : data?.message || t('payment.errors.generic'));
         setSubmitting(false);
@@ -93,7 +103,7 @@ const InvestModal = ({ project, onClose, onManualSuccess }: Props) => {
         window.location.href = data.checkoutUrl;
         return;
       }
-      onManualSuccess();
+      onManualSuccess(data.instructions || '');
     } catch {
       setError(t('payment.errors.generic'));
       setSubmitting(false);
@@ -162,6 +172,14 @@ const InvestModal = ({ project, onClose, onManualSuccess }: Props) => {
                 <option key={p.code} value={p.code}>{p.name}</option>
               ))}
             </select>
+          </div>
+        )}
+
+        {feePercent > 0 && !!amount && (
+          <div style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '6px', padding: '0.75rem', marginBottom: '1rem', fontSize: '0.9rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>{t('payment.amountLabel', { currency: currency === 'XOF' ? 'FCFA' : currency })}</span><span>{money(amount)}</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>{t('payment.feeLine', { percent: feePercent })}</span><span>{money(feeAmount)}</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700, borderTop: '1px solid #e2e8f0', marginTop: '0.35rem', paddingTop: '0.35rem' }}><span>{t('payment.totalLine')}</span><span>{money(amount + feeAmount)}</span></div>
           </div>
         )}
 

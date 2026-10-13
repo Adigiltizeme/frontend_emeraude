@@ -6,6 +6,7 @@ import { useSocket } from '../context/SocketContext';
 import { useLiveRefresh } from '../hooks/useLiveRefresh';
 import { API_URL, formatMoney } from '../config/api';
 import { usePageMeta } from '../hooks/usePageMeta';
+import { useMinTicket } from '../hooks/useMinTicket';
 import {
   CatalogFilters, CatalogProject, EMPTY_FILTERS, SORTS, activeFilterCount, countryOf, distinctValues,
   filterProjects, filtersFromParams, filtersToParams, progressOf,
@@ -21,7 +22,8 @@ const SORT_LABELS: Record<string, string> = {
 
 const Invest = () => {
   const { t, i18n } = useTranslation();
-  usePageMeta(t('invest.title'), t('invest.subtitle'));
+  const minTicket = useMinTicket();
+  usePageMeta(t('invest.title'), t('invest.subtitle', { minTicket }));
   const [projects, setProjects] = useState<CatalogProject[]>([]);
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
@@ -100,7 +102,7 @@ const Invest = () => {
       <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
         <h1>{t('invest.title')}</h1>
         <p style={{ color: 'var(--color-neutral-600)', maxWidth: '600px', margin: '1rem auto 0' }}>
-          {t('invest.subtitle')}
+          {t('invest.subtitle', { minTicket })}
         </p>
       </div>
 

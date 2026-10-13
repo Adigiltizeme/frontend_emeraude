@@ -21,6 +21,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
   const { isAuthenticated, token } = useAuth();
   const [showInvestForm, setShowInvestForm] = useState(false);
   const [investSuccess, setInvestSuccess] = useState(false);
+  const [transferInstructions, setTransferInstructions] = useState('');
   const [showInvestorsList, setShowInvestorsList] = useState(false);
   usePageMeta(isPreview ? undefined : project?.title, project?.description, project?.image || undefined);
 
@@ -166,7 +167,10 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--color-neutral-100)', paddingBottom: '0.5rem' }}>
                 <span style={{ color: 'var(--color-neutral-600)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><TrendingUp size={16} /> {t('invest.labelReturn')}</span>
-                <span style={{ fontWeight: '700', color: 'var(--color-primary-600)' }}>{project.returnRate}%</span>
+                <span style={{ fontWeight: '700', color: 'var(--color-primary-600)', textAlign: 'right' }}>
+                  {project.returnRate}%
+                  <small style={{ display: 'block', fontWeight: 500, fontSize: '0.75rem', color: 'var(--color-neutral-500)' }}>{t(`projectDetails.returnType.${project.returnType || 'FIXED'}`)}</small>
+                </span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--color-neutral-100)', paddingBottom: '0.5rem' }}>
                 <span style={{ color: 'var(--color-neutral-600)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Clock size={16} /> {t('invest.labelDuration')}</span>
@@ -288,7 +292,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
               <InvestModal
                 project={project}
                 onClose={() => setShowInvestForm(false)}
-                onManualSuccess={() => { setShowInvestForm(false); setInvestSuccess(true); }}
+                onManualSuccess={(instructions) => { setShowInvestForm(false); setTransferInstructions(instructions); setInvestSuccess(true); }}
               />
             )}
 
@@ -299,6 +303,12 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
                 <p style={{ fontSize: '0.9rem', color: '#15803d', marginBottom: '1rem' }}>
                   {t('payment.manualSuccessDesc')}
                 </p>
+                {transferInstructions && (
+                  <div style={{ textAlign: 'left', backgroundColor: 'white', border: '1px solid #bbf7d0', borderRadius: '6px', padding: '0.75rem', marginBottom: '1rem' }}>
+                    <strong style={{ display: 'block', marginBottom: '0.35rem', color: '#166534' }}>{t('payment.transferInstructionsTitle')}</strong>
+                    <p style={{ whiteSpace: 'pre-wrap', margin: 0, fontSize: '0.9rem', color: '#1f2937' }}>{transferInstructions}</p>
+                  </div>
+                )}
                 <button onClick={() => navigate('/mon-compte')} className="btn btn-primary" style={{ width: '100%' }}>
                   {t('payment.trackBtn')}
                 </button>

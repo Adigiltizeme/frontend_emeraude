@@ -5,9 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import { CheckCircle } from 'lucide-react';
 import ProjectForm from '../components/ProjectForm';
 import { usePageMeta } from '../hooks/usePageMeta';
+import { useSiteSettings } from '../context/SettingsContext';
+import { formatMoney } from '../config/api';
 
 const Finance = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { settings } = useSiteSettings();
   usePageMeta(t('finance.title'), t('finance.subtitle'));
   const { isAuthenticated, token } = useAuth();
   const navigate = useNavigate();
@@ -87,6 +90,11 @@ const Finance = () => {
         <p style={{ color: 'var(--color-neutral-600)', marginTop: '1rem' }}>
           {t('finance.subtitle')}
         </p>
+        <div style={{ marginTop: '1.5rem', backgroundColor: 'var(--color-primary-50)', borderRadius: '8px', padding: '1rem', textAlign: 'left', fontSize: '0.95rem' }}>
+          <strong style={{ display: 'block', marginBottom: '0.35rem' }}>{t('finance.feesTitle')}</strong>
+          <div>{settings.projectSubmissionFee > 0 ? t('finance.feesSubmission', { fee: formatMoney(settings.projectSubmissionFee, i18n.language) }) : t('finance.feesSubmissionFree')}</div>
+          <div>{settings.projectCommissionPercent > 0 ? t('finance.feesCommission', { percent: settings.projectCommissionPercent }) : t('finance.feesNoCommission')}</div>
+        </div>
 
       </div>
 

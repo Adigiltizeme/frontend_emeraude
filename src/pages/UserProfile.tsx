@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Save, User as UserIcon, Lock, ShieldCheck, Upload } from 'lucide-react';
+import PreferencesPanel from '../components/PreferencesPanel';
 
 const UserProfile: React.FC = () => {
   const { token, user, login } = useAuth();
@@ -282,7 +283,7 @@ const UserProfile: React.FC = () => {
           </button>
         </form>
 
-        
+        <PreferencesPanel />
       </div>
     </div>
   );

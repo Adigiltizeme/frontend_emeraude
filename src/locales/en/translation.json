@@ -14,13 +14,13 @@
     "blog": "News"
   },
   "home": {
-    "title": "Build your real estate portfolio in Africa, from 10,000 FCFA.",
+    "title": "Build your real estate portfolio in Africa, from {{minTicket}}.",
     "subtitle": "The trusted real estate crowdfunding platform, designed for Africa and its diaspora.",
     "btnInvest": "View opportunities",
     "btnFinance": "Fund a project",
     "featuresTitle": "Why choose Emeraude Africa?",
     "feature1Title": "Accessible to all",
-    "feature1Desc": "Start building your real estate portfolio in Africa from just 10,000 FCFA (or equivalent).",
+    "feature1Desc": "Start building your real estate portfolio in Africa from just {{minTicket}}.",
     "feature2Title": "Security & Transparency",
     "feature2Desc": "All our projects are rigorously audited. Track your investments with complete transparency.",
     "feature3Title": "Attractive returns",
@@ -42,7 +42,7 @@
     "title": "About Emeraude Africa",
     "subtitle": "Democratizing real estate investment in Africa, for everyone.",
     "missionTitle": "Our Mission",
-    "missionDesc": "Emeraude Africa was born from a strong conviction: Africa's urban and economic development must benefit those who believe in it. We designed this platform to allow the diaspora and local residents to easily invest in profitable and secure real estate projects, starting from accessible amounts (from 10,000 FCFA or equivalent).",
+    "missionDesc": "Emeraude Africa was born from a strong conviction: Africa's urban and economic development must benefit those who believe in it. We designed this platform to allow the diaspora and local residents to easily invest in selected real estate projects, starting from accessible amounts (from {{minTicket}}).",
     "transparencyTitle": "Transparency",
     "transparencyDesc": "We independently audit each project. You have access to all financial and legal information before investing.",
     "securityTitle": "Security",
@@ -56,7 +56,7 @@
     "title": "Frequently Asked Questions",
     "subtitle": "Have questions? We have answers.",
     "q1": "What is Emeraude Africa?",
-    "a1": "Emeraude Africa is a crowdfunding platform specializing in African real estate. We allow individuals to invest in pre-selected real estate projects starting from just 10,000 FCFA (or equivalent).",
+    "a1": "Emeraude Africa is a crowdfunding platform specializing in African real estate. We allow individuals to invest in pre-selected real estate projects starting from {{minTicket}}.",
     "q2": "How are projects selected?",
     "a2": "Each project submitted by a developer goes through a strict audit committee that verifies financial viability, legal compliance (land titles, permits), and the developer's track record.",
     "q3": "Is my investment guaranteed?",
@@ -82,7 +82,7 @@
   },
   "invest": {
     "title": "Investment Opportunities",
-    "subtitle": "Discover our real estate projects currently seeking funding and participate in their realization starting from 10,000 FCFA (or equivalent).",
+    "subtitle": "Discover our real estate projects currently seeking funding and take part in them starting from {{minTicket}}.",
     "labelTarget": "Funding goal",
     "labelReturn": "Target return",
     "labelDuration": "Target duration",
@@ -139,7 +139,11 @@
     "notOpen": "Not open yet",
     "months": "{{count}} months",
     "loading": "Loading project...",
-    "notFound": "Project not found"
+    "notFound": "Project not found",
+    "returnType": {
+      "FIXED": "Fixed return",
+      "VARIABLE": "Target return (not guaranteed)"
+    }
   },
   "finance": {
     "title": "Fund your real estate project",
@@ -159,7 +163,12 @@
     "placeholderTarget": "Ex: 327,000,000 FCFA / 500,000 €",
     "labelDesc": "Brief project description",
     "placeholderDesc": "Tell us briefly about your project...",
-    "btnSubmit": "Submit my application"
+    "btnSubmit": "Submit my application",
+    "feesTitle": "Fees for project owners",
+    "feesSubmission": "Application: {{fee}}.",
+    "feesSubmissionFree": "Application: free.",
+    "feesCommission": "Platform commission: {{percent}}% of the funds raised, deducted when the fundraising closes.",
+    "feesNoCommission": "No commission deducted from the funds raised."
   },
   "contact": {
     "title": "Contact us",
@@ -327,7 +336,9 @@
       "previewMode": "Preview Mode",
       "closePreview": "Close preview",
       "chooseFile": "Choose a file",
-      "noFileChosen": "No file chosen"
+      "noFileChosen": "No file chosen",
+      "returnType": "Return type",
+      "returnTypeDefault": "Platform default"
     },
     "status": {
       "DRAFT": "Draft",
@@ -376,16 +387,6 @@
       "FAILED": "Failed",
       "CANCELLED": "Abandoned",
       "EXPIRED": "Expired"
-    },
-    "settings": {
-      "paymentsTitle": "Payments and compliance",
-      "paymentsDesc": "Rules enforced by the server on every investment.",
-      "requireKyc": "Require a verified identity (KYC) to invest",
-      "requireKycHint": "Recommended: the Terms require identity verification before any investment.",
-      "priority": "Provider preference order",
-      "priorityHint": "Comma-separated codes, e.g. CINETPAY,WAVE,PAYDUNYA,FLUTTERWAVE,STRIPE. Empty = server default.",
-      "disabled": "Disabled providers",
-      "disabledHint": "Comma-separated codes, e.g. STRIPE. Empty = none."
     },
     "nav": {
       "overview": "Overview",
@@ -465,6 +466,171 @@
       "saved": "Article saved.",
       "cancel": "Back to the list",
       "error": "Saving failed."
+    },
+    "config": {
+      "title": "Platform settings",
+      "subtitle": "Every change applies immediately on the site and is recorded in the history.",
+      "categories": {
+        "general": "Site",
+        "contact": "Contact details",
+        "legal": "Legal information",
+        "investment": "Investment",
+        "fees": "Fees",
+        "payments": "Payments",
+        "notifications": "Notifications",
+        "history": "History"
+      },
+      "save": "Save",
+      "saving": "Saving…",
+      "saved": "Settings saved.",
+      "error": "Saving failed.",
+      "unsaved": "Unsaved changes",
+      "cancel": "Discard changes",
+      "loading": "Loading…",
+      "yes": "On",
+      "no": "Off",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "options": {
+        "FIXED": "Fixed return",
+        "VARIABLE": "Target return (variable)"
+      },
+      "historyEmpty": "No change recorded.",
+      "colDate": "Date",
+      "colSetting": "Setting",
+      "colOld": "Previous value",
+      "colNew": "New value",
+      "colBy": "By",
+      "fields": {
+        "siteAnnouncement": {
+          "label": "Announcement banner",
+          "hint": "Message shown at the top of every page (maintenance, news…). Empty = no banner."
+        },
+        "whatsappNumber": {
+          "label": "Support WhatsApp number",
+          "hint": "International format, e.g. +221 77 000 00 00. Empty = no WhatsApp button."
+        },
+        "socialFacebook": {
+          "label": "Facebook page",
+          "hint": "Full https address. Empty = link hidden."
+        },
+        "socialLinkedin": {
+          "label": "LinkedIn page",
+          "hint": "Full https address. Empty = link hidden."
+        },
+        "socialInstagram": {
+          "label": "Instagram account",
+          "hint": "Full https address. Empty = link hidden."
+        },
+        "contactEmail": {
+          "label": "Public contact email",
+          "hint": "Shown on the Contact page and in the legal notice."
+        },
+        "contactPhone": {
+          "label": "Public contact phone",
+          "hint": ""
+        },
+        "contactAddress": {
+          "label": "Office address",
+          "hint": ""
+        },
+        "adminNotificationEmail": {
+          "label": "Internal alerts email",
+          "hint": "Receives contact form messages. Empty = public contact email."
+        },
+        "legalIsDemo": {
+          "label": "Demo mode",
+          "hint": "Shows a \"demo platform\" warning in the legal notice. Turn off at official launch."
+        },
+        "legalCompanyName": {
+          "label": "Company name",
+          "hint": ""
+        },
+        "legalForm": {
+          "label": "Legal form",
+          "hint": "E.g. public limited company (SA), SAS, SARL."
+        },
+        "legalCapital": {
+          "label": "Share capital",
+          "hint": "E.g. 10,000,000 FCFA."
+        },
+        "legalRegistration": {
+          "label": "Registration (RCCM, NINEA)",
+          "hint": "Empty = \"registration in progress\"."
+        },
+        "legalAddress": {
+          "label": "Registered office",
+          "hint": ""
+        },
+        "legalDirector": {
+          "label": "Publication director",
+          "hint": ""
+        },
+        "legalRegulator": {
+          "label": "Regulatory authority",
+          "hint": "E.g. AMF-UMOA. Empty = \"licence in progress\"."
+        },
+        "legalLicense": {
+          "label": "Licence number",
+          "hint": "Empty = \"licence in progress\"."
+        },
+        "privacyEmail": {
+          "label": "Personal data email",
+          "hint": "Address for exercising data rights (privacy policy)."
+        },
+        "investmentRequiresKyc": {
+          "label": "Verified identity required to invest",
+          "hint": "Recommended: required by the Terms (anti-money laundering)."
+        },
+        "defaultMinTicket": {
+          "label": "Default minimum ticket",
+          "hint": "Suggested for new projects and shown on the site while no project is open."
+        },
+        "maxInvestmentAmount": {
+          "label": "Maximum amount per investment",
+          "hint": "0 = no cap."
+        },
+        "defaultReturnType": {
+          "label": "Default return type",
+          "hint": "Applied to new projects; can be changed per project."
+        },
+        "investorFeePercent": {
+          "label": "Investor entry fee",
+          "hint": "Percentage added to the invested amount at payment. 0 = no fee."
+        },
+        "projectCommissionPercent": {
+          "label": "Commission on funds raised",
+          "hint": "Deducted from the amount raised at closing. Shown to project owners and in the Terms."
+        },
+        "projectSubmissionFee": {
+          "label": "Application fee",
+          "hint": "Fixed amount announced to project owners. 0 = free application."
+        },
+        "paymentProviderPriority": {
+          "label": "Provider preference order",
+          "hint": "The first provider available for the chosen method is used; the next ones act as fallbacks."
+        },
+        "paymentProvidersDisabled": {
+          "label": "Disabled providers",
+          "hint": "A ticked provider is no longer offered."
+        },
+        "paymentExpiryHours": {
+          "label": "Payment window",
+          "hint": "After this delay, an unfinished online payment expires and the investment is cancelled."
+        },
+        "bankTransferEnabled": {
+          "label": "Manual transfer offered",
+          "hint": "Allows investing by bank or money transfer, validated by the team once funds are received."
+        },
+        "bankTransferInstructions": {
+          "label": "Transfer instructions",
+          "hint": "Bank or transfer details shown and emailed after an investment request."
+        },
+        "notifyOwnerOnInvestment": {
+          "label": "Notify the owner of each investment",
+          "hint": "Email to the project owner (they can also turn it off in their profile)."
+        }
+      }
     }
   },
   "payment": {
@@ -499,7 +665,8 @@
       "min": "The minimum amount is {{min}}.",
       "max": "The maximum available amount is {{max}}.",
       "kyc": "Your identity must be verified before investing. Go to \"My profile\" to upload your documents.",
-      "generic": "Something went wrong. Please try again shortly."
+      "generic": "Something went wrong. Please try again shortly.",
+      "maxAmount": "The maximum amount per investment is {{max}}."
     },
     "manualSuccessTitle": "Request received!",
     "manualSuccessDesc": "Our team will contact you with the payment instructions.",
@@ -530,7 +697,10 @@
       "failure": "Simulate a failure",
       "cancel": "Abandon"
     },
-    "pendingBanner": "Payment to complete: {{amount}} for \"{{project}}\""
+    "pendingBanner": "Payment to complete: {{amount}} for \"{{project}}\"",
+    "feeLine": "Entry fee ({{percent}}%)",
+    "totalLine": "Total to pay",
+    "transferInstructionsTitle": "Transfer instructions"
   },
   "newsletter": {
     "title": "Stay informed",
@@ -557,17 +727,18 @@
         {
           "title": "1. Platform publisher",
           "items": [
-            "Company name: Emeraude Africa (fictitious company for MVP demo)",
-            "Legal form: Public limited company (SA)",
-            "Registered office: Dakar, Senegal",
-            "Share capital: 10,000,000 FCFA",
+            "Company name: {{companyName}}",
+            "Legal form: {{legalForm}}",
+            "Share capital: {{capital}}",
+            "Registration: {{registration}}",
+            "Registered office: {{address}}",
             "Contact: {{email}}"
           ]
         },
         {
           "title": "2. Publication director",
           "paragraphs": [
-            "The publication director is Mr Abdarrahman Samassa."
+            "The publication director is {{director}}."
           ]
         },
         {
@@ -584,7 +755,7 @@
         {
           "title": "4. Licensing and regulation",
           "paragraphs": [
-            "For its production launch, Emeraude Africa will be subject to approval by the regulatory authorities competent for crowdfunding (in particular the WAMU Financial Markets Authority)."
+            "Regulatory authority: {{regulator}}. Licence number: {{license}}."
           ]
         },
         {
@@ -602,38 +773,53 @@
         {
           "title": "1. Purpose",
           "paragraphs": [
-            "These Terms and Conditions govern access to and use of the Emeraude Africa real estate crowdfunding platform. By using our services, you accept these Terms and Conditions without reservation."
+            "These Terms and Conditions govern access to and use of the real estate crowdfunding platform operated by {{companyName}}. By using our services, you accept these Terms and Conditions without reservation."
           ]
         },
         {
           "title": "2. Access to services",
           "paragraphs": [
-            "Access to investment projects requires creating a user account and providing valid identity documents (KYC - Know Your Customer process), in accordance with anti-money laundering and counter-terrorist financing legislation (AML-CFT). An investment can only be made once your identity has been verified by our team. A project owner cannot invest in their own project."
+            "Access to investment projects requires creating a user account and, when required by the platform, providing valid identity documents (KYC - Know Your Customer process), in accordance with anti-money laundering and counter-terrorist financing legislation (AML-CFT). A project owner cannot invest in their own project."
           ]
         },
         {
           "title": "3. Payments and protection of funds",
           "paragraphs": [
-            "Online payments are processed by licensed providers: CinetPay, Wave, PayDunya and Flutterwave (Mobile Money, e-wallets and cards), and Stripe (international cards). Depending on the payment method chosen, the platform automatically selects an available provider; investors may also indicate a preferred provider. A bank or manual money transfer is also possible: the investment is then validated by our team once the funds are received.",
-            "An investment is only validated after the payment has been confirmed directly with the provider, for an amount and currency identical to those of the subscription. A payment not completed within 24 hours expires and the corresponding investment is cancelled, free of charge. The minimum subscription amount is the one shown on each project page, up to the amount still to be raised.",
+            "Online payments are processed by licensed providers: CinetPay, Wave, PayDunya and Flutterwave (Mobile Money, e-wallets and cards), and Stripe (international cards). Depending on the payment method chosen, the platform automatically selects an available provider; investors may also indicate a preferred provider. When offered, a bank or manual money transfer is also possible: the investment is then validated by our team once the funds are received.",
+            "An investment is only validated after the payment has been confirmed directly with the provider, for an amount and currency identical to those of the subscription. A payment not completed within {{expiryHours}} hours expires and the corresponding investment is cancelled, free of charge. The minimum subscription amount is the one shown on each project page, up to the amount still to be raised and, where applicable, the per-investment cap set by the platform.",
             "Before each investment, the investor expressly accepts these terms and the risk warning; the date of this acceptance is recorded. Invested funds are held in a dedicated account until the fundraising closes. If the fundraising target is not reached or the project is cancelled, investors are refunded in full at no additional cost. A payment received twice is refunded."
           ]
         },
         {
-          "title": "4. Risk warning",
+          "title": "4. Fees",
+          "items": [
+            "Investors: entry fee of {{investorFee}}% of the amount invested, added to the amount paid and shown before confirmation (0% = no fee).",
+            "Project owners: application fee of {{submissionFee}} and a commission of {{commission}}% of the funds raised, deducted when the fundraising closes.",
+            "The applicable fees are those in force on the date of the investment or application."
+          ]
+        },
+        {
+          "title": "5. Risk warning",
           "paragraphs": [
             "Real estate investment and crowdfunding carry inherent risks:"
           ],
           "items": [
             "Risk of capital loss: you may lose all or part of the funds invested.",
-            "Illiquidity risk: investments are locked in for the duration of the project (generally 12 to 36 months). It is very difficult, or even impossible, to sell your shares before maturity."
+            "Illiquidity risk: investments are locked in for the duration of the project (generally 12 to 36 months). It is very difficult, or even impossible, to sell your shares before maturity.",
+            "Return: a \"fixed\" return is contractual; a \"target\" return is an objective that is not guaranteed."
           ],
           "after": [
             "We advise you never to invest money you may need in the short term and to diversify your investments."
           ]
         },
         {
-          "title": "5. Intellectual property",
+          "title": "6. Communications",
+          "paragraphs": [
+            "Emails about the account, payments and investments are always sent. Other communications (support replies by email, notices to project owners, newsletter) can be set in \"My profile\"."
+          ]
+        },
+        {
+          "title": "7. Intellectual property",
           "paragraphs": [
             "All content on the platform (texts, images, logos, architecture) is protected by copyright. Any unauthorised reproduction is strictly prohibited."
           ]
@@ -647,13 +833,14 @@
         {
           "title": "1. Data collected",
           "paragraphs": [
-            "When you sign up, invest and contact us, Emeraude Africa collects the following data:"
+            "When you sign up, invest and contact us, {{companyName}} collects the following data:"
           ],
           "items": [
             "Identification data: last name, first name, email address, phone number.",
             "Legal documents (ID document, proof of address) as part of our verification obligations (KYC). They are stored with restricted access and can only be viewed by our compliance team, through temporary links.",
             "Transaction data: investment history, chosen payment method, provider used, payment references and statuses, and a time-stamped log of exchanges with that provider (traceability and fraud prevention). We never store your card numbers or Mobile Money codes: they are entered directly with our payment providers (CinetPay, Wave, PayDunya, Flutterwave, Stripe).",
             "Proof of consent: date and time you accepted these terms when signing up, and the Terms and Conditions of Sale before each investment.",
+            "Preferences: language and communication choices (optional emails, newsletter), editable at any time in \"My profile\".",
             "Contact form and newsletter: name, email address, phone (optional), message content, page of origin and date of your consent.",
             "Audience measurement: pages viewed and technical information about your browser, only if you accepted it in the cookie banner."
           ]
@@ -692,11 +879,13 @@
         {
           "title": "6. Your rights",
           "paragraphs": [
-            "Under data protection laws (in particular Senegalese law no. 2008-12 and the GDPR for European residents), you have the right to access, rectify, erase, object to and port your data, and the right to withdraw your consent at any time. To exercise these rights, contact: privacy@emeraude-africa.com."
+            "Under data protection laws (in particular Senegalese law no. 2008-12 and the GDPR for European residents), you have the right to access, rectify, erase, object to and port your data, and the right to withdraw your consent at any time. To exercise these rights, contact: {{privacyEmail}}."
           ]
         }
       ]
-    }
+    },
+    "pending": "in progress",
+    "demoNotice": "Platform in demonstration phase: the information below will be completed at the official launch."
   },
   "why": {
     "title": "Why Emeraude Africa?",
@@ -764,5 +953,18 @@
     "by": "by {{author}}",
     "loading": "Loading…",
     "notFound": "This article does not exist or is no longer online."
+  },
+  "whatsapp": {
+    "label": "Chat with us on WhatsApp"
+  },
+  "preferences": {
+    "title": "Communication preferences",
+    "desc": "Emails about your account, payments and investments are always sent.",
+    "emailSupportReplies": "Email me when support replies",
+    "emailNewInvestmentOnMyProject": "Project owner: email me for each validated investment in my project",
+    "newsletter": "Receive the newsletter (new projects, news)",
+    "language": "Preferred language",
+    "saved": "Preferences saved.",
+    "error": "Saving failed."
   }
 }

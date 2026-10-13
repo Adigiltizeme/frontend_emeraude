@@ -28,7 +28,8 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSubmit, onPrev
     guarantee: 'Hypothèque de 1er rang',
     distribution: 'Trimestrielle',
     impact: '',
-    status: 'DRAFT'
+    status: 'DRAFT',
+    returnType: ''
   });
 
   const [customLocation, setCustomLocation] = useState('');
@@ -52,7 +53,8 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSubmit, onPrev
         guarantee: initialData.guarantee || '',
         distribution: initialData.distribution || 'Trimestrielle',
         impact: initialData.impact || '',
-        status: initialData.status || 'DRAFT'
+        status: initialData.status || 'DRAFT',
+        returnType: initialData.returnType || ''
       });
       if (!['Sénégal', "Côte d'Ivoire"].includes(initialData.location)) {
         setCustomLocation(initialData.location || '');
@@ -83,6 +85,8 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSubmit, onPrev
       minTicket: Number(formData.minTicket),
       rentYield: formData.rentYield ? Number(formData.rentYield) : null,
       capitalGain: formData.capitalGain ? Number(formData.capitalGain) : null,
+      // Vide = valeur par défaut de la plateforme (paramètre du back-office).
+      returnType: formData.returnType || undefined,
     };
 
     try {
@@ -189,6 +193,14 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSubmit, onPrev
               <option value="Trimestrielle">Trimestrielle</option>
               <option value="Annuelle">Annuelle</option>
               <option value="À l'échéance">À l'échéance</option>
+            </select>
+          </div>
+          <div>
+            <label style={labelStyle}>{t('admin.projectForm.returnType')}</label>
+            <select name="returnType" value={formData.returnType} onChange={handleChange} style={inputStyle}>
+              <option value="">{t('admin.projectForm.returnTypeDefault')}</option>
+              <option value="FIXED">{t('projectDetails.returnType.FIXED')}</option>
+              <option value="VARIABLE">{t('projectDetails.returnType.VARIABLE')}</option>
             </select>
           </div>
         </div>

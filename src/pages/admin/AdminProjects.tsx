@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Edit, Trash2, CheckCircle, XCircle, Eye, X, Lock } from 'lucide-react';
+import { Edit, Trash2, CheckCircle, XCircle, Eye, X, Lock, Plus } from 'lucide-react';
 import { API_URL, authHeaders } from '../../config/api';
 import ProjectDetails from '../ProjectDetails';
 
@@ -89,9 +89,11 @@ const AdminDashboard = () => {
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
         <h1 style={{ color: 'var(--color-primary-900)', margin: 0 }}>Dossiers Porteurs de Projets</h1>
-
+        <button type="button" onClick={() => navigate('/admin/projects/new')} className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Plus size={18} /> {t('admin.projectForm.createTitle')}
+        </button>
       </div>
 
       <div style={{ backgroundColor: 'var(--color-white)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--color-neutral-200)', overflow: 'hidden' }}>

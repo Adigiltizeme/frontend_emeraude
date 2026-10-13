@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Users, Briefcase, TrendingUp } from 'lucide-react';
+import { Users, Briefcase, TrendingUp, Plus } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
+  const { t } = useTranslation();
   const { token } = useAuth();
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -53,7 +57,12 @@ const AdminDashboard = () => {
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', paddingBottom: '2rem' }}>
-      <h1 style={{ color: 'var(--color-primary-900)', marginBottom: '2rem' }}>Tableau de Bord Analytique</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
+        <h1 style={{ color: 'var(--color-primary-900)', margin: 0 }}>Tableau de Bord Analytique</h1>
+        <button type="button" onClick={() => navigate('/admin/projects/new')} className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Plus size={18} /> {t('admin.projectForm.createTitle')}
+        </button>
+      </div>
 
       {/* KPIs */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>

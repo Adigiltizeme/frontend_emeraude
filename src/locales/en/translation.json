@@ -2025,7 +2025,8 @@
         "text": "Your platform is up and running. All that is left is to activate your access.",
         "points": []
       }
-    }
+    },
+    "demoNotice": "Preview with fictitious demo data: nothing can be changed during the tour."
   },
   "billing": {
     "title": "Activate your access",

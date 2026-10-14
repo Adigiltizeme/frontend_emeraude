@@ -2025,7 +2025,8 @@
         "text": "Votre plateforme est opérationnelle. Il ne reste qu'à activer votre accès.",
         "points": []
       }
-    }
+    },
+    "demoNotice": "Aperçu avec des données fictives de démonstration : rien n'est modifiable pendant la visite."
   },
   "billing": {
     "title": "Activez votre accès",

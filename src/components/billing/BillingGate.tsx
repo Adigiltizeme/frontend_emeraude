@@ -1,5 +1,5 @@
-import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Component, createContext, ReactNode, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { CreditCard, Landmark, LogOut, PlayCircle, Settings2 } from 'lucide-react';
 import { API_URL, authHeaders, formatMoney } from '../../config/api';
@@ -7,6 +7,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useLiveRefresh } from '../../hooks/useLiveRefresh';
 import PageLoader from '../PageLoader';
 import GuidedTour from './GuidedTour';
+import { TourDemoData, loadTourDemoData, startTourDemo } from './tourDemo';
 
 export interface BillingStatus {
   required: boolean;
@@ -33,9 +34,14 @@ export const useBilling = () => useContext(BillingContext);
  * les bloque aussi). Le serveur refuse de toute façon le reste (BILLING_REQUIRED).
  */
 export const BillingGate = ({ children }: { children: ReactNode }) => {
-  const { token } = useAuth();
+  const { token, user, isAdmin } = useAuth();
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const [status, setStatus] = useState<BillingStatus | null>(null);
+  // Visite guidée en direct : vrais écrans alimentés par les données de démonstration (jamais par l'API réelle).
+  const [touring, setTouring] = useState(false);
+  const [demo, setDemo] = useState<TourDemoData | null>(null);
+  const autoStarted = useRef(false);
   // Jeton dont l'état a été chargé : évite d'afficher l'application un instant avant l'écran de paiement.
   const [loadedFor, setLoadedFor] = useState<string | null>(null);
 
@@ -47,34 +53,70 @@ export const BillingGate = ({ children }: { children: ReactNode }) => {
   }, [token]);
   useEffect(() => { refresh(); }, [refresh]);
   // Paiement activé ou réglé ailleurs (réglages, webhook, autre appareil) : pris en compte au retour sur l'onglet et chaque minute.
-  useLiveRefresh(refresh, 60_000, !!token);
+  useLiveRefresh(refresh, 60_000, !!token && !touring);
 
-  if (token && loadedFor !== token) return <PageLoader />;
-  // Retour de la page de paiement : traité par sa propre page (confirmation auprès de Stripe).
-  const blocked = !!status?.required && !pathname.startsWith('/facturation/retour');
-  return (
-    <BillingContext.Provider value={{ status, refresh }}>
-      {blocked ? <BillingScreen status={status!} refresh={refresh} /> : children}
-    </BillingContext.Provider>
-  );
-};
+  // Première connexion du compte concerné : la visite démarre d'elle-même.
+  useEffect(() => {
+    if (status?.required && status.concerned && status.tourEnabled && !status.tourDone && !autoStarted.current) {
+      autoStarted.current = true;
+      setTouring(true);
+    }
+  }, [status]);
 
-const notice = (bg: string, border: string, color: string) => ({ backgroundColor: bg, border: `1px solid ${border}`, color, padding: '0.75rem 1rem', borderRadius: '8px' });
-
-const BillingScreen = ({ status, refresh }: { status: BillingStatus; refresh: () => Promise<void> }) => {
-  const { t, i18n } = useTranslation();
-  const { token, logout } = useAuth();
-  const [showTour, setShowTour] = useState(!!status.concerned && !!status.tourEnabled && !status.tourDone);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
+  // Mode démonstration actif seulement pendant la visite ; les écrans ne sont affichés qu'une fois les données prêtes.
+  useEffect(() => {
+    if (!touring) return;
+    let stop: (() => void) | null = null;
+    let cancelled = false;
+    loadTourDemoData().then((data) => {
+      if (cancelled) return;
+      stop = startTourDemo(data, { id: user?.id, email: user?.email, firstName: user?.firstName, lastName: user?.lastName, role: user?.role });
+      setDemo(data);
+    }).catch(() => { if (!cancelled) setTouring(false); });
+    return () => { cancelled = true; stop?.(); setDemo(null); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [touring]);
 
   const finishTour = async () => {
-    setShowTour(false);
-    if (!status.tourDone) {
+    setTouring(false);
+    navigate(isAdmin ? '/admin' : '/mon-compte', { replace: true });
+    if (!status?.tourDone) {
       await fetch(`${API_URL}/billing/tour-done`, { method: 'POST', headers: authHeaders(token) }).catch(() => null);
       await refresh();
     }
   };
+
+  if (token && loadedFor !== token) return <PageLoader />;
+  // Retour de la page de paiement : traité par sa propre page (confirmation auprès de Stripe).
+  const blocked = !!status?.required && !pathname.startsWith('/facturation/retour');
+  let content: ReactNode = children;
+  if (blocked && touring) {
+    content = demo ? (
+      <>
+        <TourErrorBoundary key={pathname}>{children}</TourErrorBoundary>
+        <GuidedTour routes={demo.__routes} isAdmin={isAdmin} onFinish={finishTour} />
+      </>
+    ) : <PageLoader />;
+  } else if (blocked) {
+    content = <BillingScreen status={status!} refresh={refresh} onReplay={() => setTouring(true)} />;
+  }
+  return <BillingContext.Provider value={{ status, refresh }}>{content}</BillingContext.Provider>;
+};
+
+/** Écran de démonstration en erreur : la visite continue (étape suivante) au lieu d'une page blanche. */
+class TourErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  render() { return this.state.failed ? <div style={{ minHeight: '60vh' }} /> : this.props.children; }
+}
+
+const notice = (bg: string, border: string, color: string) => ({ backgroundColor: bg, border: `1px solid ${border}`, color, padding: '0.75rem 1rem', borderRadius: '8px' });
+
+const BillingScreen = ({ status, refresh, onReplay }: { status: BillingStatus; refresh: () => Promise<void>; onReplay: () => void }) => {
+  const { t, i18n } = useTranslation();
+  const { token, logout } = useAuth();
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
 
   // Paiement (ou facture impayée d'un abonnement) puis portail de gestion : pages Stripe.
   const redirect = async (path: 'checkout' | 'portal') => {
@@ -89,13 +131,11 @@ const BillingScreen = ({ status, refresh }: { status: BillingStatus; refresh: ()
   };
 
   const signOut = () => { logout(); window.location.href = '/'; };
-  const backdrop = { position: 'fixed' as const, inset: 0, zIndex: 20000, overflowY: 'auto' as const, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', background: 'linear-gradient(160deg, var(--color-primary-900) 0%, #0f172a 100%)' };
-  const card = { width: 'min(620px, 100%)', backgroundColor: 'white', borderRadius: '18px', boxShadow: '0 25px 60px rgba(0,0,0,0.3)', padding: 'clamp(1.25rem, 4vw, 2.5rem)' };
+  const backdrop = { position: 'fixed' as const, inset: 0, zIndex: 20000, overflowY: 'auto' as const, display: 'flex', justifyContent: 'center', padding: '1rem', background: 'linear-gradient(160deg, var(--color-primary-900) 0%, #0f172a 100%)' };
+  const card = { width: 'min(620px, 100%)', margin: 'auto 0', backgroundColor: 'white', borderRadius: '18px', boxShadow: '0 25px 60px rgba(0,0,0,0.3)', padding: 'clamp(1.25rem, 4vw, 2.5rem)' };
   const logoutButton = (
     <button type="button" className="btn btn-outline" onClick={signOut} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', marginLeft: 'auto' }}><LogOut size={16} /> {t('nav.logout')}</button>
   );
-
-  if (showTour) return <div style={backdrop}><GuidedTour onFinish={finishTour} /></div>;
 
   // Autre administrateur, bloqué tant que le compte désigné n'a pas réglé l'accès : aucune action de paiement.
   if (!status.concerned) {
@@ -144,7 +184,7 @@ const BillingScreen = ({ status, refresh }: { status: BillingStatus; refresh: ()
 
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap' }}>
           {status.tourEnabled && (
-            <button type="button" className="btn btn-outline" onClick={() => setShowTour(true)} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}><PlayCircle size={16} /> {t('billing.replayTour')}</button>
+            <button type="button" className="btn btn-outline" onClick={onReplay} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}><PlayCircle size={16} /> {t('billing.replayTour')}</button>
           )}
           {status.canManage && (
             <button type="button" className="btn btn-outline" onClick={() => redirect('portal')} disabled={busy} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}><Settings2 size={16} /> {t('billing.manage')}</button>

@@ -141,7 +141,7 @@ const AdminRoute = () => {
       </aside>
 
       {/* Main Content Area */}
-      <main style={{ flex: 1, padding: '2rem', overflowY: 'auto' }}>
+      <main data-tour="admin-main" style={{ flex: 1, padding: '2rem', overflowY: 'auto' }}>
         <button className="admin-menu-toggle" onClick={toggleSidebar}>
           <Menu size={24} /> <span>Menu</span>
         </button>

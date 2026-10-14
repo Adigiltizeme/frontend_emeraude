@@ -34,7 +34,7 @@ const PortfolioSummary = ({ portfolio }: { portfolio: Portfolio }) => {
     try {
       const res = await fetch(`${API_URL}/portfolio/statement?year=${year}`, { headers: authHeaders(token) });
       if (!res.ok) throw new Error();
-      downloadAnnualStatement(await res.json(), t, i18n.language, settings.legalCompanyName);
+      await downloadAnnualStatement(await res.json(), t, i18n.language, settings.legalCompanyName);
     } catch {
       setError(t('portfolio.statement.error'));
     } finally {

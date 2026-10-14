@@ -1193,7 +1193,9 @@
     "notFound": "Cet article n'existe pas ou n'est plus en ligne."
   },
   "whatsapp": {
-    "label": "Discuter avec nous sur WhatsApp"
+    "label": "Discuter avec nous sur WhatsApp",
+    "message": "Bonjour, j'ai une question sur Emeraude Africa.",
+    "projectMessage": "Bonjour, j'ai une question sur ce projet : {{url}}"
   },
   "preferences": {
     "title": "Préférences de communication",
@@ -1807,5 +1809,26 @@
     "checkedBy": "Validé par {{by}} le {{date}}",
     "uncheckedBy": "Décoché par {{by}} le {{date}}",
     "error": "La modification n'a pas été enregistrée : rechargez et réessayez."
+  },
+  "common": {
+    "loading": "Chargement…"
+  },
+  "map": {
+    "show": "Afficher la carte",
+    "loading": "Chargement de la carte…",
+    "openExternal": "Ouvrir dans OpenStreetMap"
+  },
+  "keyFigures": {
+    "title": "Emeraude Africa en chiffres",
+    "raised": "financés par nos investisseurs",
+    "funded_one": "projet financé",
+    "funded_other": "projets financés",
+    "investors_one": "investisseur",
+    "investors_other": "investisseurs",
+    "source": "Chiffres calculés en temps réel à partir des investissements validés sur la plateforme."
+  },
+  "lightMode": {
+    "on": "Mode léger : activé",
+    "off": "Mode léger : désactivé"
   }
 }

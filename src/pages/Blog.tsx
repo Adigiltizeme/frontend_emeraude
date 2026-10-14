@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { API_URL } from '../config/api';
 import { usePageMeta } from '../hooks/usePageMeta';
+import { optimizedImage } from '../lib/images';
 
 interface PostSummary {
   slug: string;
@@ -65,7 +66,7 @@ const Blog = () => {
             {posts.map((post) => (
               <article key={post.slug} style={{ backgroundColor: 'var(--color-white)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: 'var(--shadow-md)', display: 'flex', flexDirection: 'column' }}>
                 {post.coverImage && (
-                  <img src={post.coverImage} alt="" loading="lazy" style={{ width: '100%', height: '190px', objectFit: 'cover' }} />
+                  <img src={optimizedImage(post.coverImage, 640)} alt="" loading="lazy" style={{ width: '100%', height: '190px', objectFit: 'cover' }} />
                 )}
                 <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
                   <time dateTime={post.publishedAt} style={{ fontSize: '0.85rem', color: 'var(--color-neutral-500)' }}>{formatDate(post.publishedAt)}</time>

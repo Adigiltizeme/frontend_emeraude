@@ -1,61 +1,67 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AuthProvider } from './context/AuthContext';
 import { SocketProvider } from './context/SocketContext';
 import { SettingsProvider } from './context/SettingsContext';
 import Home from './pages/Home';
-import Invest from './pages/Invest';
-import Finance from './pages/Finance';
-import About from './pages/About';
-import FAQ from './pages/FAQ';
-import HowItWorks from './pages/HowItWorks';
-import Contact from './pages/Contact';
-import LegalNotices from './pages/LegalNotices';
-import TermsOfUse from './pages/TermsOfUse';
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import ProjectDetails from './pages/ProjectDetails';
-import SimulatePayment from './pages/SimulatePayment';
-import PaymentReturn from './pages/PaymentReturn';
-import WhyEmeraude from './pages/WhyEmeraude';
-import VerifyEmail from './pages/VerifyEmail';
 import EmailVerificationBanner from './components/EmailVerificationBanner';
-import Blog from './pages/Blog';
-import BlogPost from './pages/BlogPost';
-import AdminPosts from './pages/admin/AdminPosts';
 
-import AdminDashboard from './pages/admin/Dashboard';
 import AdminRoute from './components/AdminRoute';
-import CreateProject from './pages/admin/CreateProject';
-import EditProject from './pages/admin/EditProject';
-import ManageUsers from './pages/admin/ManageUsers';
-import EditUser from './pages/admin/EditUser';
-import Profile from './pages/admin/Profile';
-import AdminSettings from './pages/admin/AdminSettings';
-import AdminSupportPage from './pages/admin/AdminSupportPage';
-import AdminInvestments from './pages/admin/AdminInvestments';
-import AdminProjects from './pages/admin/AdminProjects';
-import AdminLeads from './pages/admin/AdminLeads';
 import NewsletterSignup from './components/NewsletterSignup';
 import CookieConsent, { openCookieSettings } from './components/CookieConsent';
 import { AnnouncementBanner, SocialLinks, WhatsAppButton } from './components/SiteExtras';
-import Register from './pages/Register';
-import Login from './pages/Login';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
-import UserDashboard from './pages/UserDashboard';
-import UserProfile from './pages/UserProfile';
 import UserRoute from './components/UserRoute';
 import Header from './components/Header';
 import InteractiveBackground from './components/InteractiveBackground';
-import InvestorProfile from './pages/InvestorProfile';
-import AdminDistributions from './pages/admin/AdminDistributions';
-import OwnerProject from './pages/OwnerProject';
-import AdminProjectDossier from './pages/admin/AdminProjectDossier';
-import AdminAudit from './pages/admin/AdminAudit';
-import AdminExports from './pages/admin/AdminExports';
+import PageLoader from './components/PageLoader';
+import { useLightMode } from './lib/lightMode';
+
+// Découpage du code : chaque page (espace, back-office, PDF, graphiques…) est téléchargée à sa première visite.
+const Invest = lazy(() => import('./pages/Invest'));
+const Finance = lazy(() => import('./pages/Finance'));
+const About = lazy(() => import('./pages/About'));
+const FAQ = lazy(() => import('./pages/FAQ'));
+const HowItWorks = lazy(() => import('./pages/HowItWorks'));
+const Contact = lazy(() => import('./pages/Contact'));
+const LegalNotices = lazy(() => import('./pages/LegalNotices'));
+const TermsOfUse = lazy(() => import('./pages/TermsOfUse'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const ProjectDetails = lazy(() => import('./pages/ProjectDetails'));
+const SimulatePayment = lazy(() => import('./pages/SimulatePayment'));
+const PaymentReturn = lazy(() => import('./pages/PaymentReturn'));
+const WhyEmeraude = lazy(() => import('./pages/WhyEmeraude'));
+const VerifyEmail = lazy(() => import('./pages/VerifyEmail'));
+const Blog = lazy(() => import('./pages/Blog'));
+const BlogPost = lazy(() => import('./pages/BlogPost'));
+const AdminPosts = lazy(() => import('./pages/admin/AdminPosts'));
+const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'));
+const CreateProject = lazy(() => import('./pages/admin/CreateProject'));
+const EditProject = lazy(() => import('./pages/admin/EditProject'));
+const ManageUsers = lazy(() => import('./pages/admin/ManageUsers'));
+const EditUser = lazy(() => import('./pages/admin/EditUser'));
+const Profile = lazy(() => import('./pages/admin/Profile'));
+const AdminSettings = lazy(() => import('./pages/admin/AdminSettings'));
+const AdminSupportPage = lazy(() => import('./pages/admin/AdminSupportPage'));
+const AdminInvestments = lazy(() => import('./pages/admin/AdminInvestments'));
+const AdminProjects = lazy(() => import('./pages/admin/AdminProjects'));
+const AdminLeads = lazy(() => import('./pages/admin/AdminLeads'));
+const Register = lazy(() => import('./pages/Register'));
+const Login = lazy(() => import('./pages/Login'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
+const UserDashboard = lazy(() => import('./pages/UserDashboard'));
+const UserProfile = lazy(() => import('./pages/UserProfile'));
+const InvestorProfile = lazy(() => import('./pages/InvestorProfile'));
+const AdminDistributions = lazy(() => import('./pages/admin/AdminDistributions'));
+const OwnerProject = lazy(() => import('./pages/OwnerProject'));
+const AdminProjectDossier = lazy(() => import('./pages/admin/AdminProjectDossier'));
+const AdminAudit = lazy(() => import('./pages/admin/AdminAudit'));
+const AdminExports = lazy(() => import('./pages/admin/AdminExports'));
 
 function App() {
   const { t } = useTranslation();
+  const [lightMode, setLightMode] = useLightMode();
 
   
   return (
@@ -64,12 +70,13 @@ function App() {
       <SettingsProvider>
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <div className="app-container">
-          <InteractiveBackground />
+          {!lightMode && <InteractiveBackground />}
           <AnnouncementBanner />
           <Header />
           <EmailVerificationBanner />
 
           <main>
+            <Suspense fallback={<PageLoader />}>
             <Routes>
               {/* Public Routes */}
               <Route path="/" element={<Home />} />
@@ -123,6 +130,7 @@ function App() {
                 <Route path="exports" element={<AdminExports />} />
               </Route>
             </Routes>
+            </Suspense>
           </main>
 
           <footer>
@@ -139,6 +147,9 @@ function App() {
                 <Link to="/mentions-legales">{t('footer.legalNotice')}</Link>
                 <Link to="/cgu-cgv">{t('footer.terms')}</Link>
                 <Link to="/politique-confidentialite">{t('footer.privacy')}</Link>
+                <button type="button" onClick={() => setLightMode(!lightMode)} aria-pressed={lightMode} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', padding: 0, font: 'inherit', textDecoration: 'underline' }}>
+                  {t(lightMode ? 'lightMode.on' : 'lightMode.off')}
+                </button>
                 {import.meta.env.VITE_GA_MEASUREMENT_ID && (
                   <button type="button" onClick={openCookieSettings} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', padding: 0, font: 'inherit', textDecoration: 'underline' }}>{t('footer.cookies')}</button>
                 )}

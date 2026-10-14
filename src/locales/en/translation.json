@@ -1193,7 +1193,9 @@
     "notFound": "This article does not exist or is no longer online."
   },
   "whatsapp": {
-    "label": "Chat with us on WhatsApp"
+    "label": "Chat with us on WhatsApp",
+    "message": "Hello, I have a question about Emeraude Africa.",
+    "projectMessage": "Hello, I have a question about this project: {{url}}"
   },
   "preferences": {
     "title": "Communication preferences",
@@ -1807,5 +1809,26 @@
     "checkedBy": "Checked by {{by}} on {{date}}",
     "uncheckedBy": "Unchecked by {{by}} on {{date}}",
     "error": "The change was not saved: reload and try again."
+  },
+  "common": {
+    "loading": "Loading…"
+  },
+  "map": {
+    "show": "Show the map",
+    "loading": "Loading the map…",
+    "openExternal": "Open in OpenStreetMap"
+  },
+  "keyFigures": {
+    "title": "Emeraude Africa in figures",
+    "raised": "funded by our investors",
+    "funded_one": "project funded",
+    "funded_other": "projects funded",
+    "investors_one": "investor",
+    "investors_other": "investors",
+    "source": "Figures calculated in real time from investments validated on the platform."
+  },
+  "lightMode": {
+    "on": "Light mode: on",
+    "off": "Light mode: off"
   }
 }

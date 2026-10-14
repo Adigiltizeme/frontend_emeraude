@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { Navigate, Outlet, Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
@@ -6,6 +6,7 @@ import { LayoutDashboard, Users, Settings, User, LogOut, Menu, X, Banknote, Mess
 import { API_URL, authHeaders } from '../config/api';
 import { useSiteSettings } from '../context/SettingsContext';
 import TwoFactorPanel from './TwoFactorPanel';
+import PageLoader from './PageLoader';
 
 const AdminRoute = () => {
   const { isAuthenticated, isAdmin, logout, user, token, login } = useAuth();
@@ -156,7 +157,10 @@ const AdminRoute = () => {
             <p style={{ color: 'var(--color-neutral-600)' }}>{t('admin.forbiddenText', { role: t(`adminRoles.${user?.adminRole ?? 'SUPER_ADMIN'}`) })}</p>
           </div>
         ) : (
-          <Outlet />
+          // Repli local : le menu reste affiché pendant le chargement d'une page du back-office.
+          <Suspense fallback={<PageLoader />}>
+            <Outlet />
+          </Suspense>
         )}
       </main>
     </div>

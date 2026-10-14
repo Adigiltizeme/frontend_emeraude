@@ -7,7 +7,6 @@ import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
 import { Building2, FileText, Settings, Lightbulb, Clock, CheckCircle, XCircle, Headset } from 'lucide-react';
 import { UserSupport } from '../components/support/UserSupport';
-import { jsPDF } from "jspdf";
 import { useSiteSettings } from '../context/SettingsContext';
 import OnboardingChecklist from '../components/OnboardingChecklist';
 import { usePortfolio } from '../hooks/usePortfolio';
@@ -15,7 +14,9 @@ import PortfolioSummary from '../components/portfolio/PortfolioSummary';
 import TransactionHistory from '../components/portfolio/TransactionHistory';
 
 
-const generatePDF = (inv: any, user: any) => {
+// Bibliothèque PDF chargée seulement au moment du téléchargement (allège l'espace investisseur).
+const generatePDF = async (inv: any, user: any) => {
+  const { jsPDF } = await import('jspdf');
   const doc = new jsPDF();
   
   // Formatage propre du montant (eviter les bugs d'espacement de jsPDF avec toLocaleString)

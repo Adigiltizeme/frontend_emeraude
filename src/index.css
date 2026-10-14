@@ -669,3 +669,6 @@ img:hover {
   box-shadow: 0 0 0 3px rgba(16, 158, 97, 0.18);
   background-color: #fff;
 }
+
+/* Chargement d'une page (PageLoader). */
+@keyframes emeraude-spin { to { transform: rotate(360deg); } }

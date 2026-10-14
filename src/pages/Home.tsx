@@ -5,12 +5,15 @@ import { Building2, ShieldCheck, TrendingUp, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { usePageMeta } from '../hooks/usePageMeta';
 import { useMinTicket } from '../hooks/useMinTicket';
+import KeyFigures from '../components/KeyFigures';
+import { optimizedImage } from '../lib/images';
+import { useLightMode } from '../lib/lightMode';
 
 const HERO_IMAGES = [
   'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2075&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=2070&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1613490908677-22d733575fa6?q=80&w=2070&auto=format&fit=crop'
+  'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=1600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1613490908677-22d733575fa6?q=80&w=1600&auto=format&fit=crop'
 ];
 
 const Home = () => {
@@ -21,16 +24,18 @@ const Home = () => {
   const cleanPhone = settings.contactPhone.replace(/\s+/g, '');
   const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [lightMode] = useLightMode();
   const [topProjects, setTopProjects] = useState<any[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Hero slideshow
+    // Diaporama : désactivé en mode léger (une seule photo).
+    if (lightMode) return;
     const interval = setInterval(() => {
       setCurrentImageIndex((prev) => (prev + 1) % HERO_IMAGES.length);
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [lightMode]);
 
   useEffect(() => {
     // Fetch top projects
@@ -101,7 +106,8 @@ const Home = () => {
         alignItems: 'center'
       }}>
         {/* Background Images with Fade transition */}
-        {HERO_IMAGES.map((img, index) => (
+        {/* Seules la photo affichée et la suivante sont téléchargées (les autres au fil du diaporama). */}
+        {HERO_IMAGES.map((img, index) => (lightMode && index > 0) ? null : (
           <div
             key={index}
             style={{
@@ -110,7 +116,9 @@ const Home = () => {
               left: 0,
               right: 0,
               bottom: 0,
-              backgroundImage: `url(${img})`,
+              backgroundImage: index === currentImageIndex || index === (currentImageIndex + 1) % HERO_IMAGES.length || index === (currentImageIndex - 1 + HERO_IMAGES.length) % HERO_IMAGES.length
+                ? `url(${lightMode ? img.replace(/w=\d+/, 'w=900') : img})`
+                : undefined,
               backgroundSize: 'cover',
               backgroundPosition: 'center 40%',
               opacity: currentImageIndex === index ? 1 : 0,
@@ -142,6 +150,8 @@ const Home = () => {
         </div>
       </section>
 
+      <KeyFigures />
+
       {/* Top Projects Marquee Section */}
       {topProjects.length > 0 && (
         <section style={{ padding: "2rem 0", backgroundColor: "var(--color-surface)", width: "100%", overflow: "hidden" }}>
@@ -157,7 +167,7 @@ const Home = () => {
                   style={{ position: 'relative' }}
                 >
                   <div style={{ position: 'absolute', top: '0.5rem', right: '0.5rem', backgroundColor: project.status === 'COLLECTING' ? 'var(--color-primary-600)' : 'var(--color-neutral-800)', color: 'white', padding: '0.25rem 0.5rem', borderRadius: '999px', fontSize: '0.7rem', fontWeight: 'bold', textTransform: 'uppercase', zIndex: 1, boxShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>{t(`admin.status.${project.status}`)}</div>
-                  <img style={{ filter: isClosed ? 'grayscale(100%) opacity(0.8)' : 'none' }} src={project.image || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=1973&auto=format&fit=crop'} alt={project.title} />
+                  <img style={{ filter: isClosed ? 'grayscale(100%) opacity(0.8)' : 'none' }} src={optimizedImage(project.image, 640) || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=800&auto=format&fit=crop'} alt={project.title} loading="lazy" />
                   <div className="project-card-scroll-info">
                     <h4>{project.title}</h4>
                     <p>{t('home.profitability')} : {project.rentYield || project.returnRate}%</p>

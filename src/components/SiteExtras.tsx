@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Facebook, Instagram, Linkedin, MessageCircle } from 'lucide-react';
 import { useSiteSettings } from '../context/SettingsContext';
+import { useLocation } from 'react-router-dom';
 
 /** Bandeau d'annonce (paramètre « siteAnnouncement ») : maintenance, nouveauté… */
 export const AnnouncementBanner = () => {
@@ -17,11 +18,15 @@ export const AnnouncementBanner = () => {
 export const WhatsAppButton = () => {
   const { t } = useTranslation();
   const { settings } = useSiteSettings();
+  const { pathname } = useLocation();
   const digits = settings.whatsappNumber.replace(/[^0-9]/g, '');
-  if (!digits) return null;
+  // Back-office : pas de bouton (l'équipe n'écrit pas à elle-même).
+  if (!digits || pathname.startsWith('/admin')) return null;
+  // Message prérempli : sur une fiche projet, le lien du projet aide l'équipe à répondre tout de suite.
+  const text = pathname.startsWith('/projet/') ? t('whatsapp.projectMessage', { url: window.location.href }) : t('whatsapp.message');
   return (
     <a
-      href={`https://wa.me/${digits}`}
+      href={`https://wa.me/${digits}?text=${encodeURIComponent(text)}`}
       target="_blank"
       rel="noopener noreferrer"
       aria-label={t('whatsapp.label')}

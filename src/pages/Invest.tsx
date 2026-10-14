@@ -12,6 +12,7 @@ import {
   CatalogFilters, CatalogProject, EMPTY_FILTERS, SORTS, activeFilterCount, countryOf, distinctValues,
   filterProjects, filtersFromParams, filtersToParams, progressOf,
 } from '../lib/projectCatalog';
+import { optimizedImage } from '../lib/images';
 
 const SORT_LABELS: Record<string, string> = {
   recent: 'invest.filters.sortRecent',
@@ -168,7 +169,7 @@ const Invest = () => {
                 const percent = Math.round(progressOf(project));
                 return (
                   <div key={project.id} style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', backgroundColor: 'var(--color-white)', boxShadow: 'var(--shadow-md)', transition: 'transform 0.3s ease, box-shadow 0.3s ease', position: 'relative' }} className="project-card">
-                    <div className="project-card-image" style={{ height: '200px', backgroundImage: `url(${(project as any).image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'})`, backgroundSize: 'cover', backgroundPosition: 'center', transition: 'transform 0.5s ease', filter: isClosed ? 'grayscale(100%) opacity(0.8)' : 'none' }}></div>
+                    <div className="project-card-image" style={{ height: '200px', backgroundImage: `url(${optimizedImage((project as any).image, 640) || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'})`, backgroundSize: 'cover', backgroundPosition: 'center', transition: 'transform 0.5s ease', filter: isClosed ? 'grayscale(100%) opacity(0.8)' : 'none' }}></div>
                     <div style={{ position: 'absolute', top: '1rem', right: '1rem', backgroundColor: project.status === 'COLLECTING' ? 'var(--color-primary-600)' : 'var(--color-neutral-800)', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '999px', fontSize: '0.75rem', fontWeight: 'bold', textTransform: 'uppercase', zIndex: 1, boxShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>
                       {t(`admin.status.${project.status}`)}
                     </div>

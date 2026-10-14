@@ -1,4 +1,3 @@
-import { jsPDF } from 'jspdf';
 import type { TFunction } from 'i18next';
 
 interface StatementLine { date: string; kind: string; project: string; amount: number; reference?: string | null; period?: string | null }
@@ -15,7 +14,9 @@ export interface Statement {
 const amount = (value: number) => `${Math.round(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} FCFA`;
 
 /** Relevé annuel PDF (justificatif) : totaux de l'année, positions et détail des opérations. */
-export function downloadAnnualStatement(statement: Statement, t: TFunction, language: string, companyName: string) {
+export async function downloadAnnualStatement(statement: Statement, t: TFunction, language: string, companyName: string) {
+  // Bibliothèque PDF chargée seulement au moment du téléchargement.
+  const { jsPDF } = await import('jspdf');
   const doc = new jsPDF();
   // Les années du relevé sont découpées en UTC (fuseau de la plateforme) : les dates sont affichées dans le même fuseau.
   const date = (value: string) => new Date(value).toLocaleDateString(language, { timeZone: 'UTC' });

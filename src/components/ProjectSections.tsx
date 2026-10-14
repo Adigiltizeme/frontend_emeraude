@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useSiteSettings } from '../context/SettingsContext';
 import { formatMoney } from '../config/api';
+import { optimizedImage } from '../lib/images';
 
 const card = { backgroundColor: 'var(--color-surface)', padding: '2rem', borderRadius: 'var(--radius-lg)', marginTop: '2rem' } as const;
 const heading = { fontSize: '1.25rem', marginBottom: '1rem' } as const;
@@ -70,13 +71,13 @@ export const ProjectGallery = ({ photos }: { photos?: string[] }) => {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 140px), 1fr))', gap: '0.75rem' }}>
         {list.map((src, i) => (
           <button key={src} type="button" onClick={() => setOpen(i)} style={{ padding: 0, border: 'none', cursor: 'zoom-in', borderRadius: 'var(--radius-md)', overflow: 'hidden', aspectRatio: '4 / 3' }}>
-            <img src={src} alt={t('projectDetails.photo', { n: i + 1 })} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+            <img src={optimizedImage(src, 400)} alt={t('projectDetails.photo', { n: i + 1 })} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
           </button>
         ))}
       </div>
       {open !== null && list[open] && (
         <div role="dialog" aria-modal="true" aria-label={t('projectDetails.galleryTitle')} onClick={() => setOpen(null)} style={{ position: 'fixed', inset: 0, zIndex: 10000, backgroundColor: 'rgba(0,0,0,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <img src={list[open]} alt={t('projectDetails.photo', { n: open + 1 })} onClick={(e) => e.stopPropagation()} style={{ maxWidth: '100%', maxHeight: '90vh', borderRadius: '8px' }} />
+          <img src={optimizedImage(list[open], 1600)} alt={t('projectDetails.photo', { n: open + 1 })} onClick={(e) => e.stopPropagation()} style={{ maxWidth: '100%', maxHeight: '90vh', borderRadius: '8px' }} />
           <button type="button" aria-label={t('projectDetails.close')} onClick={() => setOpen(null)} style={{ ...navButton, top: '1.5rem', right: '1.5rem', transform: 'none' }}><X size={22} /></button>
           {list.length > 1 && (
             <>

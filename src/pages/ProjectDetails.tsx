@@ -4,7 +4,8 @@ import { useSocket } from '../context/SocketContext';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, MapPin, TrendingUp, Clock, AlertTriangle, FileText, Download, CheckCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import ProjectMap from '../components/ProjectMap';
+import MapOnDemand from '../components/MapOnDemand';
+import { optimizedImage } from '../lib/images';
 import InvestModal from '../components/InvestModal';
 import { KeyInformation, ProjectFaq, ProjectGallery, ProjectTimeline, ProjectVideo } from '../components/ProjectSections';
 import { API_URL, authHeaders, formatMoney } from '../config/api';
@@ -106,7 +107,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
         {/* Colonne Principale (Détails) */}
         <div>
           <div className="zoom-wrapper" style={{ width: '100%', height: '400px', borderRadius: 'var(--radius-lg)', marginBottom: '2rem' }}>
-            <div className="zoom-bg" style={{ backgroundImage: `url(${project.image || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'})` }}></div>
+            <div className="zoom-bg" style={{ backgroundImage: `url(${optimizedImage(project.image, 1600) || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'})` }}></div>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-primary-600)', fontWeight: '600', marginBottom: '0.5rem' }}>
@@ -168,7 +169,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
               <h2 style={{ fontSize: '1.25rem', marginBottom: '0.25rem' }}>Localisation du projet</h2>
               <p style={{ color: 'var(--color-neutral-600)', fontSize: '0.875rem' }}>{t('projectDetails.mapDisclaimer')}</p>
             </div>
-            <ProjectMap location={project.location} />
+            <MapOnDemand location={project.location} />
           </div>
 
           <ProjectVideo url={project.videoUrl} />

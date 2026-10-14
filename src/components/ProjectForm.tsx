@@ -23,9 +23,13 @@ interface ProjectFormProps {
   onPreview?: (data: any) => void;
   submitLabel: string;
   showStatus?: boolean; // Pour l'admin
+  /** Porteur : la date limite est fixée par l'équipe (champ masqué). */
+  hideDeadline?: boolean;
+  /** Porteur en cours d'étude : conditions financières fixées par l'équipe (champs en lecture seule). */
+  lockFinancial?: boolean;
 }
 
-const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSubmit, onPreview, submitLabel, showStatus = false }) => {
+const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSubmit, onPreview, submitLabel, showStatus = false, hideDeadline = false, lockFinancial = false }) => {
   const { t } = useTranslation();
 
   const [formData, setFormData] = useState({
@@ -193,26 +197,26 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSubmit, onPrev
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
           <div>
             <label style={labelStyle}>Montant recherché (FCFA) *</label>
-            <input type="number" name="target" required value={formData.target} onChange={handleChange} placeholder="Ex: 50000000" style={inputStyle} />
+            <input type="number" name="target" disabled={lockFinancial} required value={formData.target} onChange={handleChange} placeholder="Ex: 50000000" style={inputStyle} />
           </div>
           <div>
             <label style={labelStyle}>Ticket minimum (FCFA) *</label>
-            <input type="number" name="minTicket" required value={formData.minTicket} onChange={handleChange} placeholder="Ex: 100000" style={inputStyle} />
+            <input type="number" name="minTicket" disabled={lockFinancial} required value={formData.minTicket} onChange={handleChange} placeholder="Ex: 100000" style={inputStyle} />
           </div>
           <div>
             <label style={labelStyle}>Durée estimée (mois) *</label>
-            <input type="number" name="duration" required value={formData.duration} onChange={handleChange} placeholder="Ex: 12" style={inputStyle} />
+            <input type="number" name="duration" disabled={lockFinancial} required value={formData.duration} onChange={handleChange} placeholder="Ex: 12" style={inputStyle} />
           </div>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
           <div>
             <label style={labelStyle}>Rendement cible (%) *</label>
-            <input type="number" name="returnRate" step="0.1" required value={formData.returnRate} onChange={handleChange} placeholder="Ex: 8.5" style={inputStyle} />
+            <input type="number" name="returnRate" disabled={lockFinancial} step="0.1" required value={formData.returnRate} onChange={handleChange} placeholder="Ex: 8.5" style={inputStyle} />
           </div>
           <div>
             <label style={labelStyle}>Niveau de risque *</label>
-            <select name="riskLevel" value={formData.riskLevel} onChange={handleChange} style={inputStyle}>
+            <select name="riskLevel" disabled={lockFinancial} value={formData.riskLevel} onChange={handleChange} style={inputStyle}>
               <option value="Faible">Faible</option>
               <option value="Modéré">Modéré</option>
               <option value="Élevé">Élevé</option>
@@ -220,7 +224,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSubmit, onPrev
           </div>
           <div>
             <label style={labelStyle}>Fréquence de distribution</label>
-            <select name="distribution" value={formData.distribution} onChange={handleChange} style={inputStyle}>
+            <select name="distribution" disabled={lockFinancial} value={formData.distribution} onChange={handleChange} style={inputStyle}>
               <option value="Mensuelle">Mensuelle</option>
               <option value="Trimestrielle">Trimestrielle</option>
               <option value="Annuelle">Annuelle</option>
@@ -229,7 +233,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSubmit, onPrev
           </div>
           <div>
             <label style={labelStyle}>{t('admin.projectForm.returnType')}</label>
-            <select name="returnType" value={formData.returnType} onChange={handleChange} style={inputStyle}>
+            <select name="returnType" disabled={lockFinancial} value={formData.returnType} onChange={handleChange} style={inputStyle}>
               <option value="">{t('admin.projectForm.returnTypeDefault')}</option>
               <option value="FIXED">{t('projectDetails.returnType.FIXED')}</option>
               <option value="VARIABLE">{t('projectDetails.returnType.VARIABLE')}</option>
@@ -245,7 +249,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSubmit, onPrev
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
           <div>
             <label style={labelStyle}>Garantie proposée</label>
-            <input type="text" name="guarantee" value={formData.guarantee} onChange={handleChange} placeholder="Ex: Hypothèque de 1er rang" style={inputStyle} />
+            <input type="text" name="guarantee" disabled={lockFinancial} value={formData.guarantee} onChange={handleChange} placeholder="Ex: Hypothèque de 1er rang" style={inputStyle} />
           </div>
           <div>
             <label style={labelStyle}>Impact économique/social</label>
@@ -256,11 +260,11 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSubmit, onPrev
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
           <div>
             <label style={labelStyle}>Rendement Locatif (%)</label>
-            <input type="number" step="0.1" name="rentYield" value={formData.rentYield} onChange={handleChange} placeholder="Ex: 5.5" style={inputStyle} />
+            <input type="number" step="0.1" name="rentYield" disabled={lockFinancial} value={formData.rentYield} onChange={handleChange} placeholder="Ex: 5.5" style={inputStyle} />
           </div>
           <div>
             <label style={labelStyle}>Plus-value estimée (%)</label>
-            <input type="number" step="0.1" name="capitalGain" value={formData.capitalGain} onChange={handleChange} placeholder="Ex: 2.5" style={inputStyle} />
+            <input type="number" step="0.1" name="capitalGain" disabled={lockFinancial} value={formData.capitalGain} onChange={handleChange} placeholder="Ex: 2.5" style={inputStyle} />
           </div>
         </div>
 
@@ -274,11 +278,13 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSubmit, onPrev
         />
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))', gap: '1.5rem' }}>
+          {!hideDeadline && (
           <div>
             <label style={labelStyle} htmlFor="project-deadline">{t('admin.projectForm.fundingDeadline')}</label>
             <input id="project-deadline" type="date" name="fundingDeadline" value={formData.fundingDeadline} onChange={handleChange} style={inputStyle} />
             <small style={{ display: 'block', color: 'var(--color-neutral-500)', marginTop: '0.25rem' }}>{t('admin.projectForm.fundingDeadlineHint')}</small>
           </div>
+          )}
           {(['brochure', 'legal'] as const).map((kind) => {
             const current = kind === 'brochure' ? initialData?.brochureUrl : initialData?.legalUrl;
             return (

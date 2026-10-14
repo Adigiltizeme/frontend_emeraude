@@ -71,12 +71,13 @@ const NotificationBell = ({ compact = false, onNavigate }: { compact?: boolean; 
 
   const text = (n: AppNotification) => {
     const data = n.data || {};
+    const reason = n.type === 'PROJECT_STATUS' && data.reason ? ` ${t('notifications.reason', { reason: data.reason })}` : '';
     return t(`notifications.types.${n.type}`, {
       ...data,
       amount: typeof data.amount === 'number' ? formatMoney(data.amount, i18n.language) : '',
       status: data.status ? t(`admin.status.${data.status}`) : '',
       defaultValue: t('notifications.types.DEFAULT'),
-    });
+    }) + reason;
   };
 
   if (!token) return null;

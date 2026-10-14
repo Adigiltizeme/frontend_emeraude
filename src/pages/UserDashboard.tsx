@@ -259,8 +259,9 @@ const UserDashboard = () => {
     if (type === 'project') {
       if (item.status === 'REJECTED') {
         return (
-          <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#fee2e2', borderRadius: '8px', color: '#dc2626', fontWeight: 'bold' }}>
-            Projet refusé. Veuillez contacter le support pour plus d'informations.
+          <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#fee2e2', borderRadius: '8px', color: '#991b1b' }}>
+            <strong>{t('ownerProject.rejectedTitle')}</strong>
+            {item.rejectionReason && <div style={{ marginTop: '0.35rem', whiteSpace: 'pre-wrap' }}>{item.rejectionReason}</div>}
           </div>
         );
       }
@@ -520,9 +521,15 @@ const UserDashboard = () => {
                           <div style={{ color: 'var(--color-neutral-500)', fontSize: '0.95rem' }}>Montant cible : <strong>{p.target.toLocaleString('fr-FR')} FCFA</strong></div>
                           {p.status === 'COLLECTING' && <div style={{ color: 'var(--color-primary-700)', fontSize: '0.9rem', marginTop: '0.5rem', fontWeight: 'bold' }}>Fonds levés : {(p.raised || 0).toLocaleString('fr-FR')} FCFA</div>}
                         </div>
-                        <div>{renderStatus(p.status)}</div>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
+                          {renderStatus(p.status)}
+                          {p.infoRequestedAt && ['SUBMITTED', 'DRAFT'].includes(p.status) && (
+                            <span style={{ padding: '0.2rem 0.6rem', borderRadius: '6px', backgroundColor: '#fef3c7', color: '#92400e', fontSize: '0.8rem', fontWeight: 700 }}>{t('ownerProject.infoRequestedBadge')}</span>
+                          )}
+                        </div>
                       </div>
                       {renderTimeline('project', p)}
+                      <Link to={`/mon-compte/projets/${p.id}`} className="btn btn-outline" style={{ marginTop: '1rem', alignSelf: 'flex-start' }}>{t('ownerProject.manage')}</Link>
                     </div>
                   ))}
                   <button onClick={() => navigate('/financer')} className="btn btn-outline" style={{ marginTop: '1rem', alignSelf: 'flex-start' }}>Soumettre un nouveau projet</button>

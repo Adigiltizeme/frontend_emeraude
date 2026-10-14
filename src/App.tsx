@@ -49,6 +49,8 @@ import Header from './components/Header';
 import InteractiveBackground from './components/InteractiveBackground';
 import InvestorProfile from './pages/InvestorProfile';
 import AdminDistributions from './pages/admin/AdminDistributions';
+import OwnerProject from './pages/OwnerProject';
+import AdminProjectDossier from './pages/admin/AdminProjectDossier';
 
 function App() {
   const { t } = useTranslation();
@@ -80,6 +82,7 @@ function App() {
                 <Route path="/mon-profil" element={<UserProfile />} />
                 <Route path="/paiement/retour" element={<PaymentReturn />} />
                 <Route path="/profil-investisseur" element={<InvestorProfile />} />
+                <Route path="/mon-compte/projets/:id" element={<OwnerProject />} />
               </Route>
 
               <Route path="/investir" element={<Invest />} />
@@ -113,6 +116,7 @@ function App() {
                 <Route path="leads" element={<AdminLeads />} />
                 <Route path="posts" element={<AdminPosts />} />
                 <Route path="projects/:id/distributions" element={<AdminDistributions />} />
+                <Route path="projects/:id/dossier" element={<AdminProjectDossier />} />
               </Route>
             </Routes>
           </main>

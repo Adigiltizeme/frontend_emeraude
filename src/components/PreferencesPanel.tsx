@@ -9,10 +9,11 @@ interface Preferences {
   emailSupportReplies: boolean;
   emailNewInvestmentOnMyProject: boolean;
   newsletter: boolean;
+  emailProjectUpdates: boolean;
   locale: 'fr' | 'en';
 }
 
-const TOGGLES: (keyof Omit<Preferences, 'locale'>)[] = ['emailSupportReplies', 'emailNewInvestmentOnMyProject', 'newsletter'];
+const TOGGLES: (keyof Omit<Preferences, 'locale'>)[] = ['emailSupportReplies', 'emailNewInvestmentOnMyProject', 'emailProjectUpdates', 'newsletter'];
 
 /** Préférences de communication de l'utilisateur : enregistrées immédiatement à chaque changement. */
 const PreferencesPanel = () => {

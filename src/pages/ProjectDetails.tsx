@@ -10,6 +10,7 @@ import { KeyInformation, ProjectFaq, ProjectGallery, ProjectTimeline, ProjectVid
 import { API_URL, authHeaders, formatMoney } from '../config/api';
 import { useLiveRefresh } from '../hooks/useLiveRefresh';
 import { usePageMeta } from '../hooks/usePageMeta';
+import ProjectUpdatesFeed from '../components/ProjectUpdatesFeed';
 
 
 const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
@@ -175,6 +176,7 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
           <ProjectTimeline items={project.timeline} />
           <ProjectFaq items={project.faq} />
           <KeyInformation project={project} />
+          {!isPreview && project.id && <ProjectUpdatesFeed projectId={project.id} />}
         </div>
 
         {/* Colonne Latérale (Investissement) */}

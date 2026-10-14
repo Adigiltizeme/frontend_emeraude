@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Edit, Trash2, CheckCircle, XCircle, Eye, X, Lock, Plus, Coins } from 'lucide-react';
+import { Edit, Trash2, CheckCircle, XCircle, Eye, X, Lock, Plus, Coins, FolderOpen } from 'lucide-react';
 import { API_URL, authHeaders } from '../../config/api';
 import ProjectDetails from '../ProjectDetails';
 
@@ -51,18 +51,25 @@ const AdminDashboard = () => {
   };
 
   const updateStatus = async (id: string, newStatus: string) => {
+    const project = projects.find(p => p.id === id);
+    let rejectionReason: string | undefined;
+    // Projet d'un porteur : le motif du refus lui est communiqué (obligatoire).
+    if (newStatus === 'REJECTED' && project?.ownerId) {
+      const answer = window.prompt(t('adminDossier.rejectPrompt'));
+      if (!answer?.trim()) return;
+      rejectionReason = answer.trim();
+    }
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/projects/${id}`, {
+      const res = await fetch(`${API_URL}/projects/${id}`, {
         method: 'PATCH',
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ status: newStatus })
+        headers: { ...authHeaders(token), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus, rejectionReason })
       });
-      if (res.ok) {
-        fetchProjects(); // Rafraichir la liste
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        alert(String(data?.message || t('admin.projects.error')).replace(/^KYB_MISSING: /, ''));
       }
+      fetchProjects();
     } catch (err) {
       console.error(err);
     }
@@ -178,6 +185,28 @@ const AdminDashboard = () => {
                           </button>
                         )}
                         
+                        {(project.ownerId || ['COLLECTING', 'FUNDED', 'COMPLETED'].includes(project.status)) && (() => {
+                          // Suivi du dossier : pièces à examiner, message du porteur sans réponse, actualités à valider.
+                          const pendingDocs = project._count?.documents ?? 0;
+                          const pendingUpdates = project._count?.updates ?? 0;
+                          const awaitingReply = !!project.ownerId && project.messages?.[0]?.authorId === project.ownerId;
+                          const alerts = pendingDocs + pendingUpdates + (awaitingReply ? 1 : 0);
+                          return (
+                            <button
+                              onClick={() => navigate(`/admin/projects/${project.id}/dossier`)}
+                              title={[
+                                t('adminDossier.title'),
+                                pendingDocs ? t('adminDossier.pendingDocs', { count: pendingDocs }) : '',
+                                awaitingReply ? t('adminDossier.awaitingReply') : '',
+                                pendingUpdates ? t('adminDossier.pendingUpdates', { count: pendingUpdates }) : '',
+                              ].filter(Boolean).join(' · ')}
+                              style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '0.25rem', padding: '0.5rem 0.75rem', backgroundColor: 'white', color: '#334155', border: '1px solid #cbd5e1', borderRadius: '4px', cursor: 'pointer', fontWeight: 600 }}>
+                              <FolderOpen size={16} /> {t('adminDossier.short')}
+                              {alerts > 0 && <span aria-hidden="true" style={{ position: 'absolute', top: -6, right: -6, minWidth: 18, height: 18, borderRadius: 9, backgroundColor: '#dc2626', color: 'white', fontSize: '0.7rem', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 4px' }}>{alerts}</span>}
+                            </button>
+                          );
+                        })()}
+
                         {['FUNDED', 'COMPLETED'].includes(project.status) && (
                           <button
                             onClick={() => navigate(`/admin/projects/${project.id}/distributions`)}

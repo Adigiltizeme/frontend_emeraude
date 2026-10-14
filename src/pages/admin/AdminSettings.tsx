@@ -165,7 +165,7 @@ const AdminSettings = () => {
             {def.allowed?.map((item) => (
               <label key={item} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', cursor: 'pointer' }}>
                 <input type="checkbox" checked={list.includes(item)} onChange={(e) => set(def.key, e.target.checked ? [...list, item] : list.filter((v) => v !== item))} />
-                {item}
+                {t(`admin.config.values.${item}`, { defaultValue: item })}
               </label>
             ))}
           </div>

@@ -549,7 +549,8 @@
         "fees": "Fees",
         "payments": "Payments",
         "notifications": "Notifications",
-        "history": "History"
+        "history": "History",
+        "projects": "Owner projects"
       },
       "save": "Save",
       "saving": "Saving…",
@@ -724,7 +725,25 @@
         "investorProfileValidityMonths": {
           "label": "Investor profile validity",
           "hint": "After this, the investor must answer the questions again (European practice: 24 months)."
+        },
+        "kybRequiredDocuments": {
+          "label": "Documents required before fundraising",
+          "hint": "For a project submitted by an owner, each ticked document must be accepted before fundraising opens. Nothing ticked: no requirement."
+        },
+        "projectUpdatesRequireReview": {
+          "label": "Review owner updates",
+          "hint": "Updates posted by an owner are reviewed by the team before they are visible."
         }
+      },
+      "values": {
+        "STATUTES": "Articles of association",
+        "TRADE_REGISTER": "Trade register extract (RCCM)",
+        "TAX_ID": "Tax identification number",
+        "MANAGER_ID": "Director's ID document",
+        "LAND_TITLE": "Land title or lease",
+        "BUILDING_PERMIT": "Building permit",
+        "FINANCING_PLAN": "Financing plan",
+        "OTHER": "Other document"
       }
     },
     "projects": {
@@ -966,6 +985,9 @@
           "title": "2. Access to services",
           "paragraphs": [
             "Access to investment projects requires creating a user account and, when required by the platform, providing valid identity documents (KYC - Know Your Customer process), in accordance with anti-money laundering and counter-terrorist financing legislation (AML-CFT). A project owner cannot invest in their own project. To invest or submit a project, the account's email address must have been confirmed through the link sent at sign-up."
+          ],
+          "after": [
+            "Project owners: the owner provides accurate, up-to-date documents (verification of the company and the operation). A project may be rejected with a reason, or be subject to a request for additional information. Once the project is funded, the owner regularly informs investors of its progress through updates, which may be reviewed by {{companyName}} before publication."
           ]
         },
         {
@@ -1028,6 +1050,7 @@
           "items": [
             "Identification data: last name, first name, email address, phone number. Date on which the email address was confirmed.",
             "Legal documents (ID document, proof of address) as part of our verification obligations (KYC). They are stored with restricted access and can only be viewed by our compliance team, through temporary links.",
+            "Project owners: file documents (articles of association, trade register extract, tax number, director's ID, land titles, permits, financing plan), stored with restricted access and only reviewed by our team through temporary links, as well as messages with the team about the project.",
             "Investor profile: your answers to the knowledge and loss-capacity questionnaire, their result and date. They are only used to tailor risk warnings and are never shared with third parties. The reason your ID documents were rejected, if applicable. Notifications in your dashboard (the latest 100 at most).",
             "Payout details: the method chosen (Mobile Money or bank transfer) and the related details (number, account holder, bank, IBAN or account number), used only to pay you income and repayments. History of payouts received.",
             "Transaction data: investment history, chosen payment method, provider used, payment references and statuses, and a time-stamped log of exchanges with that provider (traceability and fraud prevention). We never store your card numbers or Mobile Money codes: they are entered directly with our payment providers (CinetPay, Wave, PayDunya, Flutterwave, Stripe).",
@@ -1157,7 +1180,8 @@
     "newsletter": "Receive the newsletter (new projects, news)",
     "language": "Preferred language",
     "saved": "Preferences saved.",
-    "error": "Saving failed."
+    "error": "Saving failed.",
+    "emailProjectUpdates": "Investor: receive an e-mail for each update on a project I invested in"
   },
   "emailVerification": {
     "banner": "Confirm your email address to be able to invest and submit a project. A link was sent to {{email}}.",
@@ -1222,10 +1246,17 @@
       "SUPPORT_REPLY": "Our team replied to your request “{{subject}}”.",
       "DEFAULT": "New notification.",
       "INCOME_PAID": "Income paid: {{amount}} for “{{project}}”.",
-      "CAPITAL_REPAID": "Capital repayment paid: {{amount}} for “{{project}}”."
+      "CAPITAL_REPAID": "Capital repayment paid: {{amount}} for “{{project}}”.",
+      "PROJECT_MESSAGE": "Our team wrote to you about “{{project}}”.",
+      "PROJECT_INFO_REQUESTED": "Additional information is requested for “{{project}}”.",
+      "PROJECT_DOCUMENT_REJECTED": "A document in the “{{project}}” file was rejected: {{comment}}",
+      "PROJECT_UPDATE": "New update on “{{project}}”: {{title}}",
+      "PROJECT_UPDATE_PUBLISHED": "Your update “{{title}}” has been published.",
+      "PROJECT_UPDATE_REJECTED": "Your update “{{title}}” was not published: {{comment}}"
     },
     "openUnread_one": "Open notifications ({{count}} unread)",
-    "openUnread_other": "Open notifications ({{count}} unread)"
+    "openUnread_other": "Open notifications ({{count}} unread)",
+    "reason": "Reason: {{reason}}"
   },
   "onboarding": {
     "title": "Getting started",
@@ -1432,5 +1463,158 @@
     "currentPassword": "Current password",
     "passwordHint": "Required to protect your income: a confirmation e-mail is sent each time these details change.",
     "wrongPassword": "Incorrect current password."
+  },
+  "dossier": {
+    "intro": "Upload your company and project documents here. They are stored privately and only reviewed by the Emeraude team.",
+    "introAdmin": "Documents uploaded by the project owner or the team. Accept them, or reject them with a comment: the owner is notified.",
+    "required": "Documents required before fundraising",
+    "empty": "No documents uploaded yet.",
+    "kind": "Document type",
+    "file": "File",
+    "upload": "Upload",
+    "uploading": "Uploading…",
+    "formats": "PDF, JPEG, PNG or WEBP, 15 MB maximum per file.",
+    "locked": "The file can no longer be changed: the project is no longer under review. Write to the team if a document needs updating.",
+    "view": "View",
+    "accept": "Accept",
+    "reject": "Reject",
+    "delete": "Remove document",
+    "confirmDelete": "Remove this document from the file?",
+    "rejectPrompt": "What the owner needs to fix:",
+    "error": "The operation failed.",
+    "kinds": {
+      "STATUTES": "Articles of association",
+      "TRADE_REGISTER": "Trade register extract (RCCM)",
+      "TAX_ID": "Tax identification number",
+      "MANAGER_ID": "Director's ID document",
+      "LAND_TITLE": "Land title or lease",
+      "BUILDING_PERMIT": "Building permit",
+      "FINANCING_PLAN": "Financing plan",
+      "OTHER": "Other document"
+    },
+    "status": {
+      "PENDING": "To review",
+      "ACCEPTED": "Accepted",
+      "REJECTED": "Rejected"
+    }
+  },
+  "thread": {
+    "empty": "No messages yet. Ask the team your question.",
+    "placeholder": "Your message…",
+    "send": "Send",
+    "error": "Your message could not be sent.",
+    "team": "Emeraude team",
+    "owner": "Project owner",
+    "formerUser": "Former user"
+  },
+  "updates": {
+    "sectionTitle": "Project updates",
+    "compose": "Post an update",
+    "title": "Title",
+    "content": "Content",
+    "contentHint": "Construction progress, milestones reached, next steps… (blank line = new paragraph, “- ” = list)",
+    "visibility": "Visible to",
+    "visibilities": {
+      "INVESTORS": "The project's investors",
+      "PUBLIC": "Everyone"
+    },
+    "images": "Photos (4 maximum)",
+    "submit": "Send for review",
+    "publishNow": "Publish",
+    "sending": "Sending…",
+    "reviewNotice": "Your updates are reviewed by the team before publication. The project's investors are notified when they are published.",
+    "sentForReview": "Update sent: it will be published after review by the team.",
+    "published": "Update published: investors have been notified.",
+    "empty": "No updates yet.",
+    "investorsOnly": "Investors only",
+    "byTeam": "by the Emeraude team",
+    "byOwner": "by {{name}}",
+    "photo": "Photo {{n}}",
+    "reviewComment": "Comment:",
+    "approve": "Publish",
+    "reject": "Reject",
+    "rejectPrompt": "Reason for rejection (sent to the owner):",
+    "delete": "Delete",
+    "confirmDelete": "Delete this update?",
+    "error": "The operation failed.",
+    "restricted_one": "{{count}} update is reserved for this project's investors.",
+    "restricted_other": "{{count}} updates are reserved for this project's investors.",
+    "status": {
+      "PENDING": "To review",
+      "PUBLISHED": "Published",
+      "REJECTED": "Rejected"
+    }
+  },
+  "ownerProject": {
+    "loading": "Loading…",
+    "notFound": "Project not found.",
+    "back": "Back to my projects",
+    "manage": "Manage the file",
+    "target": "Target: {{amount}}",
+    "raised": "Raised: {{amount}}",
+    "status": {
+      "SUBMITTED": "Submitted",
+      "DRAFT": "Under review",
+      "COLLECTING": "Raising funds",
+      "FUNDED": "Funded",
+      "COMPLETED": "Completed",
+      "REJECTED": "Rejected",
+      "FAILED": "Not funded"
+    },
+    "tabs": {
+      "dossier": "Documents",
+      "messages": "Messages with the team",
+      "updates": "Updates",
+      "edit": "Edit the project"
+    },
+    "rejectedTitle": "Project not selected",
+    "rejectedHelp": "You can write to the team from the “Messages” tab or submit a new project.",
+    "infoRequestedTitle": "The team needs more information",
+    "infoRequestedHelp": "Complete your documents or edit your project, then send it back for review.",
+    "infoRequestedBadge": "Information requested",
+    "resubmitNote": "Message for the team (optional)",
+    "resubmit": "Send back for review",
+    "resubmitted": "File sent back: the team is resuming the review.",
+    "submittedHelp": "Your project is awaiting review: you can still edit it and add documents.",
+    "studyHelp": "The team is reviewing your file. You can add documents and write to them at any time.",
+    "saveEdit": "Save changes",
+    "saved": "Changes saved.",
+    "partialUpload": "Changes saved, but some files could not be uploaded.",
+    "error": "The operation failed.",
+    "financialLocked": "During the review, the financial terms (amount, return, duration, minimum ticket) are set with the team: write to them to change them."
+  },
+  "adminDossier": {
+    "title": "Project file",
+    "short": "File",
+    "back": "Back to projects",
+    "loading": "Loading…",
+    "error": "The operation failed.",
+    "owner": "Owner: {{name}} ({{email}})",
+    "team": "Project created by the team",
+    "decision": "File review",
+    "awaitingOwner": "Information requested on {{date}}: waiting for the owner.",
+    "requestInfo": "Request more information",
+    "requestInfoHint": "Documents or information expected (sent to the owner by e-mail and in their dashboard)",
+    "sendRequest": "Send the request",
+    "infoRequested": "Request sent to the owner.",
+    "rejectReason": "Reason for rejection",
+    "rejectHint": "Sent to the owner (required for an owner's project)",
+    "reject": "Reject the project",
+    "confirmReject": "Reject this project permanently?",
+    "rejectPrompt": "Reason for rejection (sent to the owner):",
+    "rejected": "Project rejected: the owner has been notified.",
+    "startStudy": "Move to review",
+    "inStudy": "Project moved to review.",
+    "publish": "Approve and open fundraising",
+    "confirmPublish": "Open fundraising for this project? It will be visible to investors.",
+    "published": "Fundraising opened.",
+    "documents": "File documents (KYB)",
+    "messages": "Messages with the owner",
+    "updates": "Project updates",
+    "pendingDocs_one": "{{count}} document to review",
+    "pendingDocs_other": "{{count}} documents to review",
+    "pendingUpdates_one": "{{count}} update to review",
+    "pendingUpdates_other": "{{count}} updates to review",
+    "awaitingReply": "Unanswered message from the owner"
   }
 }

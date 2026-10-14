@@ -549,7 +549,8 @@
         "fees": "Frais",
         "payments": "Paiements",
         "notifications": "Notifications",
-        "history": "Historique"
+        "history": "Historique",
+        "projects": "Projets des porteurs"
       },
       "save": "Enregistrer",
       "saving": "Enregistrement…",
@@ -724,7 +725,25 @@
         "investorProfileValidityMonths": {
           "label": "Validité du profil investisseur",
           "hint": "Au-delà, l'investisseur doit répondre de nouveau aux questions (pratique européenne : 24 mois)."
+        },
+        "kybRequiredDocuments": {
+          "label": "Pièces exigées avant la mise en collecte",
+          "hint": "Pour un projet déposé par un porteur, chaque pièce cochée doit être acceptée avant de passer en collecte. Aucune case cochée : pas d'exigence."
+        },
+        "projectUpdatesRequireReview": {
+          "label": "Valider les actualités des porteurs",
+          "hint": "Les actualités publiées par un porteur sont relues par l'équipe avant d'être visibles."
         }
+      },
+      "values": {
+        "STATUTES": "Statuts de la société",
+        "TRADE_REGISTER": "Registre du commerce (RCCM)",
+        "TAX_ID": "Identifiant fiscal (NINEA, IFU…)",
+        "MANAGER_ID": "Pièce d'identité du dirigeant",
+        "LAND_TITLE": "Titre foncier ou bail",
+        "BUILDING_PERMIT": "Permis de construire",
+        "FINANCING_PLAN": "Plan de financement",
+        "OTHER": "Autre document"
       }
     },
     "projects": {
@@ -966,6 +985,9 @@
           "title": "2. Accès aux services",
           "paragraphs": [
             "L'accès aux projets d'investissement nécessite la création d'un compte utilisateur et, lorsque la plateforme l'exige, la fourniture de documents d'identité valides (processus KYC - Know Your Customer), conformément à la législation sur la lutte contre le blanchiment d'argent et le financement du terrorisme (LCB-FT). Le porteur d'un projet ne peut pas investir dans son propre projet. Pour investir ou déposer un projet, l'adresse e-mail du compte doit avoir été confirmée par le lien envoyé à l'inscription."
+          ],
+          "after": [
+            "Porteurs de projet : le porteur fournit des pièces exactes et à jour (vérification de la société et de l'opération). Un projet peut être refusé avec un motif, ou faire l'objet d'une demande de compléments. Une fois le projet financé, le porteur informe régulièrement les investisseurs de l'avancement par des actualités, qui peuvent être relues par {{companyName}} avant publication."
           ]
         },
         {
@@ -1028,6 +1050,7 @@
           "items": [
             "Données d'identification : nom, prénom, adresse e-mail, numéro de téléphone. Date de confirmation de l'adresse e-mail.",
             "Documents légaux (pièce d'identité, justificatif de domicile) dans le cadre de nos obligations de vérification (KYC). Ils sont stockés en accès restreint et consultables uniquement par notre équipe de conformité, via des liens temporaires.",
+            "Porteurs de projet : pièces du dossier (statuts, registre du commerce, identifiant fiscal, pièce d'identité du dirigeant, titres fonciers, permis, plan de financement), stockées en accès restreint et consultées uniquement par notre équipe via des liens temporaires, ainsi que les échanges avec l'équipe au sujet du projet.",
             "Profil investisseur : vos réponses au questionnaire de connaissances et de capacité à supporter une perte, leur résultat et leur date. Elles servent uniquement à adapter les avertissements sur les risques et ne sont jamais communiquées à des tiers. Motif d'un éventuel refus de vos pièces d'identité. Notifications de votre espace (100 dernières au maximum).",
             "Coordonnées de versement : moyen choisi (Mobile Money ou virement) et coordonnées associées (numéro, titulaire, banque, IBAN ou RIB), utilisées uniquement pour vous verser vos revenus et remboursements. Historique des versements reçus.",
             "Données de transaction : historique d'investissement, moyen de paiement choisi, prestataire utilisé, références et statuts des paiements, ainsi qu'un journal horodaté des échanges avec ce prestataire (traçabilité et lutte contre la fraude). Nous ne stockons jamais vos numéros de carte bancaire ni vos codes Mobile Money : ils sont saisis directement chez nos prestataires de paiement (CinetPay, Wave, PayDunya, Flutterwave, Stripe).",
@@ -1157,7 +1180,8 @@
     "newsletter": "Recevoir la lettre d'information (nouveaux projets, actualités)",
     "language": "Langue préférée",
     "saved": "Préférences enregistrées.",
-    "error": "L'enregistrement a échoué."
+    "error": "L'enregistrement a échoué.",
+    "emailProjectUpdates": "Investisseur : recevoir un e-mail à chaque actualité d'un projet dans lequel j'ai investi"
   },
   "emailVerification": {
     "banner": "Confirmez votre adresse e-mail pour pouvoir investir et déposer un projet. Un lien vous a été envoyé à {{email}}.",
@@ -1222,10 +1246,17 @@
       "SUPPORT_REPLY": "L'équipe a répondu à votre demande « {{subject}} ».",
       "DEFAULT": "Nouvelle notification.",
       "INCOME_PAID": "Revenus versés : {{amount}} pour « {{project}} ».",
-      "CAPITAL_REPAID": "Remboursement de capital versé : {{amount}} pour « {{project}} »."
+      "CAPITAL_REPAID": "Remboursement de capital versé : {{amount}} pour « {{project}} ».",
+      "PROJECT_MESSAGE": "L'équipe vous a écrit au sujet de « {{project}} ».",
+      "PROJECT_INFO_REQUESTED": "Des compléments sont demandés pour « {{project}} ».",
+      "PROJECT_DOCUMENT_REJECTED": "Une pièce du dossier « {{project}} » a été refusée : {{comment}}",
+      "PROJECT_UPDATE": "Nouvelle actualité sur « {{project}} » : {{title}}",
+      "PROJECT_UPDATE_PUBLISHED": "Votre actualité « {{title}} » est publiée.",
+      "PROJECT_UPDATE_REJECTED": "Votre actualité « {{title}} » n'a pas été publiée : {{comment}}"
     },
     "openUnread_one": "Ouvrir les notifications ({{count}} non lue)",
-    "openUnread_other": "Ouvrir les notifications ({{count}} non lues)"
+    "openUnread_other": "Ouvrir les notifications ({{count}} non lues)",
+    "reason": "Motif : {{reason}}"
   },
   "onboarding": {
     "title": "Bien démarrer",
@@ -1432,5 +1463,158 @@
     "currentPassword": "Mot de passe actuel",
     "passwordHint": "Exigé pour protéger vos revenus : un e-mail de confirmation vous est envoyé à chaque modification.",
     "wrongPassword": "Mot de passe actuel incorrect."
+  },
+  "dossier": {
+    "intro": "Déposez ici les pièces de votre société et de l'opération. Elles sont stockées en accès privé et consultées uniquement par l'équipe Emeraude.",
+    "introAdmin": "Pièces déposées par le porteur ou par l'équipe. Acceptez-les ou refusez-les avec un commentaire : le porteur est prévenu.",
+    "required": "Pièces exigées avant la mise en collecte",
+    "empty": "Aucune pièce déposée pour le moment.",
+    "kind": "Type de pièce",
+    "file": "Fichier",
+    "upload": "Déposer",
+    "uploading": "Envoi…",
+    "formats": "PDF, JPEG, PNG ou WEBP, 15 Mo maximum par fichier.",
+    "locked": "Le dossier n'est plus modifiable : le projet n'est plus en cours d'étude. Écrivez à l'équipe si une pièce doit être mise à jour.",
+    "view": "Voir",
+    "accept": "Accepter",
+    "reject": "Refuser",
+    "delete": "Retirer la pièce",
+    "confirmDelete": "Retirer cette pièce du dossier ?",
+    "rejectPrompt": "Ce que le porteur doit corriger :",
+    "error": "L'opération n'a pas abouti.",
+    "kinds": {
+      "STATUTES": "Statuts de la société",
+      "TRADE_REGISTER": "Registre du commerce (RCCM)",
+      "TAX_ID": "Identifiant fiscal (NINEA, IFU…)",
+      "MANAGER_ID": "Pièce d'identité du dirigeant",
+      "LAND_TITLE": "Titre foncier ou bail",
+      "BUILDING_PERMIT": "Permis de construire",
+      "FINANCING_PLAN": "Plan de financement",
+      "OTHER": "Autre document"
+    },
+    "status": {
+      "PENDING": "À examiner",
+      "ACCEPTED": "Acceptée",
+      "REJECTED": "Refusée"
+    }
+  },
+  "thread": {
+    "empty": "Aucun message pour le moment. Posez votre question à l'équipe.",
+    "placeholder": "Votre message…",
+    "send": "Envoyer",
+    "error": "Le message n'a pas pu être envoyé.",
+    "team": "Équipe Emeraude",
+    "owner": "Porteur de projet",
+    "formerUser": "Ancien utilisateur"
+  },
+  "updates": {
+    "sectionTitle": "Actualités du projet",
+    "compose": "Publier une actualité",
+    "title": "Titre",
+    "content": "Contenu",
+    "contentHint": "Avancement du chantier, étapes franchies, prochaines échéances… (ligne vide = nouveau paragraphe, « - » = liste)",
+    "visibility": "Visible par",
+    "visibilities": {
+      "INVESTORS": "Les investisseurs du projet",
+      "PUBLIC": "Tout le monde"
+    },
+    "images": "Photos (4 maximum)",
+    "submit": "Envoyer pour validation",
+    "publishNow": "Publier",
+    "sending": "Envoi…",
+    "reviewNotice": "Vos actualités sont relues par l'équipe avant publication. Les investisseurs du projet sont prévenus à la publication.",
+    "sentForReview": "Actualité envoyée : elle sera publiée après relecture par l'équipe.",
+    "published": "Actualité publiée : les investisseurs sont prévenus.",
+    "empty": "Aucune actualité pour le moment.",
+    "investorsOnly": "Réservée aux investisseurs",
+    "byTeam": "par l'équipe Emeraude",
+    "byOwner": "par {{name}}",
+    "photo": "Photo {{n}}",
+    "reviewComment": "Commentaire :",
+    "approve": "Publier",
+    "reject": "Refuser",
+    "rejectPrompt": "Raison du refus (communiquée au porteur) :",
+    "delete": "Supprimer",
+    "confirmDelete": "Supprimer cette actualité ?",
+    "error": "L'opération n'a pas abouti.",
+    "restricted_one": "{{count}} actualité est réservée aux investisseurs de ce projet.",
+    "restricted_other": "{{count}} actualités sont réservées aux investisseurs de ce projet.",
+    "status": {
+      "PENDING": "À valider",
+      "PUBLISHED": "Publiée",
+      "REJECTED": "Refusée"
+    }
+  },
+  "ownerProject": {
+    "loading": "Chargement…",
+    "notFound": "Projet introuvable.",
+    "back": "Retour à mes projets",
+    "manage": "Gérer le dossier",
+    "target": "Objectif : {{amount}}",
+    "raised": "Levé : {{amount}}",
+    "status": {
+      "SUBMITTED": "Soumis",
+      "DRAFT": "En cours d'étude",
+      "COLLECTING": "En collecte",
+      "FUNDED": "Financé",
+      "COMPLETED": "Terminé",
+      "REJECTED": "Refusé",
+      "FAILED": "Non financé"
+    },
+    "tabs": {
+      "dossier": "Pièces du dossier",
+      "messages": "Échanges avec l'équipe",
+      "updates": "Actualités",
+      "edit": "Modifier le projet"
+    },
+    "rejectedTitle": "Projet non retenu",
+    "rejectedHelp": "Vous pouvez échanger avec l'équipe depuis l'onglet « Échanges » ou déposer un nouveau projet.",
+    "infoRequestedTitle": "L'équipe a besoin de compléments",
+    "infoRequestedHelp": "Complétez vos pièces ou modifiez votre projet, puis renvoyez-le pour analyse.",
+    "infoRequestedBadge": "Compléments demandés",
+    "resubmitNote": "Message pour l'équipe (facultatif)",
+    "resubmit": "Renvoyer pour analyse",
+    "resubmitted": "Dossier renvoyé : l'équipe reprend l'étude.",
+    "submittedHelp": "Votre projet est en attente d'étude : vous pouvez encore le modifier et compléter vos pièces.",
+    "studyHelp": "L'équipe étudie votre dossier. Vous pouvez compléter vos pièces et lui écrire à tout moment.",
+    "saveEdit": "Enregistrer les modifications",
+    "saved": "Modifications enregistrées.",
+    "partialUpload": "Modifications enregistrées, mais certains fichiers n'ont pas pu être envoyés.",
+    "error": "L'opération n'a pas abouti.",
+    "financialLocked": "Pendant l'étude, les conditions financières (montant, rendement, durée, ticket minimum) sont fixées avec l'équipe : écrivez-lui pour les faire évoluer."
+  },
+  "adminDossier": {
+    "title": "Dossier du projet",
+    "short": "Dossier",
+    "back": "Retour aux projets",
+    "loading": "Chargement…",
+    "error": "L'opération n'a pas abouti.",
+    "owner": "Porteur : {{name}} ({{email}})",
+    "team": "Projet créé par l'équipe",
+    "decision": "Étude du dossier",
+    "awaitingOwner": "Compléments demandés le {{date}} : en attente du porteur.",
+    "requestInfo": "Demander des compléments",
+    "requestInfoHint": "Pièces ou informations attendues (envoyées au porteur par e-mail et dans son espace)",
+    "sendRequest": "Envoyer la demande",
+    "infoRequested": "Demande envoyée au porteur.",
+    "rejectReason": "Motif du refus",
+    "rejectHint": "Communiqué au porteur (obligatoire pour le projet d'un porteur)",
+    "reject": "Refuser le projet",
+    "confirmReject": "Refuser définitivement ce projet ?",
+    "rejectPrompt": "Motif du refus (communiqué au porteur) :",
+    "rejected": "Projet refusé : le porteur est prévenu.",
+    "startStudy": "Passer en cours d'étude",
+    "inStudy": "Projet passé en cours d'étude.",
+    "publish": "Valider et mettre en collecte",
+    "confirmPublish": "Mettre ce projet en collecte ? Il sera visible des investisseurs.",
+    "published": "Projet mis en collecte.",
+    "documents": "Pièces du dossier (KYB)",
+    "messages": "Échanges avec le porteur",
+    "updates": "Actualités du projet",
+    "pendingDocs_one": "{{count}} pièce à examiner",
+    "pendingDocs_other": "{{count}} pièces à examiner",
+    "pendingUpdates_one": "{{count}} actualité à valider",
+    "pendingUpdates_other": "{{count}} actualités à valider",
+    "awaitingReply": "Message du porteur sans réponse"
   }
 }

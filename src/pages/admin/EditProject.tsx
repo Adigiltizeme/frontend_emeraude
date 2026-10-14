@@ -47,7 +47,9 @@ const EditProject = () => {
       });
 
       if (!projectResponse.ok) {
-        throw new Error('Erreur lors de la mise à jour');
+        const data = await projectResponse.json().catch(() => ({}));
+        const text = Array.isArray(data?.message) ? data.message.join(' ') : data?.message;
+        throw new Error(text ? String(text).replace(/^KYB_MISSING: /, '') : 'Erreur lors de la mise à jour');
       }
 
       if (imageFile) {

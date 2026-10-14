@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { Save, User as UserIcon, Lock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { EMAIL_CHANGED_EVENT } from '../../components/EmailVerificationBanner';
+import TwoFactorPanel from '../../components/TwoFactorPanel';
 
 const Profile: React.FC = () => {
   const { token, user } = useAuth();
@@ -193,6 +194,7 @@ const Profile: React.FC = () => {
             {saving ? 'Enregistrement...' : 'Enregistrer mon profil'}
           </button>
         </form>
+        <TwoFactorPanel />
       </div>
     </div>
   );

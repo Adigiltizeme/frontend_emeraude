@@ -4,6 +4,7 @@ import { Users, Briefcase, TrendingUp, Plus } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import AdminKpis from '../../components/admin/AdminKpis';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -63,6 +64,8 @@ const AdminDashboard = () => {
           <Plus size={18} /> {t('admin.projectForm.createTitle')}
         </button>
       </div>
+
+      <AdminKpis />
 
       {/* KPIs */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>

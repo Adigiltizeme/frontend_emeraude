@@ -429,7 +429,12 @@
         "KNOWLEDGE": "connaissances insuffisantes",
         "CONCENTRATION": "épargne concentrée",
         "LOSS_CAPACITY": "perte non supportable"
-      }
+      },
+      "twoFactorOn": "Active depuis le {{date}}",
+      "twoFactorOff": "Non activée",
+      "twoFactorReset": "Réinitialiser",
+      "twoFactorResetConfirm": "Réinitialiser la double authentification de ce compte ? L'utilisateur pourra se connecter avec son seul mot de passe, puis la réactiver. Action journalisée.",
+      "twoFactorResetError": "La réinitialisation a échoué."
     },
     "investments": {
       "title": "Gestion des investissements",
@@ -468,7 +473,9 @@
       "profile": "Mon profil",
       "support": "Support client",
       "settings": "Paramètres du site",
-      "posts": "Actualités"
+      "posts": "Actualités",
+      "exports": "Exports",
+      "audit": "Journal d'audit"
     },
     "leads": {
       "title": "Demandes et prospects",
@@ -550,7 +557,8 @@
         "payments": "Paiements",
         "notifications": "Notifications",
         "history": "Historique",
-        "projects": "Projets des porteurs"
+        "projects": "Projets des porteurs",
+        "security": "Sécurité"
       },
       "save": "Enregistrer",
       "saving": "Enregistrement…",
@@ -733,6 +741,18 @@
         "projectUpdatesRequireReview": {
           "label": "Valider les actualités des porteurs",
           "hint": "Les actualités publiées par un porteur sont relues par l'équipe avant d'être visibles."
+        },
+        "adminTwoFactorRequired": {
+          "label": "Double authentification obligatoire pour les administrateurs",
+          "hint": "Un administrateur sans double authentification ne peut plus accéder au back-office tant qu'il ne l'a pas activée. Activez-la d'abord sur votre propre compte."
+        },
+        "projectReviewChecklist": {
+          "label": "Liste de contrôle de l'étude",
+          "hint": "Un point par ligne. Modifier un libellé crée un nouveau point (les validations déjà faites restent liées à l'ancien libellé)."
+        },
+        "reviewChecklistRequired": {
+          "label": "Liste de contrôle exigée avant la mise en collecte",
+          "hint": "Pour un projet de porteur, tous les points doivent être validés avant de passer en collecte."
         }
       },
       "values": {
@@ -822,7 +842,9 @@
       "close": "Fermer",
       "confirmPaid_one": "Confirmer le versement ({{count}} part)",
       "confirmPaid_other": "Confirmer le versement ({{count}} parts)"
-    }
+    },
+    "forbiddenTitle": "Accès non autorisé",
+    "forbiddenText": "Votre profil ({{role}}) ne donne pas accès à cette page. Demandez à un super-administrateur si vous en avez besoin."
   },
   "payment": {
     "title": "Finaliser l'investissement",
@@ -1057,7 +1079,8 @@
             "Preuves de consentement : date et heure d'acceptation des présentes conditions à l'inscription, et des Conditions Générales de Vente avant chaque investissement.",
             "Préférences : langue et choix de communication (e-mails facultatifs, lettre d'information), modifiables à tout moment dans « Mon profil ».",
             "Formulaire de contact et lettre d'information : nom, adresse e-mail, téléphone (facultatif), contenu du message, page d'origine et date de votre consentement.",
-            "Mesure d'audience : pages consultées et informations techniques sur votre navigateur, uniquement si vous l'avez accepté dans le bandeau de cookies."
+            "Mesure d'audience : pages consultées et informations techniques sur votre navigateur, uniquement si vous l'avez accepté dans le bandeau de cookies.",
+            "Sécurité et traçabilité : si vous activez la double authentification, la clé de votre application est conservée chiffrée et les codes de secours sous forme d'empreintes. Les actions de l'équipe sur les comptes et les opérations, ainsi que les connexions des administrateurs, sont enregistrées dans un journal d'audit (auteur, date, adresse IP), conservé pour la sécurité de la plateforme et le respect de nos obligations."
           ]
         },
         {
@@ -1505,7 +1528,9 @@
     "error": "Le message n'a pas pu être envoyé.",
     "team": "Équipe Emeraude",
     "owner": "Porteur de projet",
-    "formerUser": "Ancien utilisateur"
+    "formerUser": "Ancien utilisateur",
+    "internal": "Note interne (invisible du porteur)",
+    "internalBadge": "Note interne"
   },
   "updates": {
     "sectionTitle": "Actualités du projet",
@@ -1616,5 +1641,171 @@
     "pendingUpdates_one": "{{count}} actualité à valider",
     "pendingUpdates_other": "{{count}} actualités à valider",
     "awaitingReply": "Message du porteur sans réponse"
+  },
+  "twoFactor": {
+    "title": "Double authentification",
+    "intro": "En plus du mot de passe, un code à 6 chiffres généré par une application (Google Authenticator, Microsoft Authenticator…) est demandé à chaque connexion.",
+    "enable": "Activer la double authentification",
+    "step1": "Installez une application d'authentification sur votre téléphone.",
+    "step2": "Ajoutez un compte en saisissant cette clé :",
+    "openApp": "Ou ouvrez directement l'application (sur le téléphone)",
+    "step3": "Saisissez le code à 6 chiffres affiché par l'application.",
+    "code": "Code à 6 chiffres",
+    "codeOrRecovery": "Code de l'application ou code de secours",
+    "confirm": "Confirmer",
+    "cancel": "Annuler",
+    "active": "Double authentification active.",
+    "password": "Mot de passe actuel",
+    "disable": "Désactiver",
+    "disabled": "Double authentification désactivée.",
+    "recoveryTitle": "Codes de secours",
+    "recoveryHelp": "Conservez ces codes en lieu sûr : chacun permet une connexion si vous perdez votre téléphone. Ils ne seront plus affichés.",
+    "recoverySaved": "J'ai conservé mes codes",
+    "error": "L'opération n'a pas abouti.",
+    "tooMany": "Trop de tentatives : patientez une minute.",
+    "loginTitle": "Vérification en deux étapes",
+    "loginHelp": "Saisissez le code de votre application d'authentification (ou un code de secours).",
+    "verify": "Valider",
+    "back": "Retour",
+    "wrongCode": "Code incorrect.",
+    "expired": "La vérification a expiré : reconnectez-vous.",
+    "requiredTitle": "Double authentification obligatoire",
+    "requiredText": "Pour accéder à l'administration, activez la double authentification sur votre compte.",
+    "continue": "Continuer",
+    "locked": "Trop de codes erronés : la connexion est bloquée 15 minutes. Un e-mail d'alerte vous a été envoyé.",
+    "unreadable": "La double authentification de ce compte doit être réinitialisée par un administrateur. Contactez-nous."
+  },
+  "adminRoles": {
+    "SUPER_ADMIN": "Super-administrateur",
+    "COMPLIANCE": "Conformité",
+    "FINANCE": "Finance",
+    "SUPPORT": "Support",
+    "EDITOR": "Éditeur",
+    "label": "Profil d'administrateur",
+    "desc": {
+      "SUPER_ADMIN": "Tous les droits, dont la gestion des rôles et des paramètres.",
+      "COMPLIANCE": "Utilisateurs, KYC, projets et dossiers, journal d'audit, exports.",
+      "FINANCE": "Investissements, paiements, remboursements, versements, projets, exports.",
+      "SUPPORT": "Messagerie du support, prospects, consultation des utilisateurs.",
+      "EDITOR": "Actualités du site."
+    }
+  },
+  "audit": {
+    "title": "Journal d'audit",
+    "intro": "Toutes les modifications faites par l'équipe, les exports et les connexions des administrateurs. Cliquez sur une ligne pour voir le détail (sans mots de passe ni codes).",
+    "actor": "Auteur (e-mail)",
+    "action": "Action",
+    "actionPlaceholder": "ex. : PATCH /projects",
+    "from": "Du",
+    "to": "Au",
+    "filter": "Filtrer",
+    "export": "Exporter (CSV)",
+    "loadError": "Impossible de charger le journal.",
+    "count_one": "{{count}} entrée",
+    "count_other": "{{count}} entrées",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "page": "Page {{page}} sur {{pages}}",
+    "columns": {
+      "date": "Date",
+      "actor": "Auteur",
+      "action": "Action",
+      "target": "Cible",
+      "ip": "Adresse IP"
+    },
+    "actions": {
+      "login": "Connexion",
+      "loginFailed": "Échec de la double authentification",
+      "twoFactorOn": "Double authentification activée",
+      "twoFactorOff": "Double authentification désactivée",
+      "export": "Export",
+      "kyc": "Décision sur l'identité",
+      "userUpdate": "Modification d'un utilisateur",
+      "userDelete": "Suppression d'un utilisateur",
+      "projectCreate": "Création de projet",
+      "projectUpdate": "Modification de projet",
+      "projectDelete": "Suppression de projet",
+      "projectClose": "Clôture de collecte",
+      "dossierDocument": "Pièce du dossier",
+      "dossierInfo": "Demande de compléments",
+      "dossierChecklist": "Liste de contrôle",
+      "dossierMessage": "Message du dossier",
+      "projectUpdateReview": "Actualité de projet",
+      "investmentStatus": "Statut d'un investissement",
+      "investmentRefund": "Remboursement",
+      "distribution": "Versement aux investisseurs",
+      "settings": "Paramètres",
+      "post": "Actualité du site",
+      "lead": "Prospect",
+      "payment": "Paiement"
+    }
+  },
+  "exportsPage": {
+    "title": "Exports",
+    "intro": "Fichiers CSV (séparateur « ; ») à ouvrir dans Excel. Laissez les dates vides pour tout exporter (10 000 lignes au plus). Chaque export est enregistré dans le journal d'audit.",
+    "download": "Télécharger",
+    "preparing": "Préparation…",
+    "none": "Votre profil ne donne accès à aucun export.",
+    "kinds": {
+      "investments": {
+        "title": "Investissements",
+        "desc": "Montants, frais, moyen de paiement, statut, dates de validation, de rétractation et de remboursement."
+      },
+      "payments": {
+        "title": "Paiements",
+        "desc": "Tentatives de paiement, prestataire, références, statut et motif d'échec."
+      },
+      "payouts": {
+        "title": "Versements aux investisseurs",
+        "desc": "Parts de revenus et de capital, statut, références et moyen de versement."
+      },
+      "users": {
+        "title": "Utilisateurs",
+        "desc": "Comptes, KYC, profils, langue, nombre d'investissements et de projets."
+      },
+      "leads": {
+        "title": "Prospects",
+        "desc": "Demandes de contact et inscriptions à la lettre d'information, avec la date du consentement."
+      },
+      "audit": {
+        "title": "Journal d'audit",
+        "desc": "Actions de l'équipe, exports et connexions."
+      }
+    },
+    "truncated": "Export limité aux 10 000 premières lignes : réduisez la période pour tout obtenir."
+  },
+  "kpis": {
+    "title": "Indicateurs clés",
+    "period": "Période",
+    "lastDays_one": "{{count}} dernier jour",
+    "lastDays_other": "{{count}} derniers jours",
+    "conversion": "Conversion des inscrits",
+    "conversionHint": "{{investors}} investisseurs sur {{registered}} inscrits de la période",
+    "kyc": "Identités vérifiées",
+    "kycHint": "{{verified}} sur {{users}} utilisateurs",
+    "invested": "Montant investi sur la période",
+    "investedHint": "Total : {{total}} · ticket moyen : {{average}}",
+    "reinvestment": "Réinvestissement",
+    "reinvestmentHint": "{{reinvestors}} investisseurs sur {{investors}} ont investi plusieurs fois",
+    "kycDelay": "Délai de vérification KYC",
+    "projectDelay": "Délai d'étude des dossiers",
+    "supportDelay": "Délai de première réponse du support",
+    "basedOn_one": "sur {{count}} dossier traité",
+    "basedOn_other": "sur {{count}} dossiers traités",
+    "unanswered_one": "{{count}} demande sans réponse",
+    "unanswered_other": "{{count}} demandes sans réponse",
+    "hours_one": "{{count}} heure",
+    "hours_other": "{{count}} heures",
+    "days_one": "{{count}} jour",
+    "days_other": "{{count}} jours"
+  },
+  "checklist": {
+    "title": "Liste de contrôle de l'étude",
+    "progress": "{{done}} point(s) validé(s) sur {{total}}",
+    "required": "exigée avant la mise en collecte",
+    "optional": "indicative (non exigée)",
+    "checkedBy": "Validé par {{by}} le {{date}}",
+    "uncheckedBy": "Décoché par {{by}} le {{date}}",
+    "error": "La modification n'a pas été enregistrée : rechargez et réessayez."
   }
 }

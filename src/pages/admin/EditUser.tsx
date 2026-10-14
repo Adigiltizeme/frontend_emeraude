@@ -3,19 +3,30 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { useAuth } from '../../context/AuthContext';
 import { ArrowLeft, Save } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { fieldStyle, labelStyle } from '../../config/formStyles';
+
+/** Profils d'administrateur (mêmes valeurs que l'API : src/auth/permissions.ts). */
+const ADMIN_ROLES = ['SUPER_ADMIN', 'COMPLIANCE', 'FINANCE', 'SUPPORT', 'EDITOR'];
 
 const EditUser: React.FC = () => {
   
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { token, user: currentUser } = useAuth();
+  const { t } = useTranslation();
+  // Rôles modifiables seulement avec la permission « admins » (super-administrateur).
+  const canManageRoles = !currentUser?.permissions || currentUser.permissions.includes('admins');
+  const [original, setOriginal] = useState({ role: 'USER', adminRole: 'SUPER_ADMIN' });
+  const [error, setError] = useState('');
   
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     phone: '',
     intention: '',
-    role: 'USER'
+    role: 'USER',
+    adminRole: 'SUPER_ADMIN'
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -40,8 +51,10 @@ const EditUser: React.FC = () => {
               lastName: userToEdit.lastName || '',
               phone: userToEdit.phone || '',
               intention: userToEdit.intention || '',
-              role: userToEdit.role || 'USER'
+              role: userToEdit.role || 'USER',
+              adminRole: userToEdit.adminRole || 'SUPER_ADMIN'
             });
+            setOriginal({ role: userToEdit.role || 'USER', adminRole: userToEdit.adminRole || 'SUPER_ADMIN' });
           }
         }
       } catch (err) {
@@ -55,12 +68,23 @@ const EditUser: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    // Promotion : profil le plus restreint par défaut (jamais super-administrateur sans choix explicite).
+    if (name === 'role' && value === 'ADMIN' && original.role !== 'ADMIN') {
+      setFormData(prev => ({ ...prev, role: value, adminRole: 'EDITOR' }));
+      return;
+    }
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
+    setError('');
+    // Rôle et profil envoyés seulement s'ils changent.
+    const { role, adminRole, ...profile } = formData;
+    const payload: Record<string, unknown> = { ...profile };
+    if (role !== original.role) payload.role = role;
+    if (role === 'ADMIN' && (adminRole !== original.adminRole || role !== original.role)) payload.adminRole = adminRole;
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/auth/users/${id}`, {
         method: 'PUT',
@@ -68,13 +92,15 @@ const EditUser: React.FC = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(payload)
       });
 
       if (res.ok) {
         navigate('/admin/users');
       } else {
-        alert('Erreur lors de la modification');
+        const data = await res.json().catch(() => ({}));
+        const text = Array.isArray(data?.message) ? data.message.join(' ') : data?.message;
+        setError(text ? String(text).replace(/^PERMISSION_DENIED: /, '') : 'Erreur lors de la modification');
       }
     } catch (err) {
       console.error(err);
@@ -127,13 +153,27 @@ const EditUser: React.FC = () => {
           </select>
         </div>
 
-        <div className="form-group" style={{ marginBottom: '2rem' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#475569' }}>Rôle Système</label>
-          <select name="role" value={formData.role} onChange={handleChange} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '1rem', outline: 'none', backgroundColor: '#f8fafc', color: '#0f172a', fontWeight: 'bold' }}>
-            <option value="USER">Utilisateur Standard</option>
-            <option value="ADMIN">Administrateur</option>
-          </select>
-        </div>
+        {canManageRoles && (
+          <div className="form-group" style={{ marginBottom: '2rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#475569' }}>Rôle Système</label>
+            <select name="role" value={formData.role} onChange={handleChange} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '1rem', outline: 'none', backgroundColor: '#f8fafc', color: '#0f172a', fontWeight: 'bold' }}>
+              <option value="USER">Utilisateur Standard</option>
+              <option value="ADMIN">Administrateur</option>
+            </select>
+          </div>
+        )}
+
+        {canManageRoles && formData.role === 'ADMIN' && (
+          <div className="form-group" style={{ marginBottom: '2rem' }}>
+            <label htmlFor="admin-role" style={labelStyle}>{t('adminRoles.label')}</label>
+            <select id="admin-role" name="adminRole" value={formData.adminRole} onChange={handleChange} style={fieldStyle}>
+              {ADMIN_ROLES.map((r) => <option key={r} value={r}>{t(`adminRoles.${r}`)}</option>)}
+            </select>
+            <small style={{ display: 'block', color: 'var(--color-neutral-500)', marginTop: '0.35rem' }}>{t(`adminRoles.desc.${formData.adminRole}`)}</small>
+          </div>
+        )}
+
+        {error && <p role="alert" style={{ color: '#b91c1c', backgroundColor: '#fef2f2', padding: '0.75rem', borderRadius: '6px' }}>{error}</p>}
 
         <button type="submit" disabled={saving} className="btn btn-primary" style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}>
           <Save size={20} />

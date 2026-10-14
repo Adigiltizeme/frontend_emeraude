@@ -51,6 +51,8 @@ import InvestorProfile from './pages/InvestorProfile';
 import AdminDistributions from './pages/admin/AdminDistributions';
 import OwnerProject from './pages/OwnerProject';
 import AdminProjectDossier from './pages/admin/AdminProjectDossier';
+import AdminAudit from './pages/admin/AdminAudit';
+import AdminExports from './pages/admin/AdminExports';
 
 function App() {
   const { t } = useTranslation();
@@ -117,6 +119,8 @@ function App() {
                 <Route path="posts" element={<AdminPosts />} />
                 <Route path="projects/:id/distributions" element={<AdminDistributions />} />
                 <Route path="projects/:id/dossier" element={<AdminProjectDossier />} />
+                <Route path="audit" element={<AdminAudit />} />
+                <Route path="exports" element={<AdminExports />} />
               </Route>
             </Routes>
           </main>

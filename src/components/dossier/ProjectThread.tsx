@@ -8,17 +8,19 @@ import { useLiveRefresh } from '../../hooks/useLiveRefresh';
 import { fieldStyle } from '../../config/formStyles';
 
 interface Message {
-  id: string; content: string; createdAt: string;
+  id: string; content: string; createdAt: string; internal?: boolean;
   author: { id: string; firstName: string | null; lastName: string | null; role: string } | null;
 }
 
 /** Fil d'échanges d'un projet entre son porteur et l'équipe (temps réel). */
-const ProjectThread = ({ projectId }: { projectId: string }) => {
+const ProjectThread = ({ projectId, admin = false }: { projectId: string; admin?: boolean }) => {
   const { t, i18n } = useTranslation();
   const { token, user } = useAuth();
   const { socket } = useSocket();
   const [messages, setMessages] = useState<Message[]>([]);
   const [draft, setDraft] = useState('');
+  // Équipe : note interne (jamais visible du porteur, sans notification).
+  const [internal, setInternal] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
   const endRef = useRef<HTMLDivElement>(null);
@@ -48,7 +50,7 @@ const ProjectThread = ({ projectId }: { projectId: string }) => {
       const res = await fetch(`${API_URL}/projects/${projectId}/dossier/messages`, {
         method: 'POST',
         headers: { ...authHeaders(token), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: draft }),
+        body: JSON.stringify({ content: draft, internal: admin && internal ? true : undefined }),
       });
       if (!res.ok) throw new Error();
       setDraft('');
@@ -73,7 +75,8 @@ const ProjectThread = ({ projectId }: { projectId: string }) => {
         {messages.map((m) => {
           const mine = m.author?.id === user?.id;
           return (
-            <div key={m.id} style={{ alignSelf: mine ? 'flex-end' : 'flex-start', maxWidth: '85%', padding: '0.6rem 0.85rem', borderRadius: '10px', backgroundColor: mine ? 'var(--color-primary-50, #ecfdf5)' : '#f8fafc', border: '1px solid var(--color-neutral-200)' }}>
+            <div key={m.id} style={{ alignSelf: mine ? 'flex-end' : 'flex-start', maxWidth: '85%', padding: '0.6rem 0.85rem', borderRadius: '10px', backgroundColor: m.internal ? '#fffbeb' : mine ? 'var(--color-primary-50, #ecfdf5)' : '#f8fafc', border: m.internal ? '1px dashed #f59e0b' : '1px solid var(--color-neutral-200)' }}>
+              {m.internal && <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#92400e', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{t('thread.internalBadge')}</div>}
               <div style={{ fontSize: '0.78rem', color: 'var(--color-neutral-500)', marginBottom: '0.2rem' }}>
                 <strong style={{ color: m.author?.role === 'ADMIN' ? 'var(--color-primary-700)' : 'var(--color-neutral-700)' }}>{authorName(m)}</strong> · {new Date(m.createdAt).toLocaleString(i18n.language, { dateStyle: 'short', timeStyle: 'short' })}
               </div>
@@ -90,6 +93,11 @@ const ProjectThread = ({ projectId }: { projectId: string }) => {
           <Send size={16} /> {t('thread.send')}
         </button>
       </form>
+      {admin && (
+        <label style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', marginTop: '0.5rem', fontSize: '0.88rem', color: 'var(--color-neutral-700)', cursor: 'pointer' }}>
+          <input type="checkbox" checked={internal} onChange={(e) => setInternal(e.target.checked)} /> {t('thread.internal')}
+        </label>
+      )}
       {error && <p role="alert" style={{ color: '#b91c1c', marginTop: '0.5rem' }}>{error}</p>}
     </section>
   );

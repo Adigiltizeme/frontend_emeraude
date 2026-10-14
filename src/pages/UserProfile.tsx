@@ -8,6 +8,7 @@ import { Link, useLocation } from 'react-router-dom';
 import KycStatusNotice from '../components/KycStatusNotice';
 import { useInvestorProfile } from '../hooks/useInvestorProfile';
 import PayoutAccountForm from '../components/PayoutAccountForm';
+import TwoFactorPanel from '../components/TwoFactorPanel';
 
 const UserProfile: React.FC = () => {
   const { token, user, login } = useAuth();
@@ -320,6 +321,8 @@ const UserProfile: React.FC = () => {
         )}
 
         <PayoutAccountForm />
+
+        <TwoFactorPanel />
 
         <PreferencesPanel />
       </div>

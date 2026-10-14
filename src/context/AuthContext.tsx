@@ -7,6 +7,10 @@ interface User {
   firstName?: string;
   lastName?: string;
   intention?: string;
+  /** Administrateur : profil (SUPER_ADMIN, COMPLIANCE, FINANCE, SUPPORT, EDITOR) et permissions par domaine. */
+  adminRole?: string | null;
+  permissions?: string[];
+  twoFactorEnabled?: boolean;
 }
 
 interface AuthContextType {
@@ -48,10 +52,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     window.fetch = async (...args) => {
       const response = await originalFetch(...args);
       
-      // If unauthorized and not on a login/register route, logout and redirect
+      // Session expirée ou jeton refusé (message générique « Unauthorized » du garde JWT) : déconnexion.
+      // Les autres 401 (mot de passe actuel ou code de double authentification incorrect) sont affichés par l'écran.
       if (response.status === 401) {
         const url = typeof args[0] === 'string' ? args[0] : args[0] instanceof Request ? args[0].url : '';
-        if (!url.includes('/auth/login') && !url.includes('/auth/register')) {
+        const data = await response.clone().json().catch(() => null);
+        if (!url.includes('/auth/login') && !url.includes('/auth/register') && data?.message === 'Unauthorized') {
           logout();
           window.location.href = '/login?expired=true';
         }

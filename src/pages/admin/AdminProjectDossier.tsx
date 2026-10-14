@@ -9,6 +9,7 @@ import DossierDocuments from '../../components/dossier/DossierDocuments';
 import ProjectThread from '../../components/dossier/ProjectThread';
 import ProjectUpdatesFeed from '../../components/ProjectUpdatesFeed';
 import { fieldStyle, labelStyle } from '../../config/formStyles';
+import ReviewChecklist from '../../components/dossier/ReviewChecklist';
 
 const LIVE = ['COLLECTING', 'FUNDED', 'COMPLETED'];
 
@@ -40,7 +41,7 @@ const AdminProjectDossier = () => {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         const text = Array.isArray(data?.message) ? data.message.join(' ') : String(data?.message || t('adminDossier.error'));
-        throw new Error(text.replace(/^KYB_MISSING: /, ''));
+        throw new Error(text.replace(/^(KYB_MISSING|CHECKLIST_INCOMPLETE): /, ''));
       }
       setMessage({ ok: true, text: success });
       load();
@@ -111,6 +112,13 @@ const AdminProjectDossier = () => {
         <section style={card}><strong>{t('adminDossier.rejectReason')}</strong><p style={{ margin: '0.35rem 0 0', whiteSpace: 'pre-wrap' }}>{project.rejectionReason}</p></section>
       )}
 
+      {project.owner && (
+        <section style={card}>
+          <h2 style={{ fontSize: '1.15rem', margin: '0 0 1rem' }}>{t('checklist.title')}</h2>
+          <ReviewChecklist projectId={project.id} />
+        </section>
+      )}
+
       <section style={card}>
         <h2 style={{ fontSize: '1.15rem', margin: '0 0 1rem' }}>{t('adminDossier.documents')}</h2>
         <DossierDocuments projectId={project.id} admin editable />
@@ -119,7 +127,7 @@ const AdminProjectDossier = () => {
       {project.owner && (
         <section style={card}>
           <h2 style={{ fontSize: '1.15rem', margin: '0 0 1rem' }}>{t('adminDossier.messages')}</h2>
-          <ProjectThread projectId={project.id} />
+          <ProjectThread projectId={project.id} admin />
         </section>
       )}
 

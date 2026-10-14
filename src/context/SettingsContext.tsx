@@ -37,6 +37,7 @@ export interface SiteSettings {
   investorProfileValidityMonths: number;
   kybRequiredDocuments: string[];
   projectUpdatesRequireReview: boolean;
+  adminTwoFactorRequired: boolean;
 }
 
 /** Chiffres publics calculés à partir des projets (ticket le plus accessible, collecte…). */
@@ -82,6 +83,7 @@ const defaultSettings: SiteSettings = {
   investorProfileValidityMonths: 24,
   kybRequiredDocuments: ['STATUTES', 'TRADE_REGISTER', 'LAND_TITLE'],
   projectUpdatesRequireReview: true,
+  adminTwoFactorRequired: false,
 };
 
 interface SettingsContextType {

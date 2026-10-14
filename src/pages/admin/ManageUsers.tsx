@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { API_URL, authHeaders } from '../../config/api';
 import { useAuth } from '../../context/AuthContext';
 import { Activity, ArrowLeft, Mail, Phone, Calendar, User as UserIcon, Edit, Trash2, Eye, Search, Filter, Download , ShieldCheck, ShieldAlert, Check, X as XIcon, FileText } from 'lucide-react';
 
@@ -18,6 +19,8 @@ interface UserData {
   idDocumentUrl?: string;
   investorProfile?: { fragile?: boolean; score?: number; maxScore?: number; reasons?: string[] } | null;
   investorProfileAt?: string | null;
+  adminRole?: string | null;
+  twoFactorEnabledAt?: string | null;
   _count?: {
     investments: number;
     ownedProjects: number;
@@ -86,6 +89,15 @@ const ManageUsers: React.FC = () => {
     } catch(err) {
       alert("Erreur réseau");
     }
+  };
+
+  /** Super-administrateur : réinitialise la double authentification (téléphone et codes de secours perdus). */
+  const resetTwoFactor = async (id: string) => {
+    if (!window.confirm(t('admin.manageUsers.twoFactorResetConfirm'))) return;
+    const res = await fetch(`${API_URL}/auth/users/${id}/2fa/reset`, { method: 'POST', headers: authHeaders(token) }).catch(() => null);
+    if (!res?.ok) { alert(t('admin.manageUsers.twoFactorResetError')); return; }
+    setUsers(users.map(u => u.id === id ? { ...u, twoFactorEnabledAt: null } : u));
+    if (selectedUser?.id === id) setSelectedUser({ ...selectedUser, twoFactorEnabledAt: null });
   };
 
   const handleDelete = async (id: string, name: string) => {
@@ -504,6 +516,19 @@ const ManageUsers: React.FC = () => {
               ) : (
                 <div style={{ fontSize: '0.95rem', color: 'var(--color-neutral-500)' }}>{t('admin.manageUsers.profileMissing')}</div>
               )}
+            </div>
+
+            <div style={{ marginTop: '2rem', backgroundColor: '#f8fafc', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+              <h3 style={{ fontSize: '1.1rem', color: 'var(--color-neutral-800)', marginTop: 0, marginBottom: '0.75rem' }}>{t('twoFactor.title')}</h3>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                <span style={{ fontWeight: 600, color: selectedUser.twoFactorEnabledAt ? '#166534' : 'var(--color-neutral-500)' }}>
+                  {selectedUser.twoFactorEnabledAt ? t('admin.manageUsers.twoFactorOn', { date: new Date(selectedUser.twoFactorEnabledAt).toLocaleDateString(i18n.language) }) : t('admin.manageUsers.twoFactorOff')}
+                </span>
+                {selectedUser.role === 'ADMIN' && <span style={{ fontSize: '0.9rem', color: 'var(--color-neutral-600)' }}>{t('adminRoles.label')} : {t(`adminRoles.${selectedUser.adminRole ?? 'SUPER_ADMIN'}`)}</span>}
+                {selectedUser.twoFactorEnabledAt && user?.permissions?.includes('admins') && (
+                  <button type="button" className="btn btn-outline" style={{ color: '#b91c1c' }} onClick={() => resetTwoFactor(selectedUser.id)}>{t('admin.manageUsers.twoFactorReset')}</button>
+                )}
+              </div>
             </div>
 
             <div style={{ marginTop: '2rem', backgroundColor: '#f8fafc', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>

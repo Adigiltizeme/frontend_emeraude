@@ -11,7 +11,8 @@
     "register": "Register",
     "dashboard": "Dashboard",
     "why": "Why us",
-    "blog": "News"
+    "blog": "News",
+    "logout": "Log out"
   },
   "home": {
     "title": "Build your real estate portfolio in Africa, from {{minTicket}}.",
@@ -558,7 +559,8 @@
         "notifications": "Notifications",
         "history": "History",
         "projects": "Owner projects",
-        "security": "Security"
+        "security": "Security",
+        "billing": "Access payment"
       },
       "save": "Save",
       "saving": "Saving…",
@@ -573,7 +575,10 @@
       "moveDown": "Move down",
       "options": {
         "FIXED": "Fixed return",
-        "VARIABLE": "Target return (variable)"
+        "VARIABLE": "Target return (variable)",
+        "ONE_TIME": "One-time payment",
+        "MONTHLY": "Monthly subscription",
+        "YEARLY": "Yearly subscription"
       },
       "historyEmpty": "No change recorded.",
       "colDate": "Date",
@@ -753,6 +758,46 @@
         "reviewChecklistRequired": {
           "label": "Checklist required before fundraising",
           "hint": "For an owner's project, every item must be checked before fundraising opens."
+        },
+        "billingGateEnabled": {
+          "label": "Access payment enabled",
+          "hint": "The account concerned sees the guided tour then the payment invitation, and cannot use anything before paying. Disabling reopens access immediately."
+        },
+        "billingTargetEmail": {
+          "label": "E-mail of the account concerned",
+          "hint": "One account only; other users are never affected."
+        },
+        "billingAmount": {
+          "label": "Amount",
+          "hint": "In the currency below (per period for a subscription)."
+        },
+        "billingCurrency": {
+          "label": "Currency",
+          "hint": "SEPA direct debit is only available in euros."
+        },
+        "billingMode": {
+          "label": "Payment type",
+          "hint": "Subscription: renewed automatically; a payment more than 3 days overdue blocks access again."
+        },
+        "billingPaymentMethods": {
+          "label": "Payment methods",
+          "hint": "Bank card and/or automatic SEPA direct debit."
+        },
+        "billingProductName": {
+          "label": "Payment label",
+          "hint": "Shown on the payment page and on the statement."
+        },
+        "billingMessage": {
+          "label": "Message displayed",
+          "hint": "Free text, emojis included."
+        },
+        "billingTourEnabled": {
+          "label": "Guided tour before payment",
+          "hint": "Interactive presentation of the features (administration, investors, project owners)."
+        },
+        "billingBlockAllAdmins": {
+          "label": "Also block other administrators",
+          "hint": "Until the designated account has paid, other administrators (except billing administrators) cannot use the back office, and therefore cannot restore its access. Investors and project owners are never blocked."
         }
       },
       "values": {
@@ -763,8 +808,13 @@
         "LAND_TITLE": "Land title or lease",
         "BUILDING_PERMIT": "Building permit",
         "FINANCING_PLAN": "Financing plan",
-        "OTHER": "Other document"
-      }
+        "OTHER": "Other document",
+        "CARD": "Bank card",
+        "SEPA_DEBIT": "SEPA direct debit (euros only)"
+      },
+      "emojis": "Emojis",
+      "insertEmoji": "Insert emoji",
+      "emojiTip": "Tip: on Windows, Windows key + “.” opens all emojis; on a phone, use the emoji keyboard."
     },
     "projects": {
       "close": "Close fundraising",
@@ -1830,5 +1880,232 @@
   "lightMode": {
     "on": "Light mode: on",
     "off": "Light mode: off"
+  },
+  "tour": {
+    "sections": {
+      "intro": "Welcome",
+      "admin": "Administration",
+      "investor": "Investor area",
+      "owner": "Project owner area"
+    },
+    "progress": "Step {{current}} of {{total}}",
+    "goTo": "Go to step {{n}}",
+    "skip": "Skip the tour",
+    "previous": "Previous",
+    "next": "Next",
+    "finish": "Finish the tour",
+    "steps": {
+      "welcome": {
+        "title": "Your Emeraude Africa platform",
+        "text": "Discover in a few steps everything you can manage: the team back office, then what your investors and project owners see.",
+        "points": [
+          "Use the arrow keys or buttons to move on",
+          "Replay the tour at any time from this screen"
+        ]
+      },
+      "dashboard": {
+        "title": "Dashboard and indicators",
+        "text": "An overview of activity, with the success indicators from the specification.",
+        "points": [
+          "Amount raised, users, projects by status",
+          "Sign-up conversion, verified identities, reinvestment",
+          "Team processing times (KYC, files, support)"
+        ]
+      },
+      "projects": {
+        "title": "Projects",
+        "text": "Create and publish your real estate projects and follow their fundraising live.",
+        "points": [
+          "Full page: photos, video, timeline, FAQ, risks, documents",
+          "Fundraising deadline, automatic closing, refunds if it fails",
+          "Public preview before publication"
+        ]
+      },
+      "dossier": {
+        "title": "Reviewing project owner files",
+        "text": "Each project submitted by an owner has its own file.",
+        "points": [
+          "Private KYB documents, accepted or rejected with a comment",
+          "Review checklist, internal notes, information requests",
+          "Reasoned rejection or opening fundraising in one click"
+        ]
+      },
+      "investments": {
+        "title": "Investments and payments",
+        "text": "All investments and payments, with their live status.",
+        "points": [
+          "Mobile Money, cards, transfers: smart routing between providers",
+          "Transfer validation, tracked refunds",
+          "Alerts on payment anomalies"
+        ]
+      },
+      "distributions": {
+        "title": "Investor payouts",
+        "text": "Income and capital repayments split automatically.",
+        "points": [
+          "Pro rata split, to the nearest franc",
+          "Each investor's payout details",
+          "Investors notified by notification and e-mail"
+        ]
+      },
+      "users": {
+        "title": "Users and roles",
+        "text": "Accounts, identity checks and team.",
+        "points": [
+          "KYC approval or rejection with a reason",
+          "Administrator profiles: compliance, finance, support, editor",
+          "Each user's investor profile result"
+        ]
+      },
+      "support": {
+        "title": "Support and leads",
+        "text": "Your user relationships, in one place.",
+        "points": [
+          "Real-time support inbox",
+          "Contact requests and newsletter sign-ups",
+          "WhatsApp button on the site"
+        ]
+      },
+      "content": {
+        "title": "News and communication",
+        "text": "Keep the platform alive.",
+        "points": [
+          "Site articles (with SEO)",
+          "Project construction updates, reviewed before publication",
+          "Announcement banner and social networks"
+        ]
+      },
+      "settings": {
+        "title": "Platform settings",
+        "text": "Everything is configurable without development.",
+        "points": [
+          "Fees, minimum ticket, caps, fundraising durations",
+          "Payment providers, bank transfer, legal information",
+          "History of every change"
+        ]
+      },
+      "security": {
+        "title": "Security and compliance",
+        "text": "A platform built for trust.",
+        "points": [
+          "Two-factor authentication, can be required for administrators",
+          "Audit log of every team action",
+          "CSV exports for accounting and compliance"
+        ]
+      },
+      "investor": {
+        "title": "Your investors' journey",
+        "text": "Simple and reassuring, from the first click to the first investment.",
+        "points": [
+          "Filterable catalogue, full project page",
+          "Identity check, investor profile, cooling-off period",
+          "Payment by Mobile Money, card or bank transfer"
+        ]
+      },
+      "portfolio": {
+        "title": "The investor portfolio",
+        "text": "Each investor follows their investments in real time.",
+        "points": [
+          "Capital invested, income received, upcoming payouts",
+          "Transaction history and annual PDF statement",
+          "Notification centre"
+        ]
+      },
+      "owner": {
+        "title": "Project owners' journey",
+        "text": "Owners submit and follow their project on their own.",
+        "points": [
+          "Project and file document submission",
+          "Messages with the team, information requests, resubmission",
+          "Construction updates for investors"
+        ]
+      },
+      "end": {
+        "title": "Everything is ready",
+        "text": "Your platform is up and running. All that is left is to activate your access.",
+        "points": []
+      }
+    }
+  },
+  "billing": {
+    "title": "Activate your access",
+    "pay": "Proceed to payment",
+    "redirecting": "Redirecting to the secure payment page…",
+    "secure": "Secure payment by Stripe. Your bank details never go through the platform.",
+    "replayTour": "Replay the tour",
+    "per": {
+      "MONTHLY": "per month",
+      "YEARLY": "per year"
+    },
+    "methods": {
+      "card": "Bank card",
+      "sepa_debit": "SEPA direct debit"
+    },
+    "processing": "Your payment is being processed (a direct debit can take a few days). Your access will open as soon as it is confirmed.",
+    "pastDue": "The last renewal could not be collected. Pay again to restore your access.",
+    "unavailable": "Payment is not available yet. Please try again a little later.",
+    "error": "The payment could not start. Please try again shortly.",
+    "return": {
+      "checking": {
+        "title": "Checking the payment…",
+        "text": "One moment, we are confirming your payment with our provider."
+      },
+      "paid": {
+        "title": "Thank you, your access is active! 🎉",
+        "text": "Your payment is confirmed. You can now use the whole platform."
+      },
+      "processing": {
+        "title": "Payment being processed",
+        "text": "Your direct debit is recorded. Access will open once it is confirmed (a few days at most)."
+      },
+      "cancelled": {
+        "title": "Payment cancelled",
+        "text": "Nothing was charged. You can resume the payment whenever you like."
+      },
+      "error": {
+        "title": "Payment not confirmed",
+        "text": "We could not confirm the payment. If it went through, access will open automatically within a few minutes."
+      },
+      "start": "Get started",
+      "back": "Back"
+    },
+    "failed": "The last direct debit was declined. You can pay again by card or with another bank account.",
+    "manage": "Manage my subscription",
+    "waiting": {
+      "title": "Access temporarily suspended",
+      "text": "The platform is waiting for management to activate access. It will be available again as soon as this is done; there is no need to sign in again."
+    }
+  },
+  "billingAdmin": {
+    "title": "Access payment tracking",
+    "stripeOk": "Billing Stripe account configured",
+    "stripeMissing": "BILLING_STRIPE_SECRET_KEY missing: payment cannot start",
+    "webhookOk": "Stripe webhook configured",
+    "webhookMissing": "BILLING_STRIPE_WEBHOOK_SECRET missing: renewals and direct debits are not tracked automatically",
+    "target": "Account concerned: {{email}}",
+    "targetMissing": "No account matches the address entered",
+    "disabled": "Payment disabled",
+    "blocked": "Access blocked pending payment",
+    "open": "Access open",
+    "status": "status: {{status}}",
+    "statuses": {
+      "NONE": "no payment",
+      "PAID": "paid",
+      "ACTIVE": "active subscription",
+      "PROCESSING": "processing",
+      "PAST_DUE": "unpaid",
+      "CANCELED": "subscription cancelled",
+      "FAILED": "direct debit declined"
+    },
+    "paidAt": "paid on {{date}}",
+    "periodEnd": "due on {{date}}",
+    "tourDone": "tour viewed",
+    "tourPending": "tour not viewed",
+    "blockAll": "Other administrators are also blocked until access is paid",
+    "blockTargetOnly": "Only the designated account is blocked",
+    "reset": "Reset payment",
+    "resetConfirm": "The designated account will have to pay again to access the platform. An ongoing Stripe subscription is not cancelled by this action (do it from Stripe). Continue?",
+    "resetDone": "Payment reset: access is subject to payment again.",
+    "resetError": "The reset failed."
   }
 }

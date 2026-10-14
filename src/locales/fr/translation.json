@@ -11,7 +11,8 @@
     "register": "Inscription",
     "dashboard": "Tableau de Bord",
     "why": "Pourquoi nous",
-    "blog": "Actualités"
+    "blog": "Actualités",
+    "logout": "Déconnexion"
   },
   "home": {
     "title": "Bâtissez votre patrimoine immobilier en Afrique, à partir de {{minTicket}}.",
@@ -558,7 +559,8 @@
         "notifications": "Notifications",
         "history": "Historique",
         "projects": "Projets des porteurs",
-        "security": "Sécurité"
+        "security": "Sécurité",
+        "billing": "Paiement d'accès"
       },
       "save": "Enregistrer",
       "saving": "Enregistrement…",
@@ -573,7 +575,10 @@
       "moveDown": "Descendre",
       "options": {
         "FIXED": "Rendement fixe",
-        "VARIABLE": "Rendement cible (variable)"
+        "VARIABLE": "Rendement cible (variable)",
+        "ONE_TIME": "Paiement unique",
+        "MONTHLY": "Abonnement mensuel",
+        "YEARLY": "Abonnement annuel"
       },
       "historyEmpty": "Aucune modification enregistrée.",
       "colDate": "Date",
@@ -753,6 +758,46 @@
         "reviewChecklistRequired": {
           "label": "Liste de contrôle exigée avant la mise en collecte",
           "hint": "Pour un projet de porteur, tous les points doivent être validés avant de passer en collecte."
+        },
+        "billingGateEnabled": {
+          "label": "Paiement d'accès activé",
+          "hint": "Le compte concerné voit la visite guidée puis l'invitation à payer, et ne peut rien utiliser avant d'avoir payé. Désactiver rouvre l'accès immédiatement."
+        },
+        "billingTargetEmail": {
+          "label": "Adresse e-mail du compte concerné",
+          "hint": "Un seul compte ; les autres utilisateurs ne sont jamais concernés."
+        },
+        "billingAmount": {
+          "label": "Montant",
+          "hint": "Dans la devise ci-dessous (par période pour un abonnement)."
+        },
+        "billingCurrency": {
+          "label": "Devise",
+          "hint": "Prélèvement SEPA possible uniquement en euros."
+        },
+        "billingMode": {
+          "label": "Type de paiement",
+          "hint": "Abonnement : renouvelé automatiquement ; un impayé de plus de 3 jours bloque de nouveau l'accès."
+        },
+        "billingPaymentMethods": {
+          "label": "Moyens de paiement",
+          "hint": "Carte bancaire et / ou prélèvement automatique SEPA."
+        },
+        "billingProductName": {
+          "label": "Libellé du paiement",
+          "hint": "Affiché sur la page de paiement et sur le relevé."
+        },
+        "billingMessage": {
+          "label": "Message affiché",
+          "hint": "Rédaction libre, émojis compris."
+        },
+        "billingTourEnabled": {
+          "label": "Visite guidée avant le paiement",
+          "hint": "Présentation interactive des fonctionnalités (administration, investisseurs, porteurs)."
+        },
+        "billingBlockAllAdmins": {
+          "label": "Bloquer aussi les autres administrateurs",
+          "hint": "Tant que le compte concerné n'a pas payé, les autres administrateurs (hors administrateurs du paiement) ne peuvent pas utiliser le back-office, et donc pas lui rouvrir l'accès. Les investisseurs et porteurs ne sont jamais bloqués."
         }
       },
       "values": {
@@ -763,8 +808,13 @@
         "LAND_TITLE": "Titre foncier ou bail",
         "BUILDING_PERMIT": "Permis de construire",
         "FINANCING_PLAN": "Plan de financement",
-        "OTHER": "Autre document"
-      }
+        "OTHER": "Autre document",
+        "CARD": "Carte bancaire",
+        "SEPA_DEBIT": "Prélèvement SEPA (euros uniquement)"
+      },
+      "emojis": "Émojis",
+      "insertEmoji": "Insérer l'émoji",
+      "emojiTip": "Astuce : sous Windows, la touche Windows + « . » ouvre tous les émojis ; sur téléphone, utilisez le clavier émoji."
     },
     "projects": {
       "close": "Clôturer la collecte",
@@ -1830,5 +1880,232 @@
   "lightMode": {
     "on": "Mode léger : activé",
     "off": "Mode léger : désactivé"
+  },
+  "tour": {
+    "sections": {
+      "intro": "Bienvenue",
+      "admin": "Administration",
+      "investor": "Espace investisseur",
+      "owner": "Espace porteur de projet"
+    },
+    "progress": "Étape {{current}} sur {{total}}",
+    "goTo": "Aller à l'étape {{n}}",
+    "skip": "Passer la visite",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "finish": "Terminer la visite",
+    "steps": {
+      "welcome": {
+        "title": "Votre plateforme Emeraude Africa",
+        "text": "Découvrez en quelques étapes tout ce que vous pouvez piloter : le back-office de l'équipe, puis ce que voient vos investisseurs et vos porteurs de projet.",
+        "points": [
+          "Flèches du clavier ou boutons pour avancer",
+          "Revoir la visite à tout moment depuis cet écran"
+        ]
+      },
+      "dashboard": {
+        "title": "Tableau de bord et indicateurs",
+        "text": "Une vue d'ensemble de l'activité, avec les indicateurs de succès du cahier des charges.",
+        "points": [
+          "Montant collecté, utilisateurs, projets par statut",
+          "Conversion des inscrits, identités vérifiées, réinvestissement",
+          "Délais de traitement de l'équipe (KYC, dossiers, support)"
+        ]
+      },
+      "projects": {
+        "title": "Projets",
+        "text": "Créez et publiez vos projets immobiliers, suivez leur collecte en temps réel.",
+        "points": [
+          "Fiche complète : photos, vidéo, calendrier, FAQ, risques, documents",
+          "Date limite de collecte, clôture automatique, remboursements si échec",
+          "Aperçu public avant publication"
+        ]
+      },
+      "dossier": {
+        "title": "Étude des dossiers des porteurs",
+        "text": "Chaque projet déposé par un porteur a son dossier.",
+        "points": [
+          "Pièces KYB en accès privé, acceptées ou refusées avec commentaire",
+          "Liste de contrôle de l'étude, notes internes, demandes de compléments",
+          "Refus motivé ou mise en collecte en un clic"
+        ]
+      },
+      "investments": {
+        "title": "Investissements et paiements",
+        "text": "Tous les investissements et paiements, avec leur statut en direct.",
+        "points": [
+          "Mobile Money, cartes, virements : routage intelligent entre prestataires",
+          "Validation des virements, remboursements tracés",
+          "Alertes en cas d'anomalie de paiement"
+        ]
+      },
+      "distributions": {
+        "title": "Versements aux investisseurs",
+        "text": "Revenus et remboursements de capital répartis automatiquement.",
+        "points": [
+          "Répartition au prorata, au franc près",
+          "Coordonnées de versement de chaque investisseur",
+          "Investisseurs prévenus par notification et e-mail"
+        ]
+      },
+      "users": {
+        "title": "Utilisateurs et rôles",
+        "text": "Comptes, vérification d'identité et équipe.",
+        "points": [
+          "Validation ou refus du KYC avec motif",
+          "Profils d'administrateur : conformité, finance, support, éditeur",
+          "Résultat du profil investisseur de chacun"
+        ]
+      },
+      "support": {
+        "title": "Support et prospects",
+        "text": "La relation avec vos utilisateurs, au même endroit.",
+        "points": [
+          "Messagerie du support en temps réel",
+          "Demandes de contact et inscriptions à la lettre d'information",
+          "Bouton WhatsApp sur le site"
+        ]
+      },
+      "content": {
+        "title": "Actualités et communication",
+        "text": "Faites vivre la plateforme.",
+        "points": [
+          "Articles du site (référencement inclus)",
+          "Actualités de chantier des projets, validées avant publication",
+          "Bandeau d'annonce et réseaux sociaux"
+        ]
+      },
+      "settings": {
+        "title": "Paramètres de la plateforme",
+        "text": "Tout se règle sans développement.",
+        "points": [
+          "Frais, ticket minimum, plafonds, durées de collecte",
+          "Prestataires de paiement, virement, informations légales",
+          "Historique de chaque modification"
+        ]
+      },
+      "security": {
+        "title": "Sécurité et conformité",
+        "text": "Une plateforme pensée pour la confiance.",
+        "points": [
+          "Double authentification, imposable aux administrateurs",
+          "Journal d'audit de toutes les actions de l'équipe",
+          "Exports CSV pour la comptabilité et la conformité"
+        ]
+      },
+      "investor": {
+        "title": "Le parcours de vos investisseurs",
+        "text": "Simple et rassurant, du premier clic au premier investissement.",
+        "points": [
+          "Catalogue filtrable, fiche projet complète",
+          "Vérification d'identité, profil investisseur, délai de rétractation",
+          "Paiement par Mobile Money, carte ou virement"
+        ]
+      },
+      "portfolio": {
+        "title": "Le portefeuille investisseur",
+        "text": "Chaque investisseur suit ses placements en temps réel.",
+        "points": [
+          "Capital investi, revenus perçus, versements à venir",
+          "Historique des opérations et relevé annuel PDF",
+          "Centre de notifications"
+        ]
+      },
+      "owner": {
+        "title": "Le parcours des porteurs de projet",
+        "text": "Les porteurs déposent et suivent leur projet en autonomie.",
+        "points": [
+          "Dépôt du projet et des pièces du dossier",
+          "Échanges avec l'équipe, compléments, renvoi pour analyse",
+          "Actualités de chantier pour les investisseurs"
+        ]
+      },
+      "end": {
+        "title": "Tout est prêt",
+        "text": "Votre plateforme est opérationnelle. Il ne reste qu'à activer votre accès.",
+        "points": []
+      }
+    }
+  },
+  "billing": {
+    "title": "Activez votre accès",
+    "pay": "Procéder au paiement",
+    "redirecting": "Redirection vers le paiement sécurisé…",
+    "secure": "Paiement sécurisé par Stripe. Vos coordonnées bancaires ne transitent jamais par la plateforme.",
+    "replayTour": "Revoir la visite",
+    "per": {
+      "MONTHLY": "par mois",
+      "YEARLY": "par an"
+    },
+    "methods": {
+      "card": "Carte bancaire",
+      "sepa_debit": "Prélèvement SEPA"
+    },
+    "processing": "Votre paiement est en cours de traitement (un prélèvement peut prendre quelques jours). Votre accès sera ouvert dès sa confirmation.",
+    "pastDue": "Le dernier renouvellement n'a pas pu être encaissé. Réglez de nouveau pour retrouver votre accès.",
+    "unavailable": "Le paiement n'est pas encore disponible. Merci de réessayer un peu plus tard.",
+    "error": "Le paiement n'a pas pu démarrer. Réessayez dans quelques instants.",
+    "return": {
+      "checking": {
+        "title": "Vérification du paiement…",
+        "text": "Un instant, nous confirmons votre paiement auprès de notre prestataire."
+      },
+      "paid": {
+        "title": "Merci, votre accès est activé ! 🎉",
+        "text": "Votre paiement est confirmé. Vous pouvez maintenant utiliser toute la plateforme."
+      },
+      "processing": {
+        "title": "Paiement en cours de traitement",
+        "text": "Votre prélèvement est enregistré. L'accès sera ouvert dès sa confirmation (quelques jours au plus)."
+      },
+      "cancelled": {
+        "title": "Paiement annulé",
+        "text": "Aucun montant n'a été débité. Vous pouvez reprendre le paiement quand vous le souhaitez."
+      },
+      "error": {
+        "title": "Paiement non confirmé",
+        "text": "Nous n'avons pas pu confirmer le paiement. S'il a bien été effectué, l'accès s'ouvrira automatiquement dans quelques minutes."
+      },
+      "start": "Commencer",
+      "back": "Retour"
+    },
+    "failed": "Le dernier prélèvement a été refusé. Vous pouvez relancer le paiement, par carte ou avec un autre compte bancaire.",
+    "manage": "Gérer mon abonnement",
+    "waiting": {
+      "title": "Accès momentanément suspendu",
+      "text": "La plateforme est en attente de l'activation de l'accès par la direction. Elle sera de nouveau disponible dès que ce sera fait ; inutile de vous reconnecter."
+    }
+  },
+  "billingAdmin": {
+    "title": "Suivi du paiement d'accès",
+    "stripeOk": "Compte Stripe de facturation configuré",
+    "stripeMissing": "BILLING_STRIPE_SECRET_KEY absente : le paiement ne peut pas démarrer",
+    "webhookOk": "Webhook Stripe configuré",
+    "webhookMissing": "BILLING_STRIPE_WEBHOOK_SECRET absent : renouvellements et prélèvements non suivis automatiquement",
+    "target": "Compte concerné : {{email}}",
+    "targetMissing": "Aucun compte ne correspond à l'adresse indiquée",
+    "disabled": "Paiement désactivé",
+    "blocked": "Accès bloqué en attente du paiement",
+    "open": "Accès ouvert",
+    "status": "statut : {{status}}",
+    "statuses": {
+      "NONE": "aucun paiement",
+      "PAID": "payé",
+      "ACTIVE": "abonnement actif",
+      "PROCESSING": "en cours de traitement",
+      "PAST_DUE": "impayé",
+      "CANCELED": "abonnement résilié",
+      "FAILED": "prélèvement refusé"
+    },
+    "paidAt": "payé le {{date}}",
+    "periodEnd": "échéance le {{date}}",
+    "tourDone": "visite vue",
+    "tourPending": "visite non vue",
+    "blockAll": "Les autres administrateurs sont aussi bloqués tant que l'accès n'est pas réglé",
+    "blockTargetOnly": "Seul le compte concerné est bloqué",
+    "reset": "Réinitialiser le paiement",
+    "resetConfirm": "Le compte concerné devra de nouveau payer pour accéder à la plateforme. Un abonnement Stripe en cours n'est pas résilié par cette action (à faire depuis Stripe). Continuer ?",
+    "resetDone": "Paiement réinitialisé : l'accès est de nouveau soumis au paiement.",
+    "resetError": "La réinitialisation a échoué."
   }
 }

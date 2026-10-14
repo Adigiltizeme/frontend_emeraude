@@ -42,7 +42,7 @@ const NewsletterSignup = () => {
 
   return (
     <section aria-labelledby="newsletter-title" style={{ width: '100%', maxWidth: '560px', margin: '0 auto', textAlign: 'center' }}>
-      <h2 id="newsletter-title" style={{ fontSize: '1.1rem', marginBottom: '0.25rem' }}>{t('newsletter.title')}</h2>
+      <h2 id="newsletter-title" style={{ fontSize: '1.1rem', marginBottom: '0.25rem', color: 'inherit' }}>{t('newsletter.title')}</h2>
       <p style={{ fontSize: '0.875rem', opacity: 0.85, marginBottom: '0.75rem' }}>{t('newsletter.desc')}</p>
       {state === 'done' ? (
         <p role="status" style={{ fontWeight: 600 }}>{t('newsletter.success')}</p>
@@ -52,6 +52,8 @@ const NewsletterSignup = () => {
             <label htmlFor="newsletter-email" style={{ position: 'absolute', left: '-10000px' }}>{t('newsletter.placeholder')}</label>
             <input
               id="newsletter-email"
+              name="email"
+              autoComplete="email"
               type="email"
               required
               maxLength={254}
@@ -65,9 +67,9 @@ const NewsletterSignup = () => {
             </button>
           </div>
           {/* Champ piège invisible pour les robots. */}
-          <input type="text" value={website} onChange={(e) => setWebsite(e.target.value)} tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: 'absolute', left: '-10000px', width: 1, height: 1, opacity: 0 }} />
+          <input type="text" name="website" value={website} onChange={(e) => setWebsite(e.target.value)} tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: 'absolute', left: '-10000px', width: 1, height: 1, opacity: 0 }} />
           <label style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start', justifyContent: 'center', fontSize: '0.75rem', marginTop: '0.5rem', textAlign: 'left', cursor: 'pointer' }}>
-            <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} style={{ marginTop: '0.15rem' }} />
+            <input type="checkbox" name="consent" checked={consent} onChange={(e) => setConsent(e.target.checked)} style={{ marginTop: '0.15rem' }} />
             <span>{t('newsletter.consent')}</span>
           </label>
           {error && <p role="alert" style={{ fontSize: '0.8rem', color: '#fca5a5', marginTop: '0.5rem' }}>{error}</p>}

@@ -89,7 +89,7 @@ const Login = () => {
           {error && <div role="alert" style={{ backgroundColor: '#fee2e2', color: '#991b1b', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', fontSize: '0.875rem', border: '1px solid #f87171' }}>{error}</div>}
           <form onSubmit={handleCode} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <label htmlFor="login-code" style={labelStyle}>{t('twoFactor.code')}</label>
-            <input id="login-code" value={code} onChange={(e) => setCode(e.target.value)} autoComplete="one-time-code" inputMode="text" autoFocus required maxLength={20} style={{ ...fieldStyle, letterSpacing: '0.2em', textAlign: 'center', fontSize: '1.25rem' }} />
+            <input id="login-code" name="code" value={code} onChange={(e) => setCode(e.target.value)} autoComplete="one-time-code" inputMode="text" autoFocus required maxLength={20} style={{ ...fieldStyle, letterSpacing: '0.2em', textAlign: 'center', fontSize: '1.25rem' }} />
             <button type="submit" className="btn btn-primary" style={{ padding: '0.9rem', fontWeight: 'bold' }}>{t('twoFactor.verify')}</button>
             <button type="button" className="btn btn-outline" onClick={() => { setChallenge(''); setCode(''); setError(''); }}>{t('twoFactor.back')}</button>
           </form>
@@ -109,8 +109,11 @@ const Login = () => {
 
         <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#475569' }}>Email</label>
+            <label htmlFor="login-email" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#475569' }}>Email</label>
             <input
+              id="login-email"
+              name="email"
+              autoComplete="username"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -124,8 +127,11 @@ const Login = () => {
             </div>
           </div>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#475569' }}>Mot de passe</label>
+            <label htmlFor="login-password" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#475569' }}>Mot de passe</label>
             <input
+              id="login-password"
+              name="password"
+              autoComplete="current-password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

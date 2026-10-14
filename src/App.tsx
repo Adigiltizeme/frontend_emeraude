@@ -16,6 +16,7 @@ import Header from './components/Header';
 import InteractiveBackground from './components/InteractiveBackground';
 import PageLoader from './components/PageLoader';
 import { useLightMode } from './lib/lightMode';
+import { BillingGate } from './components/billing/BillingGate';
 
 // Découpage du code : chaque page (espace, back-office, PDF, graphiques…) est téléchargée à sa première visite.
 const Invest = lazy(() => import('./pages/Invest'));
@@ -47,6 +48,7 @@ const AdminInvestments = lazy(() => import('./pages/admin/AdminInvestments'));
 const AdminProjects = lazy(() => import('./pages/admin/AdminProjects'));
 const AdminLeads = lazy(() => import('./pages/admin/AdminLeads'));
 const Register = lazy(() => import('./pages/Register'));
+const BillingReturn = lazy(() => import('./pages/BillingReturn'));
 const Login = lazy(() => import('./pages/Login'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
@@ -69,6 +71,7 @@ function App() {
       <SocketProvider>
       <SettingsProvider>
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <BillingGate>
         <div className="app-container">
           {!lightMode && <InteractiveBackground />}
           <AnnouncementBanner />
@@ -85,6 +88,7 @@ function App() {
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/verifier-email" element={<VerifyEmail />} />
+              <Route path="/facturation/retour" element={<BillingReturn />} />
               
               <Route element={<UserRoute />}>
                 <Route path="/mon-compte" element={<UserDashboard />} />
@@ -159,6 +163,7 @@ function App() {
           <CookieConsent />
           <WhatsAppButton />
         </div>
+        </BillingGate>
       </BrowserRouter>
       </SettingsProvider>
       </SocketProvider>

@@ -5,6 +5,10 @@ import { useAuth } from '../../context/AuthContext';
 import { useSiteSettings } from '../../context/SettingsContext';
 import { API_URL, authHeaders } from '../../config/api';
 import { compactFieldStyle } from '../../config/formStyles';
+import BillingAdminPanel from '../../components/billing/BillingAdminPanel';
+
+/** Émojis proposés pour le message du paiement d'accès (tout autre émoji peut être collé ou saisi). */
+const EMOJIS = ['🎉', '🚀', '💳', '🙏', '✅', '👋', '💼', '🏠', '🌍', '📈', '🔒', '⭐', '🤝', '💡', '📞', '😊'];
 
 type Value = string | number | boolean | string[];
 
@@ -130,6 +134,28 @@ const AdminSettings = () => {
           </div>
         );
       case 'text':
+        if (def.key === 'billingMessage') {
+          // Message du paiement d'accès : rédaction libre, émojis insérés à l'emplacement du curseur.
+          const insert = (emoji: string) => {
+            const el = document.getElementById(id) as HTMLTextAreaElement | null;
+            const text = String(value ?? '');
+            const start = el?.selectionStart ?? text.length;
+            const end = el?.selectionEnd ?? text.length;
+            set(def.key, text.slice(0, start) + emoji + text.slice(end));
+            requestAnimationFrame(() => { el?.focus(); el?.setSelectionRange(start + emoji.length, start + emoji.length); });
+          };
+          return (
+            <div>
+              <div role="group" aria-label={t('admin.config.emojis')} style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem', marginBottom: '0.4rem' }}>
+                {EMOJIS.map((emoji) => (
+                  <button key={emoji} type="button" onClick={() => insert(emoji)} aria-label={`${t('admin.config.insertEmoji')} ${emoji}`} style={{ fontSize: '1.2rem', lineHeight: 1, padding: '0.3rem 0.4rem', borderRadius: '6px', border: '1px solid #e2e8f0', backgroundColor: 'white', cursor: 'pointer' }}>{emoji}</button>
+                ))}
+              </div>
+              <textarea id={id} rows={8} maxLength={def.maxLength} value={String(value ?? '')} onChange={(e) => set(def.key, e.target.value)} style={{ ...field, lineHeight: 1.6 }} />
+              <small style={{ display: 'block', color: 'var(--color-neutral-500)', marginTop: '0.3rem' }}>{t('admin.config.emojiTip')}</small>
+            </div>
+          );
+        }
         return <textarea id={id} rows={3} maxLength={def.maxLength} value={String(value ?? '')} onChange={(e) => set(def.key, e.target.value)} style={{ ...field, lineHeight: 1.5 }} />;
       case 'select':
         return (
@@ -234,6 +260,7 @@ const AdminSettings = () => {
         )
       ) : (
         <div style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          {tab === 'billing' && <BillingAdminPanel refreshKey={Object.keys(saved).length + JSON.stringify(saved).length} />}
           {definitions.filter((d) => d.category === tab).map((def) => (
             <div key={def.key}>
               <label htmlFor={`setting-${def.key}`} style={{ display: 'block', fontWeight: 600, color: '#334155', marginBottom: '0.35rem' }}>

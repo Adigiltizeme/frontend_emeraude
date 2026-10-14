@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Edit, Trash2, CheckCircle, XCircle, Eye, X, Lock, Plus } from 'lucide-react';
+import { Edit, Trash2, CheckCircle, XCircle, Eye, X, Lock, Plus, Coins } from 'lucide-react';
 import { API_URL, authHeaders } from '../../config/api';
 import ProjectDetails from '../ProjectDetails';
 
@@ -178,6 +178,15 @@ const AdminDashboard = () => {
                           </button>
                         )}
                         
+                        {['FUNDED', 'COMPLETED'].includes(project.status) && (
+                          <button
+                            onClick={() => navigate(`/admin/projects/${project.id}/distributions`)}
+                            title={t('admin.distributions.title')}
+                            style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', padding: '0.5rem 0.75rem', backgroundColor: 'white', color: '#166534', border: '1px solid #bbf7d0', borderRadius: '4px', cursor: 'pointer', fontWeight: 600 }}>
+                            <Coins size={16} /> {t('admin.distributions.short')}
+                          </button>
+                        )}
+
                         <button onClick={() => { setPreviewProject(project); setShowPreview(true); }} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', padding: '0.25rem' }} title="Aperçu public">
                           <Eye size={20} />
                         </button>

@@ -733,6 +733,76 @@
       "reject": "Reject",
       "deadline": "Closes: {{date}}",
       "error": "The action failed."
+    },
+    "distributions": {
+      "title": "Investor payouts",
+      "short": "Payouts",
+      "back": "Back to projects",
+      "loading": "Loading…",
+      "loadError": "Could not load the payouts for this project.",
+      "genericError": "Something went wrong.",
+      "kpi": {
+        "investors": "Investors",
+        "invested": "Capital invested",
+        "incomePaid": "Income paid",
+        "capitalRepaid": "Capital repaid"
+      },
+      "newTitle": "New payout",
+      "newIntro": "The amount is split pro rata to validated investments, to the nearest franc. Make the bank transfers or Mobile Money payments, then mark the payout as paid: every investor is then notified.",
+      "notDistributable": "Payouts are available once the project is funded or completed.",
+      "type": "Type",
+      "types": {
+        "INCOME": "Income (rent, interest)",
+        "CAPITAL": "Capital repayment"
+      },
+      "totalAmount": "Total amount to split (FCFA)",
+      "period": "Period",
+      "periodPlaceholder": "e.g. Q1 2027",
+      "scheduledAt": "Expected payout date",
+      "note": "Internal note (optional)",
+      "preview": "Calculate the split",
+      "confirm": "Create the {{amount}} payout",
+      "investor": "Investor",
+      "base": "Amount invested",
+      "share": "Share",
+      "payoutAccount": "Payout details",
+      "noPayoutAccount": "Not provided",
+      "history": "Payout history",
+      "empty": "No payouts for this project yet.",
+      "status": {
+        "ANNOUNCED": "To be paid",
+        "PAID": "Paid",
+        "CANCELLED": "Cancelled"
+      },
+      "paidOn": "Paid on {{date}} · ref. {{ref}}",
+      "cancelledBecause": "Cancelled: {{reason}}",
+      "scheduledOn": "Expected on {{date}}",
+      "notScheduled": "No date set",
+      "markPaid": "Mark as paid",
+      "cancel": "Cancel",
+      "shares_one": "{{count}} share",
+      "shares_other": "{{count}} shares",
+      "referencePrompt": "Payout reference (Mobile Money batch, grouped transfer):",
+      "cancelPrompt": "Reason for cancelling (at least 3 characters):",
+      "shareStatus": "Status",
+      "shareStatuses": {
+        "PENDING": "To be paid",
+        "PAID": "Paid",
+        "FAILED": "Not paid"
+      },
+      "regularize": "Mark this share as paid",
+      "toRegularize_one": "{{count}} share to settle",
+      "toRegularize_other": "{{count}} shares to settle",
+      "payTitle": "Record the {{amount}} payout",
+      "payIntro": "Tick the shares actually paid. Unticked shares remain due (to be settled later) and the investor is not notified. A share without payout details cannot be ticked.",
+      "paidColumn": "Paid",
+      "excludedWarning_one": "{{count}} share will not be marked as paid: it will remain to be settled.",
+      "excludedWarning_other": "{{count}} shares will not be marked as paid: they will remain to be settled.",
+      "reference": "Payout reference",
+      "paidDate": "Payout date (today by default)",
+      "close": "Close",
+      "confirmPaid_one": "Confirm the payout ({{count}} share)",
+      "confirmPaid_other": "Confirm the payout ({{count}} shares)"
     }
   },
   "payment": {
@@ -904,6 +974,9 @@
             "Online payments are processed by licensed providers: CinetPay, Wave, PayDunya and Flutterwave (Mobile Money, e-wallets and cards), and Stripe (international cards). Depending on the payment method chosen, the platform automatically selects an available provider; investors may also indicate a preferred provider. When offered, a bank or manual money transfer is also possible: the investment is then validated by our team once the funds are received.",
             "An investment is only validated after the payment has been confirmed directly with the provider, for an amount and currency identical to those of the subscription. A payment not completed within {{expiryHours}} hours expires and the corresponding investment is cancelled, free of charge. The minimum subscription amount is the one shown on each project page, up to the amount still to be raised and, where applicable, the per-investment cap set by the platform.",
             "Before each investment, the investor expressly accepts these terms and the risk warning; the date of this acceptance is recorded. Invested funds are held in a dedicated account until the fundraising closes. If the fundraising target is not reached or the project is cancelled, investors are refunded in full at no additional cost. A payment received twice is refunded. Each project has a fundraising deadline, shown on its page. On that date, if the amount raised reaches {{threshold}}% of the target, the fundraising succeeds; otherwise the project is declared not funded: pending investments are cancelled and paid investments are refunded in full, at no cost, the investor being informed by email when the refund starts and when it is completed. Investors have a withdrawal period, whose length is shown in each project's key investment information and in the investment window: during this period, and as long as the fundraising is not closed, they can cancel their investment from their account, at no cost and without justification; the amount paid, fees included, is then refunded in full."
+          ],
+          "after": [
+            "Income and repayments: amounts paid by a project (rental income, interest, capital repayment) are split among its investors pro rata to their validated investments, rounded to the franc, and paid by {{companyName}} to the payout details given in “My profile”. Each payout is notified and appears in the portfolio and the annual statement. Declaring the income received for tax purposes is the investor's responsibility."
           ]
         },
         {
@@ -956,6 +1029,7 @@
             "Identification data: last name, first name, email address, phone number. Date on which the email address was confirmed.",
             "Legal documents (ID document, proof of address) as part of our verification obligations (KYC). They are stored with restricted access and can only be viewed by our compliance team, through temporary links.",
             "Investor profile: your answers to the knowledge and loss-capacity questionnaire, their result and date. They are only used to tailor risk warnings and are never shared with third parties. The reason your ID documents were rejected, if applicable. Notifications in your dashboard (the latest 100 at most).",
+            "Payout details: the method chosen (Mobile Money or bank transfer) and the related details (number, account holder, bank, IBAN or account number), used only to pay you income and repayments. History of payouts received.",
             "Transaction data: investment history, chosen payment method, provider used, payment references and statuses, and a time-stamped log of exchanges with that provider (traceability and fraud prevention). We never store your card numbers or Mobile Money codes: they are entered directly with our payment providers (CinetPay, Wave, PayDunya, Flutterwave, Stripe).",
             "Proof of consent: date and time you accepted these terms when signing up, and the Terms and Conditions of Sale before each investment.",
             "Preferences: language and communication choices (optional emails, newsletter), editable at any time in \"My profile\".",
@@ -1146,7 +1220,9 @@
       "KYC_REJECTED": "Your ID documents were not approved. See the reason in “My profile”.",
       "PROJECT_STATUS": "Your project “{{project}}” is now “{{status}}”.",
       "SUPPORT_REPLY": "Our team replied to your request “{{subject}}”.",
-      "DEFAULT": "New notification."
+      "DEFAULT": "New notification.",
+      "INCOME_PAID": "Income paid: {{amount}} for “{{project}}”.",
+      "CAPITAL_REPAID": "Capital repayment paid: {{amount}} for “{{project}}”."
     },
     "openUnread_one": "Open notifications ({{count}} unread)",
     "openUnread_other": "Open notifications ({{count}} unread)"
@@ -1268,5 +1344,93 @@
       }
     },
     "limit": "You have already answered several times today. You can answer again tomorrow."
+  },
+  "portfolio": {
+    "title": "My portfolio",
+    "filterLabel": "Filter my investments",
+    "filters": {
+      "ALL": "All",
+      "ACTIVE": "Ongoing",
+      "CLOSED": "Closed"
+    },
+    "summary": {
+      "investedActive": "Capital currently invested",
+      "incomeReceived": "Income received",
+      "capitalRepaid": "Capital repaid",
+      "upcoming": "Upcoming payouts",
+      "activeProjects_one": "{{count}} ongoing project",
+      "activeProjects_other": "{{count}} ongoing projects",
+      "closedProjects_one": "{{count}} closed project",
+      "closedProjects_other": "{{count}} closed projects"
+    },
+    "upcomingIncome": "Upcoming income: {{amount}} for “{{project}}”{{period}}, payout expected on {{date}}.",
+    "upcomingCapital": "Upcoming repayment: {{amount}} for “{{project}}”{{period}}, payout expected on {{date}}.",
+    "dateTbd": "a date to be confirmed",
+    "payoutMissing": "Tell us where to send your income and repayments (Mobile Money or bank).",
+    "payoutCta": "Add my payout details",
+    "groupIncome": "Income received: {{amount}}",
+    "groupCapital": "Capital repaid: {{amount}}",
+    "history": "Transaction history",
+    "reference": "Ref. {{ref}}",
+    "showMore_one": "Show {{count}} more transaction",
+    "showMore_other": "Show {{count}} more transactions",
+    "columns": {
+      "date": "Date",
+      "operation": "Transaction",
+      "project": "Project",
+      "amount": "Amount",
+      "invested": "Invested",
+      "income": "Income",
+      "capital": "Capital repaid"
+    },
+    "kinds": {
+      "INVESTMENT": "Investment",
+      "PAYMENT": "Payment",
+      "REFUND": "Refund",
+      "INCOME": "Income received",
+      "CAPITAL": "Capital repaid"
+    },
+    "statement": {
+      "label": "Annual statement",
+      "download": "Download (PDF)",
+      "downloading": "Preparing…",
+      "error": "The statement could not be generated. Please try again shortly.",
+      "pdfTitle": "ANNUAL STATEMENT {{year}}",
+      "investor": "Investor",
+      "email": "E-mail",
+      "generated": "Issued on",
+      "totals": "Totals for the year",
+      "paid": "Payments made (investments and fees)",
+      "income": "Income received",
+      "capital": "Capital repaid",
+      "refunds": "Refunds received (unfunded projects, withdrawals)",
+      "positions": "Position on the issue date",
+      "operations": "Transaction details",
+      "noOperation": "No transactions this year.",
+      "disclaimer": "Summary document prepared from the transactions recorded on the platform, for supporting purposes. It is not an official tax document: declaring the income received is the investor's responsibility, under the rules of their country of residence.",
+      "fileName": "Emeraude_annual_statement"
+    }
+  },
+  "payoutAccount": {
+    "title": "Payout details",
+    "intro": "Your income and capital repayments are paid to these details. Only you and the Emeraude team can see them.",
+    "method": "Payout method",
+    "methods": {
+      "MOBILE_MONEY": "Mobile Money",
+      "BANK_TRANSFER": "Bank transfer"
+    },
+    "details": "Details",
+    "placeholders": {
+      "MOBILE_MONEY": "Operator and number (e.g. Wave +221 77 000 00 00)",
+      "BANK_TRANSFER": "Account holder, bank, IBAN or account number"
+    },
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "Payout details saved.",
+    "error": "Your payout details could not be saved.",
+    "updated": "Updated on {{date}}",
+    "currentPassword": "Current password",
+    "passwordHint": "Required to protect your income: a confirmation e-mail is sent each time these details change.",
+    "wrongPassword": "Incorrect current password."
   }
 }

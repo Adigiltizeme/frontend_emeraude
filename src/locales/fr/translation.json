@@ -733,6 +733,76 @@
       "reject": "Refuser",
       "deadline": "Clôture : {{date}}",
       "error": "L'action a échoué."
+    },
+    "distributions": {
+      "title": "Versements aux investisseurs",
+      "short": "Versements",
+      "back": "Retour aux projets",
+      "loading": "Chargement…",
+      "loadError": "Impossible de charger les versements de ce projet.",
+      "genericError": "Une erreur est survenue.",
+      "kpi": {
+        "investors": "Investisseurs",
+        "invested": "Capital investi",
+        "incomePaid": "Revenus versés",
+        "capitalRepaid": "Capital remboursé"
+      },
+      "newTitle": "Nouveau versement",
+      "newIntro": "Le montant est réparti au prorata des investissements validés, au franc près. Effectuez les virements ou envois Mobile Money, puis marquez le versement comme effectué : chaque investisseur est alors prévenu.",
+      "notDistributable": "Les versements sont possibles une fois le projet financé ou terminé.",
+      "type": "Type",
+      "types": {
+        "INCOME": "Revenus (loyers, intérêts)",
+        "CAPITAL": "Remboursement du capital"
+      },
+      "totalAmount": "Montant total à répartir (FCFA)",
+      "period": "Période",
+      "periodPlaceholder": "ex. : T1 2027",
+      "scheduledAt": "Date de versement prévue",
+      "note": "Note interne (facultative)",
+      "preview": "Calculer la répartition",
+      "confirm": "Créer le versement de {{amount}}",
+      "investor": "Investisseur",
+      "base": "Montant investi",
+      "share": "Part",
+      "payoutAccount": "Coordonnées de versement",
+      "noPayoutAccount": "Non renseignées",
+      "history": "Historique des versements",
+      "empty": "Aucun versement pour ce projet.",
+      "status": {
+        "ANNOUNCED": "À verser",
+        "PAID": "Versé",
+        "CANCELLED": "Annulé"
+      },
+      "paidOn": "Versé le {{date}} · réf. {{ref}}",
+      "cancelledBecause": "Annulé : {{reason}}",
+      "scheduledOn": "Prévu le {{date}}",
+      "notScheduled": "Date non fixée",
+      "markPaid": "Marquer comme versé",
+      "cancel": "Annuler",
+      "shares_one": "{{count}} part",
+      "shares_other": "{{count}} parts",
+      "referencePrompt": "Référence du versement (lot Mobile Money, virement groupé) :",
+      "cancelPrompt": "Motif de l'annulation (3 caractères minimum) :",
+      "shareStatus": "Statut",
+      "shareStatuses": {
+        "PENDING": "À verser",
+        "PAID": "Versée",
+        "FAILED": "Non versée"
+      },
+      "regularize": "Marquer cette part versée",
+      "toRegularize_one": "{{count}} part à régulariser",
+      "toRegularize_other": "{{count}} parts à régulariser",
+      "payTitle": "Enregistrer le versement de {{amount}}",
+      "payIntro": "Cochez les parts réellement versées. Les parts décochées restent dues (à régulariser plus tard) et l'investisseur n'est pas prévenu. Une part sans coordonnées de versement ne peut pas être cochée.",
+      "paidColumn": "Versée",
+      "excludedWarning_one": "{{count}} part ne sera pas marquée versée : elle restera à régulariser.",
+      "excludedWarning_other": "{{count}} parts ne seront pas marquées versées : elles resteront à régulariser.",
+      "reference": "Référence du versement",
+      "paidDate": "Date du versement (aujourd'hui par défaut)",
+      "close": "Fermer",
+      "confirmPaid_one": "Confirmer le versement ({{count}} part)",
+      "confirmPaid_other": "Confirmer le versement ({{count}} parts)"
     }
   },
   "payment": {
@@ -904,6 +974,9 @@
             "Les paiements en ligne sont assurés par des prestataires agréés : CinetPay, Wave, PayDunya et Flutterwave (Mobile Money, portefeuilles électroniques et cartes), et Stripe (cartes internationales). Selon le moyen de paiement choisi, la plateforme sélectionne automatiquement un prestataire disponible ; l'investisseur peut aussi indiquer son prestataire préféré. Lorsqu'il est proposé, un virement ou un transfert manuel reste possible : l'investissement est alors validé par notre équipe à réception des fonds.",
             "Un investissement n'est validé qu'après confirmation du paiement directement auprès du prestataire, pour un montant et une devise identiques à ceux de la souscription. Un paiement non finalisé dans un délai de {{expiryHours}} heures expire et l'investissement correspondant est annulé, sans frais. Le montant minimum de souscription est celui indiqué sur la fiche de chaque projet, dans la limite du montant restant à financer et, le cas échéant, du plafond par investissement fixé par la plateforme.",
             "Avant chaque investissement, l'investisseur accepte expressément les présentes conditions et l'avertissement sur les risques ; la date de cette acceptation est conservée. Les fonds investis sont cantonnés dans un compte dédié jusqu'à la clôture de la levée de fonds. Si l'objectif de collecte n'est pas atteint ou si le projet est annulé, les investisseurs sont intégralement remboursés, sans frais supplémentaires. Un paiement reçu en double est remboursé. Chaque projet a une date limite de collecte, indiquée sur sa fiche. À cette date, si le montant levé atteint {{threshold}} % de l'objectif, la collecte est réussie ; sinon, le projet est déclaré non financé : les investissements en attente sont annulés et les investissements payés sont intégralement remboursés, sans frais, l'investisseur étant informé par e-mail de la mise en remboursement puis du remboursement effectué. L'investisseur dispose d'un délai de rétractation dont la durée est indiquée dans la fiche d'informations clés de chaque projet et dans la fenêtre d'investissement : pendant ce délai, et tant que la collecte n'est pas close, il peut annuler son investissement depuis son espace, sans frais ni justification ; le montant payé, frais compris, lui est alors intégralement remboursé."
+          ],
+          "after": [
+            "Revenus et remboursements : les sommes versées par un projet (revenus locatifs, intérêts, remboursement du capital) sont réparties entre ses investisseurs au prorata des montants investis validés, arrondies au franc, et versées par {{companyName}} sur les coordonnées de versement indiquées dans « Mon profil ». Chaque versement est notifié et figure dans le portefeuille et le relevé annuel. La déclaration fiscale des revenus perçus relève de l'investisseur."
           ]
         },
         {
@@ -956,6 +1029,7 @@
             "Données d'identification : nom, prénom, adresse e-mail, numéro de téléphone. Date de confirmation de l'adresse e-mail.",
             "Documents légaux (pièce d'identité, justificatif de domicile) dans le cadre de nos obligations de vérification (KYC). Ils sont stockés en accès restreint et consultables uniquement par notre équipe de conformité, via des liens temporaires.",
             "Profil investisseur : vos réponses au questionnaire de connaissances et de capacité à supporter une perte, leur résultat et leur date. Elles servent uniquement à adapter les avertissements sur les risques et ne sont jamais communiquées à des tiers. Motif d'un éventuel refus de vos pièces d'identité. Notifications de votre espace (100 dernières au maximum).",
+            "Coordonnées de versement : moyen choisi (Mobile Money ou virement) et coordonnées associées (numéro, titulaire, banque, IBAN ou RIB), utilisées uniquement pour vous verser vos revenus et remboursements. Historique des versements reçus.",
             "Données de transaction : historique d'investissement, moyen de paiement choisi, prestataire utilisé, références et statuts des paiements, ainsi qu'un journal horodaté des échanges avec ce prestataire (traçabilité et lutte contre la fraude). Nous ne stockons jamais vos numéros de carte bancaire ni vos codes Mobile Money : ils sont saisis directement chez nos prestataires de paiement (CinetPay, Wave, PayDunya, Flutterwave, Stripe).",
             "Preuves de consentement : date et heure d'acceptation des présentes conditions à l'inscription, et des Conditions Générales de Vente avant chaque investissement.",
             "Préférences : langue et choix de communication (e-mails facultatifs, lettre d'information), modifiables à tout moment dans « Mon profil ».",
@@ -1146,7 +1220,9 @@
       "KYC_REJECTED": "Vos pièces d'identité n'ont pas été validées. Consultez le motif dans « Mon profil ».",
       "PROJECT_STATUS": "Votre projet « {{project}} » est passé au statut « {{status}} ».",
       "SUPPORT_REPLY": "L'équipe a répondu à votre demande « {{subject}} ».",
-      "DEFAULT": "Nouvelle notification."
+      "DEFAULT": "Nouvelle notification.",
+      "INCOME_PAID": "Revenus versés : {{amount}} pour « {{project}} ».",
+      "CAPITAL_REPAID": "Remboursement de capital versé : {{amount}} pour « {{project}} »."
     },
     "openUnread_one": "Ouvrir les notifications ({{count}} non lue)",
     "openUnread_other": "Ouvrir les notifications ({{count}} non lues)"
@@ -1268,5 +1344,93 @@
       }
     },
     "limit": "Vous avez déjà répondu plusieurs fois aujourd'hui. Vous pourrez répondre de nouveau demain."
+  },
+  "portfolio": {
+    "title": "Mon portefeuille",
+    "filterLabel": "Filtrer mes investissements",
+    "filters": {
+      "ALL": "Tous",
+      "ACTIVE": "En cours",
+      "CLOSED": "Clôturés"
+    },
+    "summary": {
+      "investedActive": "Capital investi en cours",
+      "incomeReceived": "Revenus perçus",
+      "capitalRepaid": "Capital remboursé",
+      "upcoming": "Versements à venir",
+      "activeProjects_one": "{{count}} projet en cours",
+      "activeProjects_other": "{{count}} projets en cours",
+      "closedProjects_one": "{{count}} projet clôturé",
+      "closedProjects_other": "{{count}} projets clôturés"
+    },
+    "upcomingIncome": "Revenus à venir : {{amount}} pour « {{project}} »{{period}}, versement prévu le {{date}}.",
+    "upcomingCapital": "Remboursement à venir : {{amount}} pour « {{project}} »{{period}}, versement prévu le {{date}}.",
+    "dateTbd": "date à confirmer",
+    "payoutMissing": "Indiquez où recevoir vos revenus et remboursements (Mobile Money ou banque).",
+    "payoutCta": "Renseigner mes coordonnées",
+    "groupIncome": "Revenus perçus : {{amount}}",
+    "groupCapital": "Capital remboursé : {{amount}}",
+    "history": "Historique des opérations",
+    "reference": "Réf. {{ref}}",
+    "showMore_one": "Afficher {{count}} opération de plus",
+    "showMore_other": "Afficher {{count}} opérations de plus",
+    "columns": {
+      "date": "Date",
+      "operation": "Opération",
+      "project": "Projet",
+      "amount": "Montant",
+      "invested": "Investi",
+      "income": "Revenus",
+      "capital": "Capital remboursé"
+    },
+    "kinds": {
+      "INVESTMENT": "Investissement",
+      "PAYMENT": "Paiement",
+      "REFUND": "Remboursement",
+      "INCOME": "Revenus reçus",
+      "CAPITAL": "Capital remboursé"
+    },
+    "statement": {
+      "label": "Relevé annuel",
+      "download": "Télécharger (PDF)",
+      "downloading": "Préparation…",
+      "error": "Le relevé n'a pas pu être généré. Réessayez dans quelques instants.",
+      "pdfTitle": "RELEVÉ ANNUEL {{year}}",
+      "investor": "Investisseur",
+      "email": "E-mail",
+      "generated": "Édité le",
+      "totals": "Totaux de l'année",
+      "paid": "Paiements effectués (investissements et frais)",
+      "income": "Revenus perçus",
+      "capital": "Capital remboursé",
+      "refunds": "Remboursements reçus (projets non financés, rétractations)",
+      "positions": "Situation à la date d'édition",
+      "operations": "Détail des opérations",
+      "noOperation": "Aucune opération sur cette année.",
+      "disclaimer": "Document récapitulatif établi à partir des opérations enregistrées sur la plateforme, à titre de justificatif. Il ne constitue pas un document fiscal officiel : la déclaration des revenus perçus relève de la responsabilité de l'investisseur, selon la réglementation de son pays de résidence.",
+      "fileName": "Releve_annuel_Emeraude"
+    }
+  },
+  "payoutAccount": {
+    "title": "Coordonnées de versement",
+    "intro": "Vos revenus et remboursements de capital vous sont versés sur ces coordonnées. Elles ne sont visibles que par vous et par l'équipe Emeraude.",
+    "method": "Moyen de versement",
+    "methods": {
+      "MOBILE_MONEY": "Mobile Money",
+      "BANK_TRANSFER": "Virement bancaire"
+    },
+    "details": "Coordonnées",
+    "placeholders": {
+      "MOBILE_MONEY": "Opérateur et numéro (ex. : Wave +221 77 000 00 00)",
+      "BANK_TRANSFER": "Titulaire, banque, IBAN ou RIB"
+    },
+    "save": "Enregistrer",
+    "saving": "Enregistrement…",
+    "saved": "Coordonnées enregistrées.",
+    "error": "Les coordonnées n'ont pas pu être enregistrées.",
+    "updated": "Mises à jour le {{date}}",
+    "currentPassword": "Mot de passe actuel",
+    "passwordHint": "Exigé pour protéger vos revenus : un e-mail de confirmation vous est envoyé à chaque modification.",
+    "wrongPassword": "Mot de passe actuel incorrect."
   }
 }

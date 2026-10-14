@@ -7,6 +7,7 @@ import { EMAIL_CHANGED_EVENT } from '../components/EmailVerificationBanner';
 import { Link, useLocation } from 'react-router-dom';
 import KycStatusNotice from '../components/KycStatusNotice';
 import { useInvestorProfile } from '../hooks/useInvestorProfile';
+import PayoutAccountForm from '../components/PayoutAccountForm';
 
 const UserProfile: React.FC = () => {
   const { token, user, login } = useAuth();
@@ -61,9 +62,9 @@ const UserProfile: React.FC = () => {
     if (token) fetchProfile();
   }, [token, user]);
 
-  // Lien « #kyc » (liste de progression) : défilement vers la vérification d'identité une fois la page chargée.
+  // Lien vers une section (« #kyc », « #versements ») : défilement une fois la page chargée.
   useEffect(() => {
-    if (!loading && location.hash === '#kyc') document.getElementById('kyc')?.scrollIntoView({ behavior: 'smooth' });
+    if (!loading && location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView({ behavior: 'smooth' });
   }, [loading, location.hash]);
 
   const handleKycUpload = async () => {
@@ -317,6 +318,8 @@ const UserProfile: React.FC = () => {
             </Link>
           </section>
         )}
+
+        <PayoutAccountForm />
 
         <PreferencesPanel />
       </div>

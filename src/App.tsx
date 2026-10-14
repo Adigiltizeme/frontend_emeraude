@@ -48,6 +48,7 @@ import UserRoute from './components/UserRoute';
 import Header from './components/Header';
 import InteractiveBackground from './components/InteractiveBackground';
 import InvestorProfile from './pages/InvestorProfile';
+import AdminDistributions from './pages/admin/AdminDistributions';
 
 function App() {
   const { t } = useTranslation();
@@ -111,6 +112,7 @@ function App() {
                 <Route path="support" element={<AdminSupportPage />} />
                 <Route path="leads" element={<AdminLeads />} />
                 <Route path="posts" element={<AdminPosts />} />
+                <Route path="projects/:id/distributions" element={<AdminDistributions />} />
               </Route>
             </Routes>
           </main>

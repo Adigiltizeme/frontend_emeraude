@@ -10,6 +10,9 @@ import { UserSupport } from '../components/support/UserSupport';
 import { jsPDF } from "jspdf";
 import { useSiteSettings } from '../context/SettingsContext';
 import OnboardingChecklist from '../components/OnboardingChecklist';
+import { usePortfolio } from '../hooks/usePortfolio';
+import PortfolioSummary from '../components/portfolio/PortfolioSummary';
+import TransactionHistory from '../components/portfolio/TransactionHistory';
 
 
 const generatePDF = (inv: any, user: any) => {
@@ -180,6 +183,16 @@ const UserDashboard = () => {
     const res = await fetch(`${API_URL}/investments/${id}/withdraw`, { method: 'POST', headers: authHeaders(token) });
     alert(res.ok ? t('withdrawal.done') : t('withdrawal.error'));
     refreshInvestments();
+  };
+
+  // Portefeuille (revenus, remboursements, historique) et filtre « en cours / clôturés ».
+  const { portfolio } = usePortfolio();
+  const [positionFilter, setPositionFilter] = useState<'ALL' | 'ACTIVE' | 'CLOSED'>('ALL');
+  const positionOf = (projectId: string) => portfolio?.positions.find(p => p.projectId === projectId);
+  const matchesFilter = (projectId: string) => {
+    if (positionFilter === 'ALL') return true;
+    const state = positionOf(projectId)?.state ?? 'ACTIVE';
+    return positionFilter === 'CLOSED' ? state === 'CLOSED' : state !== 'CLOSED';
   };
 
   // Investissements en attente dont le paiement en ligne n'a pas abouti : à reprendre.
@@ -557,6 +570,19 @@ const UserDashboard = () => {
                 </div>
               )}
 
+              {portfolio && hasInvestments && <PortfolioSummary portfolio={portfolio} />}
+
+              {hasInvestments && portfolio && (
+                <div role="tablist" aria-label={t('portfolio.filterLabel')} style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
+                  {(['ALL', 'ACTIVE', 'CLOSED'] as const).map(f => (
+                    <button key={f} type="button" role="tab" aria-selected={positionFilter === f} onClick={() => setPositionFilter(f)}
+                      className={positionFilter === f ? 'btn btn-primary' : 'btn btn-outline'} style={{ padding: '0.4rem 0.9rem' }}>
+                      {t(`portfolio.filters.${f}`)}
+                    </button>
+                  ))}
+                </div>
+              )}
+
               {loadingInvestments ? <p>Chargement...</p> : !hasInvestments ? (
                 <div>
                   <p style={{ color: 'var(--color-neutral-500)' }}>Vous n'avez pas encore d'investissement actif. Explorez nos projets pour commencer.</p>
@@ -567,6 +593,7 @@ const UserDashboard = () => {
                   {Object.values(investments.reduce((acc: any, inv: any) => {
                     if (!acc[inv.projectId]) {
                       acc[inv.projectId] = {
+                        projectId: inv.projectId,
                         project: inv.project,
                         totalAmount: 0,
                         transactions: [],
@@ -589,13 +616,23 @@ const UserDashboard = () => {
                     // Sort transactions by date desc
                     acc[inv.projectId].transactions.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
                     return acc;
-                  }, {})).map((group: any) => (
-                    <div key={`group-${group.project.id}`} style={{ padding: '1.5rem', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column' }}>
+                  }, {})).filter((group: any) => matchesFilter(group.projectId)).map((group: any) => (
+                    <div key={`group-${group.projectId}`} style={{ padding: '1.5rem', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                         <div>
                           <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '1.25rem', color: 'var(--color-primary-900)' }}>{group.project.title}</h4>
                           <div style={{ color: 'var(--color-neutral-600)', fontSize: '1.1rem' }}>Total Investi : <strong style={{ color: 'var(--color-primary-700)' }}>{group.totalAmount.toLocaleString('fr-FR')} FCFA</strong></div>
                           <div style={{ color: 'var(--color-neutral-500)', fontSize: '0.9rem', marginTop: '0.25rem' }}>Rendement cible : {group.project.returnRate}%</div>
+                          {(positionOf(group.projectId)?.incomeReceived ?? 0) > 0 && (
+                            <div style={{ color: '#166534', fontSize: '0.9rem', marginTop: '0.25rem', fontWeight: 600 }}>
+                              {t('portfolio.groupIncome', { amount: formatMoney(positionOf(group.projectId)!.incomeReceived, i18n.language) })}
+                            </div>
+                          )}
+                          {(positionOf(group.projectId)?.capitalRepaid ?? 0) > 0 && (
+                            <div style={{ color: '#166534', fontSize: '0.9rem', marginTop: '0.25rem', fontWeight: 600 }}>
+                              {t('portfolio.groupCapital', { amount: formatMoney(positionOf(group.projectId)!.capitalRepaid, i18n.language) })}
+                            </div>
+                          )}
                         </div>
                         <div style={{ textAlign: 'right' }}>
                           <div style={{ marginBottom: '0.5rem' }}>{renderStatus(group.status)}</div>
@@ -624,6 +661,8 @@ const UserDashboard = () => {
                   <button onClick={() => navigate('/investir')} className="btn btn-primary tab-button" style={{ marginTop: '1rem', alignSelf: 'flex-start' }}>Nouvel investissement</button>
                 </div>
               )}
+
+              {portfolio && <TransactionHistory transactions={portfolio.transactions} />}
             </>
           )}
         </div>

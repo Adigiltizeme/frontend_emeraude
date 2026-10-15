@@ -2,7 +2,8 @@ import { Suspense, useEffect, useState } from 'react';
 import { Navigate, Outlet, Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, Users, Settings, User, LogOut, Menu, X, Banknote, MessageSquare, Inbox, Newspaper, ScrollText, Download, ShieldAlert } from 'lucide-react';
+import { LogOut, Menu, X, ShieldAlert } from 'lucide-react';
+import { ADMIN_MENU } from '../config/adminMenu';
 import { API_URL, authHeaders } from '../config/api';
 import { useSiteSettings } from '../context/SettingsContext';
 import TwoFactorPanel from './TwoFactorPanel';
@@ -53,19 +54,7 @@ const AdminRoute = () => {
   };
 
   const permissions = user?.permissions ?? [];
-  const allMenuItems = [
-    { path: '/admin', icon: <LayoutDashboard size={20} />, label: t('admin.nav.overview'), permission: 'dashboard' },
-    { path: '/admin/investments', icon: <Banknote size={20} />, label: t('admin.nav.investments'), permission: 'investments' },
-    { path: '/admin/projects', icon: <LayoutDashboard size={20} />, label: t('admin.nav.projects'), permission: 'projects' },
-    { path: '/admin/users', icon: <Users size={20} />, label: t('admin.nav.users'), permission: 'users' },
-    { path: '/admin/leads', icon: <Inbox size={20} />, label: t('admin.nav.leads'), permission: 'leads' },
-    { path: '/admin/posts', icon: <Newspaper size={20} />, label: t('admin.nav.posts'), permission: 'posts' },
-    { path: '/admin/support', icon: <MessageSquare size={20} />, label: t('admin.nav.support'), permission: 'support' },
-    { path: '/admin/exports', icon: <Download size={20} />, label: t('admin.nav.exports'), permission: 'exports' },
-    { path: '/admin/audit', icon: <ScrollText size={20} />, label: t('admin.nav.audit'), permission: 'audit' },
-    { path: '/admin/settings', icon: <Settings size={20} />, label: t('admin.nav.settings'), permission: 'settings' },
-    { path: '/admin/profile', icon: <User size={20} />, label: t('admin.nav.profile'), permission: null },
-  ];
+  const allMenuItems = ADMIN_MENU.map((item) => ({ ...item, label: t(item.labelKey) }));
   // Anciennes sessions sans liste de permissions : menu complet (l'API refuse de toute façon ce qui n'est pas permis).
   const menuItems = allMenuItems.filter((item) => !item.permission || !user?.permissions || permissions.includes(item.permission));
   // Page demandée hors du profil : écran d'accès refusé plutôt qu'une page vide d'erreurs.

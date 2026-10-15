@@ -46,22 +46,21 @@ export const BillingGate = ({ children }: { children: ReactNode }) => {
   const [loadedFor, setLoadedFor] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
-    if (!token) { setStatus(null); setLoadedFor(null); return; }
+    if (!token) { setStatus(null); setLoadedFor(null); autoStarted.current = false; return; }
     const res = await fetch(`${API_URL}/billing/status`, { headers: authHeaders(token) }).catch(() => null);
-    setStatus(res?.ok ? await res.json() : null);
+    const next: BillingStatus | null = res?.ok ? await res.json() : null;
+    // Visite activée : première chose affichée à chaque connexion ou rechargement (même rendu que l'état : pas
+    // d'écran de paiement entrevu avant la visite).
+    if (next?.required && next.concerned && next.tourEnabled && !autoStarted.current) {
+      autoStarted.current = true;
+      setTouring(true);
+    }
+    setStatus(next);
     setLoadedFor(token);
   }, [token]);
   useEffect(() => { refresh(); }, [refresh]);
   // Paiement activé ou réglé ailleurs (réglages, webhook, autre appareil) : pris en compte au retour sur l'onglet et chaque minute.
   useLiveRefresh(refresh, 60_000, !!token && !touring);
-
-  // Première connexion du compte concerné : la visite démarre d'elle-même.
-  useEffect(() => {
-    if (status?.required && status.concerned && status.tourEnabled && !status.tourDone && !autoStarted.current) {
-      autoStarted.current = true;
-      setTouring(true);
-    }
-  }, [status]);
 
   // Mode démonstration actif seulement pendant la visite ; les écrans ne sont affichés qu'une fois les données prêtes.
   useEffect(() => {
@@ -77,10 +76,11 @@ export const BillingGate = ({ children }: { children: ReactNode }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [touring]);
 
-  const finishTour = async () => {
+  // Visite terminée (dernière étape) ou passée (possible seulement après une première visite complète).
+  const finishTour = async (completed: boolean) => {
     setTouring(false);
     navigate(isAdmin ? '/admin' : '/mon-compte', { replace: true });
-    if (!status?.tourDone) {
+    if (completed && !status?.tourDone) {
       await fetch(`${API_URL}/billing/tour-done`, { method: 'POST', headers: authHeaders(token) }).catch(() => null);
       await refresh();
     }
@@ -94,7 +94,7 @@ export const BillingGate = ({ children }: { children: ReactNode }) => {
     content = demo ? (
       <>
         <TourErrorBoundary key={pathname}>{children}</TourErrorBoundary>
-        <GuidedTour routes={demo.__routes} isAdmin={isAdmin} onFinish={finishTour} />
+        <GuidedTour routes={demo.__routes} isAdmin={isAdmin} mandatory={!status?.tourDone} onFinish={finishTour} />
       </>
     ) : <PageLoader />;
   } else if (blocked) {

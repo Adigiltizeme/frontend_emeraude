@@ -28,7 +28,10 @@ export function startTourDemo(data: TourDemoData, identity: { id?: string; email
     }
     if (method !== 'GET') return json({ message: 'DEMO: action désactivée pendant la visite.' }, 403);
     if (path === '/auth/me') return json({ ...(data['/auth/me'] as object), ...identity });
-    return path in data ? json(data[path]) : json({ message: 'DEMO: aperçu indisponible.' }, 404);
+    if (path in data) return json(data[path]);
+    // Écran nouveau ou modifié : régénérer les données (backend_emeraude/scripts/tour-demo-capture.mjs).
+    if (import.meta.env.DEV) console.warn(`[visite guidée] réponse de démonstration manquante : GET ${path}`);
+    return json({ message: 'DEMO: aperçu indisponible.' }, 404);
   };
 
   return () => { window.fetch = previous; };

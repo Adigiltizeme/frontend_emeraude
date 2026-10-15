@@ -1958,11 +1958,11 @@
         ]
       },
       "support": {
-        "title": "Support and leads",
-        "text": "Your user relationships, in one place.",
+        "title": "Customer support",
+        "text": "Your relationship with users, in real time.",
         "points": [
-          "Real-time support inbox",
-          "Contact requests and newsletter sign-ups",
+          "Support messaging with each user",
+          "Request status and notifications",
           "WhatsApp button on the site"
         ]
       },
@@ -1988,9 +1988,9 @@
         "title": "Security and compliance",
         "text": "A platform built for trust.",
         "points": [
-          "Two-factor authentication, can be required for administrators",
           "Audit log of every team action",
-          "CSV exports for accounting and compliance"
+          "Two-factor authentication, can be required for administrators",
+          "Administrator profiles with limited rights"
         ]
       },
       "investor": {
@@ -2024,6 +2024,24 @@
         "title": "Everything is ready",
         "text": "Your platform is up and running. All that is left is to activate your access.",
         "points": []
+      },
+      "leads": {
+        "title": "Requests and leads",
+        "text": "Incoming contacts, followed up until they are handled.",
+        "points": [
+          "Contact form requests",
+          "Newsletter sign-ups",
+          "Handling status for each request"
+        ]
+      },
+      "exports": {
+        "title": "Exports",
+        "text": "Your data for accounting and compliance.",
+        "points": [
+          "Investments, payments, users, distributions",
+          "CSV files readable in Excel",
+          "Every export is logged"
+        ]
       }
     },
     "demoNotice": "Preview with fictitious demo data: nothing can be changed during the tour."

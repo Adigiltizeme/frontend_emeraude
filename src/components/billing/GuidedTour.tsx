@@ -1,11 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import {
-  BarChart3, Building2, Coins, FolderOpen, Headset, KeyRound, LayoutDashboard, Megaphone, PiggyBank, Rocket,
-  Settings, Sparkles, UserRound, Users, Wallet,
-} from 'lucide-react';
+import { BarChart3, PiggyBank, Rocket, Sparkles, UserRound } from 'lucide-react';
 import type { TourDemoData } from './tourDemo';
+import { ADMIN_MENU } from '../../config/adminMenu';
 
 type Routes = TourDemoData['__routes'];
 interface Step {
@@ -20,23 +18,23 @@ interface Step {
 const ADMIN_MAIN = '[data-tour="admin-main"]';
 const USER_MAIN = '.dashboard-container';
 
+/**
+ * Étapes « administration » : une par rubrique du menu du back-office (et ses sous-écrans), dans l'ordre du menu.
+ * Une rubrique ajoutée au menu entre donc d'elle-même dans la visite (voir config/adminMenu.tsx).
+ */
+const ADMIN_STEPS: Step[] = ADMIN_MENU.flatMap((item) => (item.tour ? [
+  { key: item.tour.key, section: 'admin' as const, icon: item.icon, route: () => item.path, target: ADMIN_MAIN },
+  ...(item.tour.children ?? []).map((c) => ({ key: c.key, section: 'admin' as const, icon: item.icon, route: c.route, target: ADMIN_MAIN })),
+] : []));
+
 /** Étapes : écran, zone encadrée ; les textes sont dans les traductions (tour.steps.<clé>). */
 const STEPS: Step[] = [
-  { key: 'welcome', section: 'intro', icon: <Sparkles size={22} /> },
-  { key: 'dashboard', section: 'admin', icon: <LayoutDashboard size={22} />, route: () => '/admin', target: ADMIN_MAIN },
-  { key: 'projects', section: 'admin', icon: <Building2 size={22} />, route: () => '/admin/projects', target: ADMIN_MAIN },
-  { key: 'dossier', section: 'admin', icon: <FolderOpen size={22} />, route: (r) => `/admin/projects/${r.dossier}/dossier`, target: ADMIN_MAIN },
-  { key: 'investments', section: 'admin', icon: <Wallet size={22} />, route: () => '/admin/investments', target: ADMIN_MAIN },
-  { key: 'distributions', section: 'admin', icon: <Coins size={22} />, route: (r) => `/admin/projects/${r.distributions}/distributions`, target: ADMIN_MAIN },
-  { key: 'users', section: 'admin', icon: <Users size={22} />, route: () => '/admin/users', target: ADMIN_MAIN },
-  { key: 'support', section: 'admin', icon: <Headset size={22} />, route: () => '/admin/support', target: ADMIN_MAIN },
-  { key: 'content', section: 'admin', icon: <Megaphone size={22} />, route: () => '/admin/posts', target: ADMIN_MAIN },
-  { key: 'settings', section: 'admin', icon: <Settings size={22} />, route: () => '/admin/settings', target: ADMIN_MAIN },
-  { key: 'security', section: 'admin', icon: <KeyRound size={22} />, route: () => '/admin/audit', target: ADMIN_MAIN },
-  { key: 'investor', section: 'investor', icon: <UserRound size={22} />, route: () => '/mon-compte', target: USER_MAIN },
-  { key: 'portfolio', section: 'investor', icon: <PiggyBank size={22} />, route: () => '/mon-compte', target: '[aria-labelledby="portfolio-title"]' },
-  { key: 'owner', section: 'owner', icon: <BarChart3 size={22} />, route: (r) => `/mon-compte/projets/${r.owner}`, target: USER_MAIN },
-  { key: 'end', section: 'intro', icon: <Rocket size={22} /> },
+  { key: 'welcome', section: 'intro', icon: <Sparkles size={20} /> },
+  ...ADMIN_STEPS,
+  { key: 'investor', section: 'investor', icon: <UserRound size={20} />, route: () => '/mon-compte', target: USER_MAIN },
+  { key: 'portfolio', section: 'investor', icon: <PiggyBank size={20} />, route: () => '/mon-compte', target: '[aria-labelledby="portfolio-title"]' },
+  { key: 'owner', section: 'owner', icon: <BarChart3 size={20} />, route: (r) => `/mon-compte/projets/${r.owner}`, target: USER_MAIN },
+  { key: 'end', section: 'intro', icon: <Rocket size={20} /> },
 ];
 
 interface Rect { top: number; left: number; width: number; height: number }
@@ -45,21 +43,27 @@ const PAD = 8;
 /**
  * Visite guidée en direct : chaque étape ouvre le véritable écran (alimenté par les données de démonstration),
  * encadre la zone concernée et assombrit le reste. L'écran est visible, pas utilisable (le voile capte les clics).
- * Clavier : flèches pour naviguer, Échap pour passer.
+ * Clavier : flèches pour naviguer, Échap pour passer. Première visite obligatoire (`mandatory`) : ni « Passer », ni Échap,
+ * ni saut vers une étape pas encore vue ; elle se termine par la dernière étape (onFinish(true)).
  */
-const GuidedTour = ({ routes, isAdmin, onFinish }: { routes: Routes; isAdmin: boolean; onFinish: () => void }) => {
+const GuidedTour = ({ routes, isAdmin, mandatory, onFinish }: { routes: Routes; isAdmin: boolean; mandatory: boolean; onFinish: (completed: boolean) => void }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const steps = STEPS.filter((s) => isAdmin || s.section !== 'admin');
   const [index, setIndex] = useState(0);
+  const [reached, setReached] = useState(0);
   const [rect, setRect] = useState<Rect | null>(null);
   const [wide, setWide] = useState(() => window.innerWidth >= 900);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const step = steps[index];
   const last = index === steps.length - 1;
   const points = t(`tour.steps.${step.key}.points`, { returnObjects: true }) as unknown;
-  const go = useCallback((i: number) => setIndex(Math.max(0, Math.min(i, steps.length - 1))), [steps.length]);
+  const go = useCallback((i: number) => {
+    const next = Math.max(0, Math.min(i, steps.length - 1));
+    setIndex(next);
+    setReached((r) => Math.max(r, next));
+  }, [steps.length]);
 
   // Ouverture de l'écran de l'étape.
   useEffect(() => {
@@ -117,11 +121,11 @@ const GuidedTour = ({ routes, isAdmin, onFinish }: { routes: Routes; isAdmin: bo
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight') go(index + 1);
       if (e.key === 'ArrowLeft') go(index - 1);
-      if (e.key === 'Escape') onFinish();
+      if (e.key === 'Escape' && !mandatory) onFinish(false);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [index, go, onFinish]);
+  }, [index, go, onFinish, mandatory]);
 
   const shade = 'rgba(15, 23, 42, 0.72)';
   const centered = !step.target;
@@ -163,15 +167,15 @@ const GuidedTour = ({ routes, isAdmin, onFinish }: { routes: Routes; isAdmin: bo
 
           <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '0.35rem', margin: '1rem 0 0.9rem' }}>
             {steps.map((s, i) => (
-              <button key={s.key} type="button" aria-label={t('tour.goTo', { n: i + 1 })} aria-current={i === index ? 'step' : undefined} onClick={() => go(i)}
-                style={{ width: i === index ? 20 : 8, height: 8, borderRadius: 4, border: 'none', cursor: 'pointer', padding: 0, backgroundColor: i <= index ? 'var(--color-primary-500)' : '#cbd5e1', transition: 'width 0.25s ease' }} />
+              <button key={s.key} type="button" aria-label={t('tour.goTo', { n: i + 1 })} aria-current={i === index ? 'step' : undefined} disabled={mandatory && i > reached} onClick={() => go(i)}
+                style={{ width: i === index ? 20 : 8, height: 8, borderRadius: 4, border: 'none', cursor: mandatory && i > reached ? 'default' : 'pointer', padding: 0, backgroundColor: i <= index ? 'var(--color-primary-500)' : '#cbd5e1', transition: 'width 0.25s ease' }} />
             ))}
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.5rem', flexWrap: 'wrap' }}>
-            <button type="button" className="btn btn-outline" onClick={onFinish} style={{ border: 'none', color: 'var(--color-neutral-500)', padding: '0.5rem 0.25rem' }}>{t('tour.skip')}</button>
+            {mandatory ? <span /> : <button type="button" className="btn btn-outline" onClick={() => onFinish(false)} style={{ border: 'none', color: 'var(--color-neutral-500)', padding: '0.5rem 0.25rem' }}>{t('tour.skip')}</button>}
             <div style={{ display: 'flex', gap: '0.5rem' }}>
               <button type="button" className="btn btn-outline" disabled={index === 0} onClick={() => go(index - 1)}>{t('tour.previous')}</button>
-              <button type="button" className="btn btn-primary" onClick={() => (last ? onFinish() : go(index + 1))}>{t(last ? 'tour.finish' : 'tour.next')}</button>
+              <button type="button" className="btn btn-primary" onClick={() => (last ? onFinish(true) : go(index + 1))}>{t(last ? 'tour.finish' : 'tour.next')}</button>
             </div>
           </div>
         </div>

@@ -1958,11 +1958,11 @@
         ]
       },
       "support": {
-        "title": "Support et prospects",
-        "text": "La relation avec vos utilisateurs, au même endroit.",
+        "title": "Support client",
+        "text": "La relation avec vos utilisateurs, en temps réel.",
         "points": [
-          "Messagerie du support en temps réel",
-          "Demandes de contact et inscriptions à la lettre d'information",
+          "Messagerie du support avec chaque utilisateur",
+          "Statut des demandes et notifications",
           "Bouton WhatsApp sur le site"
         ]
       },
@@ -1988,9 +1988,9 @@
         "title": "Sécurité et conformité",
         "text": "Une plateforme pensée pour la confiance.",
         "points": [
-          "Double authentification, imposable aux administrateurs",
           "Journal d'audit de toutes les actions de l'équipe",
-          "Exports CSV pour la comptabilité et la conformité"
+          "Double authentification, imposable aux administrateurs",
+          "Profils d'administrateur aux droits limités"
         ]
       },
       "investor": {
@@ -2024,6 +2024,24 @@
         "title": "Tout est prêt",
         "text": "Votre plateforme est opérationnelle. Il ne reste qu'à activer votre accès.",
         "points": []
+      },
+      "leads": {
+        "title": "Demandes et prospects",
+        "text": "Les contacts entrants, suivis jusqu'à leur traitement.",
+        "points": [
+          "Demandes du formulaire de contact",
+          "Inscriptions à la lettre d'information",
+          "Statut de traitement de chaque demande"
+        ]
+      },
+      "exports": {
+        "title": "Exports",
+        "text": "Vos données pour la comptabilité et la conformité.",
+        "points": [
+          "Investissements, paiements, utilisateurs, versements",
+          "Fichiers CSV lisibles dans Excel",
+          "Chaque export est tracé"
+        ]
       }
     },
     "demoNotice": "Aperçu avec des données fictives de démonstration : rien n'est modifiable pendant la visite."

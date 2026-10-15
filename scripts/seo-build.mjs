@@ -124,13 +124,33 @@ if (API) {
     // Valeur par défaut conservée.
   }
 }
+// FAQ éditée dans le back-office : données structurées FAQPage (questions publiées en français).
+let faqJsonLd;
+if (API) {
+  try {
+    const faq = await fetchJson('/faq?locale=fr');
+    if (Array.isArray(faq) && faq.length) {
+      faqJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faq.map((item) => ({
+          '@type': 'Question',
+          name: item.question,
+          acceptedAnswer: { '@type': 'Answer', text: item.answer.replace(/\{\{\s*minTicket\s*\}\}/g, vars.minTicket) },
+        })),
+      };
+    }
+  } catch {
+    // Page FAQ pré-rendue sans données structurées.
+  }
+}
 try {
   for (const [path, titleKey, descKey] of STATIC_PAGES) {
     await write(path, render({
       path,
       title: titleKey ? get(titleKey) : null,
       description: get(descKey),
-      jsonLd: path === '/' ? [ORGANIZATION, { '@context': 'https://schema.org', '@type': 'WebSite', name: SITE_NAME, url: SITE }] : undefined,
+      jsonLd: path === '/' ? [ORGANIZATION, { '@context': 'https://schema.org', '@type': 'WebSite', name: SITE_NAME, url: SITE }] : path === '/faq' ? faqJsonLd : undefined,
     }));
     count++;
   }

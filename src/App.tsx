@@ -36,6 +36,10 @@ const VerifyEmail = lazy(() => import('./pages/VerifyEmail'));
 const Blog = lazy(() => import('./pages/Blog'));
 const BlogPost = lazy(() => import('./pages/BlogPost'));
 const AdminPosts = lazy(() => import('./pages/admin/AdminPosts'));
+const AdminFaq = lazy(() => import('./pages/admin/AdminFaq'));
+const AdminBroadcasts = lazy(() => import('./pages/admin/AdminBroadcasts'));
+const AdminReports = lazy(() => import('./pages/admin/AdminReports'));
+const AdminReferrals = lazy(() => import('./pages/admin/AdminReferrals'));
 const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'));
 const CreateProject = lazy(() => import('./pages/admin/CreateProject'));
 const EditProject = lazy(() => import('./pages/admin/EditProject'));
@@ -128,6 +132,10 @@ function App() {
                 <Route path="support" element={<AdminSupportPage />} />
                 <Route path="leads" element={<AdminLeads />} />
                 <Route path="posts" element={<AdminPosts />} />
+                <Route path="faq" element={<AdminFaq />} />
+                <Route path="messages" element={<AdminBroadcasts />} />
+                <Route path="reports" element={<AdminReports />} />
+                <Route path="referrals" element={<AdminReferrals />} />
                 <Route path="projects/:id/distributions" element={<AdminDistributions />} />
                 <Route path="projects/:id/dossier" element={<AdminProjectDossier />} />
                 <Route path="audit" element={<AdminAudit />} />

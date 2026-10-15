@@ -61,12 +61,21 @@
     "q2": "Comment sont sélectionnés les projets ?",
     "a2": "Chaque projet soumis par un promoteur passe par un comité d'audit strict qui vérifie la viabilité financière, la conformité juridique (titres fonciers, permis), et l'historique du promoteur.",
     "q3": "Est-ce que mon investissement est garanti ?",
-    "a3": "Comme tout investissement immobilier, il existe un risque de perte en capital ou d'illiquidité. Cependant, tous nos projets sont adossés à des actifs réels (les biens immobiliers) ce qui limite considérablement les risques.",
+    "a3": "Non. Comme tout investissement immobilier, il comporte un risque de perte partielle ou totale du capital et de retard dans les versements. N'investissez que des sommes dont vous n'avez pas besoin à court terme.",
     "q4": "Comment puis-je récupérer mes gains ?",
-    "a4": "Les revenus générés par les loyers ou la revente sont versés directement sur votre espace investisseur Emeraude. Vous pouvez ensuite les réinvestir ou les virer vers votre compte bancaire ou Mobile Money.",
+    "a4": "Les revenus sont répartis entre les investisseurs au prorata de leur participation, puis versés par Mobile Money ou virement sur les coordonnées enregistrées dans votre espace.",
     "notFoundTitle": "Vous ne trouvez pas votre réponse ?",
     "notFoundDesc": "Notre équipe de support est là pour vous accompagner dans vos démarches.",
-    "btnContact": "Contactez-nous"
+    "btnContact": "Contactez-nous",
+    "categories": {
+      "general": "Généralités",
+      "investing": "Investir",
+      "risks": "Risques",
+      "payments": "Paiements et revenus",
+      "owners": "Porteurs de projet",
+      "account": "Compte et données",
+      "other": "Autres questions"
+    }
   },
   "howItWorks": {
     "title": "Comment ça marche ?",
@@ -287,7 +296,11 @@
     "readyDesc": "Maintenant que votre compte est créé, nos agents sont à votre entière disposition pour vous guider dans vos premiers pas. Contactez-nous !",
     "call": "Appel Téléphonique",
     "chat": "Chattez avec un conseiller",
-    "passwordHint": "8 caractères minimum"
+    "passwordHint": "8 caractères minimum",
+    "referralCode": "Code de parrainage (facultatif)",
+    "referralHint": "Si un proche vous a invité, saisissez son code.",
+    "referralValid": "Code valide (parrain : {{name}})",
+    "referralUnknown": "Code inconnu : vérifiez-le ou laissez ce champ vide."
   },
   "admin": {
     "login": {
@@ -476,7 +489,11 @@
       "settings": "Paramètres du site",
       "posts": "Actualités",
       "exports": "Exports",
-      "audit": "Journal d'audit"
+      "audit": "Journal d'audit",
+      "faq": "FAQ",
+      "broadcasts": "Messages groupés",
+      "reports": "Rapports",
+      "referrals": "Parrainage"
     },
     "leads": {
       "title": "Demandes et prospects",
@@ -560,7 +577,8 @@
         "history": "Historique",
         "projects": "Projets des porteurs",
         "security": "Sécurité",
-        "billing": "Paiement d'accès"
+        "billing": "Paiement d'accès",
+        "referral": "Parrainage"
       },
       "save": "Enregistrer",
       "saving": "Enregistrement…",
@@ -798,6 +816,34 @@
         "billingBlockAllAdmins": {
           "label": "Bloquer aussi les autres administrateurs",
           "hint": "Tant que le compte concerné n'a pas payé, les autres administrateurs (hors administrateurs du paiement) ne peuvent pas utiliser le back-office, et donc pas lui rouvrir l'accès. Les investisseurs et porteurs ne sont jamais bloqués."
+        },
+        "referralEnabled": {
+          "label": "Programme de parrainage ouvert",
+          "hint": "Code et lien personnels dans l'espace de chaque utilisateur, champ « code de parrainage » à l'inscription."
+        },
+        "referralReferrerReward": {
+          "label": "Prime du parrain",
+          "hint": "Versée manuellement (comme les revenus) quand un filleul réalise son premier investissement. 0 = pas de prime."
+        },
+        "referralRefereeReward": {
+          "label": "Prime du filleul",
+          "hint": "Versée manuellement au filleul après son premier investissement. 0 = pas de prime."
+        },
+        "referralRefereeFeeDiscountPercent": {
+          "label": "Réduction des frais du filleul",
+          "hint": "Réduction des frais d'entrée sur le premier investissement du filleul (100 = frais offerts). Sans effet si aucun frais d'entrée."
+        },
+        "referralMinInvestment": {
+          "label": "Premier investissement minimum",
+          "hint": "Montant minimum du premier investissement validé du filleul pour déclencher les primes. 0 = ticket minimum du projet."
+        },
+        "referralMaxRewardsPerReferrer": {
+          "label": "Primes maximum par parrain",
+          "hint": "Limite le nombre de primes « parrain » (anti-abus). 0 = sans limite."
+        },
+        "autoInvestEnabled": {
+          "label": "Investissement automatique",
+          "hint": "Les investisseurs enregistrent leurs critères et reçoivent une proposition à valider pour chaque nouveau projet correspondant (aucun prélèvement automatique)."
         }
       },
       "values": {
@@ -894,7 +940,168 @@
       "confirmPaid_other": "Confirmer le versement ({{count}} parts)"
     },
     "forbiddenTitle": "Accès non autorisé",
-    "forbiddenText": "Votre profil ({{role}}) ne donne pas accès à cette page. Demandez à un super-administrateur si vous en avez besoin."
+    "forbiddenText": "Votre profil ({{role}}) ne donne pas accès à cette page. Demandez à un super-administrateur si vous en avez besoin.",
+    "faq": {
+      "title": "Foire aux questions",
+      "new": "Nouvelle question",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "intro": "Questions affichées sur la page FAQ du site, par langue et par rubrique. Les modifications sont visibles immédiatement.",
+      "language": "Langue",
+      "languages": {
+        "fr": "Français",
+        "en": "Anglais"
+      },
+      "question": "Question",
+      "answer": "Réponse",
+      "category": "Rubrique",
+      "published": "Publiée sur le site",
+      "hidden": "Masquée",
+      "answerHint": "Texte simple : une ligne vide sépare les paragraphes, « - » en début de ligne crée une liste. {{minTicket}} affiche le ticket minimum en vigueur.",
+      "save": "Enregistrer",
+      "saving": "Enregistrement…",
+      "cancel": "Annuler",
+      "saved": "Question enregistrée.",
+      "error": "L'enregistrement a échoué.",
+      "empty": "Aucune question dans cette langue.",
+      "moveUp": "Monter",
+      "moveDown": "Descendre",
+      "confirmDelete": "Supprimer la question « {{question}} » ?"
+    },
+    "broadcasts": {
+      "title": "Messages groupés",
+      "intro": "Envoyez une information à un public : elle apparaît dans le centre de notifications de chaque destinataire et, s'il l'accepte, par e-mail.",
+      "segment": "Destinataires",
+      "project": "Projet",
+      "chooseProject": "Choisir un projet…",
+      "segments": {
+        "PROJECT_INVESTORS": "Investisseurs d'un projet",
+        "ALL_INVESTORS": "Tous les investisseurs",
+        "ALL_USERS": "Tous les utilisateurs"
+      },
+      "audience_one": "{{count}} destinataire, dont {{emailable}} par e-mail",
+      "audience_other": "{{count}} destinataires, dont {{emailable}} par e-mail",
+      "audiencePending": "Choisissez le public pour connaître le nombre de destinataires.",
+      "subject": "Objet",
+      "message": "Message",
+      "sendEmail": "Envoyer aussi par e-mail",
+      "emailHintProject": "Seuls les investisseurs qui acceptent les actualités des projets le reçoivent par e-mail.",
+      "emailHintNewsletter": "Seuls les utilisateurs inscrits à la lettre d'information le reçoivent par e-mail.",
+      "send": "Envoyer",
+      "sending": "Envoi…",
+      "confirm_one": "Envoyer ce message à {{count}} destinataire ?",
+      "confirm_other": "Envoyer ce message à {{count}} destinataires ?",
+      "sent_one": "Message envoyé à {{count}} destinataire.",
+      "sent_other": "Message envoyé à {{count}} destinataires.",
+      "error": "L'envoi a échoué.",
+      "history": "Historique",
+      "empty": "Aucun message envoyé.",
+      "counts_one": "{{count}} destinataire, {{emailed}} e-mail(s)",
+      "counts_other": "{{count}} destinataires, {{emailed}} e-mail(s)",
+      "statuses": {
+        "SENDING": "Envoi en cours",
+        "SENT": "Envoyé",
+        "FAILED": "Interrompu"
+      }
+    },
+    "reports": {
+      "title": "Rapport mensuel d'activité",
+      "intro": "Collecte, paiements, versements, vérifications et relation utilisateurs, mois par mois.",
+      "month": "Mois",
+      "download": "Télécharger le PDF",
+      "error": "Le rapport n'a pas pu être chargé.",
+      "pdfTitle": "Rapport d'activité — {{month}}",
+      "generated": "Généré le",
+      "fileName": "rapport_activite",
+      "sections": {
+        "funding": "Collecte",
+        "payments": "Paiements",
+        "distributions": "Versements aux investisseurs",
+        "kyc": "Vérification d'identité",
+        "community": "Utilisateurs et support"
+      },
+      "rows": {
+        "invested": "Montant investi (validé)",
+        "investments": "Investissements validés",
+        "investors": "Investisseurs actifs",
+        "newInvestors": "Nouveaux investisseurs",
+        "fees": "Frais d'entrée",
+        "projectsFunded": "Projets financés",
+        "projectsFailed": "Collectes échouées",
+        "paymentsSucceeded": "Paiements réussis",
+        "paymentsFailed": "Paiements refusés",
+        "paymentsExpired": "Paiements expirés",
+        "paymentsCancelled": "Paiements annulés",
+        "paymentsPending": "Paiements en attente",
+        "refunds": "Remboursements effectués",
+        "withdrawals": "Rétractations",
+        "income": "Revenus versés",
+        "capital": "Capital remboursé",
+        "distributions": "Versements effectués",
+        "kycSubmitted": "Dossiers déposés",
+        "kycVerified": "Identités vérifiées",
+        "kycRejected": "Dossiers refusés",
+        "kycPending": "En attente à ce jour",
+        "registered": "Nouveaux inscrits",
+        "tickets": "Demandes de support ouvertes",
+        "resolved": "Demandes résolues",
+        "contacts": "Demandes de contact",
+        "newsletter": "Inscriptions à la lettre d'information"
+      },
+      "cols": {
+        "project": "Projet",
+        "investments": "Investissements",
+        "amount": "Montant",
+        "provider": "Prestataire",
+        "payments": "Paiements"
+      }
+    },
+    "referrals": {
+      "title": "Parrainage",
+      "summary": "Prime parrain : {{referrer}} · prime filleul : {{referee}} · réduction des frais du filleul : {{discount}} % · premier investissement minimum : {{min}}.",
+      "disabled": "Le parrainage est désactivé.",
+      "settingsLink": "Modifier les réglages",
+      "rewards": "Primes",
+      "filters": {
+        "PENDING": "À verser",
+        "ALL": "Toutes"
+      },
+      "noRewards": "Aucune prime.",
+      "cols": {
+        "beneficiary": "Bénéficiaire",
+        "reason": "Motif",
+        "amount": "Montant",
+        "payout": "Versement",
+        "status": "Statut",
+        "referrer": "Parrain",
+        "referees": "Filleuls",
+        "investedReferees": "Ayant investi",
+        "investedAmount": "Montant investi",
+        "rewards": "Primes"
+      },
+      "roles": {
+        "REFERRER": "Parrain de {{name}}",
+        "REFEREE": "Filleul (premier investissement)"
+      },
+      "statuses": {
+        "PENDING": "À verser",
+        "PAID": "Versée",
+        "CANCELLED": "Annulée"
+      },
+      "noPayout": "Coordonnées non renseignées",
+      "reference": "Référence du versement",
+      "markPaid": "Marquer versée",
+      "cancel": "Annuler",
+      "cancelReason": "Motif de l'annulation :",
+      "referenceRequired": "Indiquez la référence du versement.",
+      "paidDone": "Prime marquée comme versée : le bénéficiaire est prévenu.",
+      "cancelDone": "Prime annulée.",
+      "error": "L'opération a échoué.",
+      "leaderboard": "Classement des parrains",
+      "noReferrers": "Aucun parrainage pour le moment.",
+      "rewardTotals": "{{paid}} versées · {{pending}} à verser",
+      "eligibleFrom": "Versable à partir du {{date}} (délai de rétractation)"
+    }
   },
   "payment": {
     "title": "Finaliser l'investissement",
@@ -977,7 +1184,8 @@
     "reinforced": {
       "title": "Avertissement renforcé : ce placement est risqué pour vous",
       "accept": "J'ai lu cet avertissement. Je comprends que je peux perdre tout ou partie de la somme investie et je confirme vouloir investir."
-    }
+    },
+    "referralDiscount": "parrainage −{{percent}} %"
   },
   "newsletter": {
     "title": "Restez informé",
@@ -1099,13 +1307,31 @@
         {
           "title": "6. Communications",
           "paragraphs": [
-            "Les e-mails liés au compte, aux paiements et aux investissements sont toujours envoyés. Les autres communications (réponses du support par e-mail, avis aux porteurs de projet, lettre d'information) se règlent dans « Mon profil »."
+            "Les e-mails liés au compte, aux paiements et aux investissements sont toujours envoyés. Les autres communications (réponses du support par e-mail, avis aux porteurs de projet, lettre d'information) se règlent dans « Mon profil ». Les messages groupés de l'équipe apparaissent dans votre centre de notifications et, selon vos préférences, par e-mail."
           ]
         },
         {
           "title": "7. Propriété intellectuelle",
           "paragraphs": [
             "L'ensemble du contenu de la plateforme (textes, images, logos, architecture) est protégé par le droit d'auteur. Toute reproduction non autorisée est strictement interdite."
+          ]
+        },
+        {
+          "title": "8. Parrainage",
+          "paragraphs": [
+            "Lorsque le programme de parrainage est ouvert, chaque utilisateur dispose d'un code et d'un lien personnels. Les avantages en vigueur (prime au parrain, prime au filleul, réduction des frais d'entrée du filleul) et leurs conditions sont affichés dans l'espace de l'utilisateur ; ils peuvent être modifiés ou suspendus pour l'avenir."
+          ],
+          "items": [
+            "Les avantages sont accordés une seule fois par filleul, au premier investissement validé de celui-ci, éventuellement à partir d'un montant minimum.",
+            "Les primes sont versées par Emeraude Africa sur les coordonnées de versement du bénéficiaire ; une prime non encore versée est annulée si l'investissement qui l'a déclenchée est retiré (rétractation, refus ou remboursement).",
+            "Le parrainage de soi-même, la création de comptes fictifs ou toute manœuvre visant à obtenir indûment un avantage entraînent l'annulation des avantages concernés.",
+            "Il appartient au bénéficiaire de déclarer, le cas échéant, les primes perçues auprès de l'administration fiscale de son pays de résidence."
+          ]
+        },
+        {
+          "title": "9. Investissement automatique",
+          "paragraphs": [
+            "L'investisseur peut enregistrer des critères (montant, rendement cible minimum, durée maximum, types de biens, plafond mensuel). À chaque projet mis en collecte qui y répond, il reçoit une proposition. Aucune somme n'est réservée ni prélevée automatiquement : chaque proposition doit être confirmée puis payée par l'investisseur, dans les mêmes conditions que tout investissement (vérification d'identité, profil investisseur, acceptation des présentes conditions). Une proposition ne constitue pas un conseil en investissement ; les critères peuvent être modifiés ou désactivés à tout moment."
           ]
         }
       ]
@@ -1128,6 +1354,8 @@
             "Données de transaction : historique d'investissement, moyen de paiement choisi, prestataire utilisé, références et statuts des paiements, ainsi qu'un journal horodaté des échanges avec ce prestataire (traçabilité et lutte contre la fraude). Nous ne stockons jamais vos numéros de carte bancaire ni vos codes Mobile Money : ils sont saisis directement chez nos prestataires de paiement (CinetPay, Wave, PayDunya, Flutterwave, Stripe).",
             "Preuves de consentement : date et heure d'acceptation des présentes conditions à l'inscription, et des Conditions Générales de Vente avant chaque investissement.",
             "Préférences : langue et choix de communication (e-mails facultatifs, lettre d'information), modifiables à tout moment dans « Mon profil ».",
+            "Parrainage : lien entre le parrain et le filleul, code de parrainage et primes. Le parrain voit uniquement le prénom et l'initiale du nom de ses filleuls et s'ils ont investi (jamais les montants) ; le filleul voit le prénom et l'initiale de son parrain.",
+            "Investissement automatique : critères enregistrés (montant, rendement, durée, types de biens, plafond) et propositions reçues.",
             "Formulaire de contact et lettre d'information : nom, adresse e-mail, téléphone (facultatif), contenu du message, page d'origine et date de votre consentement.",
             "Mesure d'audience : pages consultées et informations techniques sur votre navigateur, uniquement si vous l'avez accepté dans le bandeau de cookies.",
             "Sécurité et traçabilité : si vous activez la double authentification, la clé de votre application est conservée chiffrée et les codes de secours sous forme d'empreintes. Les actions de l'équipe sur les comptes et les opérations, ainsi que les connexions des administrateurs, sont enregistrées dans un journal d'audit (auteur, date, adresse IP), conservé pour la sécurité de la plateforme et le respect de nos obligations."
@@ -1327,7 +1555,12 @@
       "PROJECT_DOCUMENT_REJECTED": "Une pièce du dossier « {{project}} » a été refusée : {{comment}}",
       "PROJECT_UPDATE": "Nouvelle actualité sur « {{project}} » : {{title}}",
       "PROJECT_UPDATE_PUBLISHED": "Votre actualité « {{title}} » est publiée.",
-      "PROJECT_UPDATE_REJECTED": "Votre actualité « {{title}} » n'a pas été publiée : {{comment}}"
+      "PROJECT_UPDATE_REJECTED": "Votre actualité « {{title}} » n'a pas été publiée : {{comment}}",
+      "ANNOUNCEMENT": "📣 {{subject}}",
+      "REFERRAL_REWARD": "🎁 Prime de parrainage de {{amount}} obtenue (premier investissement de {{referee}}).",
+      "REFERRAL_REWARD_PAID": "🎉 Votre prime de parrainage de {{amount}} a été versée.",
+      "AUTO_INVEST_PROPOSAL": "🔁 Nouveau projet pour vous : « {{project}} », proposition de {{amount}}.",
+      "REFERRAL_REWARD_REFEREE": "🎁 Prime de bienvenue de {{amount}} obtenue grâce à votre premier investissement."
     },
     "openUnread_one": "Ouvrir les notifications ({{count}} non lue)",
     "openUnread_other": "Ouvrir les notifications ({{count}} non lues)",
@@ -1737,9 +1970,9 @@
     "desc": {
       "SUPER_ADMIN": "Tous les droits, dont la gestion des rôles et des paramètres.",
       "COMPLIANCE": "Utilisateurs, KYC, projets et dossiers, journal d'audit, exports.",
-      "FINANCE": "Investissements, paiements, remboursements, versements, projets, exports.",
-      "SUPPORT": "Messagerie du support, prospects, consultation des utilisateurs.",
-      "EDITOR": "Actualités du site."
+      "FINANCE": "Investissements, paiements, remboursements, versements, primes de parrainage, projets, exports.",
+      "SUPPORT": "Messagerie du support, prospects, messages groupés, consultation des utilisateurs.",
+      "EDITOR": "Actualités du site et foire aux questions."
     }
   },
   "audit": {
@@ -2042,6 +2275,42 @@
           "Fichiers CSV lisibles dans Excel",
           "Chaque export est tracé"
         ]
+      },
+      "faq": {
+        "title": "Foire aux questions",
+        "text": "La FAQ du site se met à jour depuis le back-office, sans développement.",
+        "points": [
+          "Questions par langue et par rubrique",
+          "Ordre, publication ou masquage",
+          "Ticket minimum toujours à jour dans les réponses"
+        ]
+      },
+      "broadcasts": {
+        "title": "Messages groupés",
+        "text": "Informez vos investisseurs ou tous vos utilisateurs en quelques clics.",
+        "points": [
+          "Investisseurs d'un projet, tous les investisseurs ou tous les utilisateurs",
+          "Notification dans l'espace, e-mail selon les préférences de chacun",
+          "Historique des envois"
+        ]
+      },
+      "reports": {
+        "title": "Rapport mensuel d'activité",
+        "text": "Chaque mois, l'essentiel de l'activité en une page, à partager en PDF.",
+        "points": [
+          "Collecte, paiements, remboursements et versements",
+          "Vérifications d'identité et relation utilisateurs",
+          "Douze derniers mois disponibles"
+        ]
+      },
+      "referrals": {
+        "title": "Parrainage",
+        "text": "Vos investisseurs font connaître la plateforme ; vous suivez et récompensez.",
+        "points": [
+          "Lien et code personnels, partage WhatsApp",
+          "Primes au parrain et/ou au filleul, réduction des frais",
+          "Classement des parrains et primes à verser"
+        ]
       }
     },
     "demoNotice": "Aperçu avec des données fictives de démonstration : rien n'est modifiable pendant la visite."
@@ -2126,5 +2395,89 @@
     "resetConfirm": "Le compte concerné devra de nouveau payer pour accéder à la plateforme. Un abonnement Stripe en cours n'est pas résilié par cette action (à faire depuis Stripe). Continuer ?",
     "resetDone": "Paiement réinitialisé : l'accès est de nouveau soumis au paiement.",
     "resetError": "La réinitialisation a échoué."
+  },
+  "referral": {
+    "tab": "Parrainage",
+    "title": "Parrainez vos proches",
+    "intro": "Partagez votre lien : vos proches s'inscrivent avec votre code et vous suivez ici leurs premiers pas.",
+    "offers": {
+      "referrer": "Vous recevez {{amount}} pour chaque filleul qui réalise son premier investissement.",
+      "referee": "Votre filleul reçoit {{amount}} après son premier investissement.",
+      "discount": "Votre filleul bénéficie de {{percent}} % de réduction sur les frais d'entrée de son premier investissement.",
+      "condition": "Premier investissement validé de {{amount}} minimum."
+    },
+    "yourCode": "Votre code de parrainage",
+    "copy": "Copier le lien",
+    "copied": "Lien copié",
+    "copyManually": "Copiez ce lien :",
+    "share": "Partager",
+    "shareTitle": "Investir avec Emeraude Africa",
+    "shareText": "Je t'invite à découvrir Emeraude Africa, l'investissement immobilier participatif en Afrique : {{link}}",
+    "referredBy": "Votre parrain : {{name}}",
+    "discountAvailable": "Réduction de {{percent}} % sur les frais de votre premier investissement.",
+    "stats": {
+      "referees": "Filleuls inscrits",
+      "invested": "Filleuls ayant investi",
+      "pending": "Primes à recevoir",
+      "paid": "Primes versées"
+    },
+    "rewardsTitle": "Mes primes",
+    "refereesTitle": "Mes filleuls",
+    "roles": {
+      "REFERRER": "Parrainage de {{name}}",
+      "REFEREE": "Bienvenue (premier investissement)"
+    },
+    "statuses": {
+      "PENDING": "À recevoir",
+      "PAID": "Versée",
+      "CANCELLED": "Annulée"
+    },
+    "invested": "A investi",
+    "notInvested": "N'a pas encore investi",
+    "payoutHint": "Les primes sont versées sur vos coordonnées de versement.",
+    "payoutLink": "Vérifier mes coordonnées",
+    "terms": "Conditions du parrainage :",
+    "termsLink": "voir les CGU",
+    "disabled": "Le programme de parrainage n'est pas ouvert pour le moment.",
+    "eligibleFrom": "versable à partir du {{date}}"
+  },
+  "autoInvest": {
+    "tab": "Investissement automatique",
+    "title": "Investissement automatique",
+    "intro": "Indiquez vos critères : dès qu'un nouveau projet y répond, vous recevez une proposition préremplie. Vous gardez la décision : rien n'est investi ni prélevé sans votre confirmation.",
+    "enabled": "Recevoir des propositions",
+    "amount": "Montant par projet (FCFA)",
+    "minReturnRate": "Rendement cible minimum (%)",
+    "maxDuration": "Durée maximum (mois)",
+    "monthlyCap": "Plafond mensuel (FCFA)",
+    "zeroHint": "0 ou vide = sans condition.",
+    "assetTypes": "Types de biens",
+    "allTypes": "Aucune case cochée = tous les types de biens.",
+    "types": {
+      "Résidentiel": "Résidentiel",
+      "Commercial": "Commercial",
+      "Industriel": "Industriel",
+      "Agricole": "Agricole",
+      "Mixte": "Mixte"
+    },
+    "emailProposals": "Recevoir aussi les propositions par e-mail",
+    "never": "Chaque proposition doit être confirmée puis payée par vous, comme tout investissement.",
+    "capUsage": "Ce mois-ci : {{used}} engagés sur {{cap}}.",
+    "save": "Enregistrer mes critères",
+    "saving": "Enregistrement…",
+    "saved": "Critères enregistrés : vous serez prévenu des projets correspondants.",
+    "paused": "Propositions mises en pause.",
+    "error": "L'enregistrement a échoué.",
+    "proposals": "Propositions reçues",
+    "noProposals": "Aucune proposition pour l'instant.",
+    "projectLine": "{{rate}} % · {{duration}} mois",
+    "invest": "Investir",
+    "decline": "Décliner",
+    "statuses": {
+      "PROPOSED": "À valider",
+      "ACCEPTED": "Investi",
+      "DECLINED": "Déclinée",
+      "EXPIRED": "Expirée"
+    }
   }
 }

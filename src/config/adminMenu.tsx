@@ -1,4 +1,4 @@
-import { Banknote, Download, Inbox, LayoutDashboard, MessageSquare, Newspaper, ScrollText, Settings, User, Users } from 'lucide-react';
+import { Banknote, Download, FileBarChart, Gift, HelpCircle, Inbox, LayoutDashboard, Megaphone, MessageSquare, Newspaper, ScrollText, Settings, User, Users } from 'lucide-react';
 import type { TourDemoData } from '../components/billing/tourDemo';
 
 type TourRoutes = TourDemoData['__routes'];
@@ -31,10 +31,14 @@ export const ADMIN_MENU: AdminMenuItem[] = [
       ],
     },
   },
+  { path: '/admin/referrals', icon: <Gift size={20} />, labelKey: 'admin.nav.referrals', permission: 'distributions', tour: { key: 'referrals' } },
   { path: '/admin/users', icon: <Users size={20} />, labelKey: 'admin.nav.users', permission: 'users', tour: { key: 'users' } },
   { path: '/admin/leads', icon: <Inbox size={20} />, labelKey: 'admin.nav.leads', permission: 'leads', tour: { key: 'leads' } },
   { path: '/admin/posts', icon: <Newspaper size={20} />, labelKey: 'admin.nav.posts', permission: 'posts', tour: { key: 'content' } },
+  { path: '/admin/faq', icon: <HelpCircle size={20} />, labelKey: 'admin.nav.faq', permission: 'posts', tour: { key: 'faq' } },
   { path: '/admin/support', icon: <MessageSquare size={20} />, labelKey: 'admin.nav.support', permission: 'support', tour: { key: 'support' } },
+  { path: '/admin/messages', icon: <Megaphone size={20} />, labelKey: 'admin.nav.broadcasts', permission: 'broadcasts', tour: { key: 'broadcasts' } },
+  { path: '/admin/reports', icon: <FileBarChart size={20} />, labelKey: 'admin.nav.reports', permission: 'dashboard', tour: { key: 'reports' } },
   { path: '/admin/exports', icon: <Download size={20} />, labelKey: 'admin.nav.exports', permission: 'exports', tour: { key: 'exports' } },
   { path: '/admin/audit', icon: <ScrollText size={20} />, labelKey: 'admin.nav.audit', permission: 'audit', tour: { key: 'security' } },
   { path: '/admin/settings', icon: <Settings size={20} />, labelKey: 'admin.nav.settings', permission: 'settings', tour: { key: 'settings' } },

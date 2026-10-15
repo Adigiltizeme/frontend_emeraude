@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ASSET_TYPES } from '../config/assetTypes';
 import { useTranslation } from 'react-i18next';
 import { Upload } from 'lucide-react';
 import ProjectExtrasEditor, { ProjectExtras } from './ProjectExtrasEditor';
@@ -175,11 +176,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialData, onSubmit, onPrev
           <div>
             <label style={labelStyle}>Type d'actif *</label>
             <select name="assetType" value={formData.assetType} onChange={handleChange} style={inputStyle}>
-              <option value="Résidentiel">Résidentiel</option>
-              <option value="Commercial">Commercial</option>
-              <option value="Industriel">Industriel</option>
-              <option value="Agricole">Agricole</option>
-              <option value="Mixte">Mixte</option>
+              {ASSET_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
             </select>
           </div>
         </div>

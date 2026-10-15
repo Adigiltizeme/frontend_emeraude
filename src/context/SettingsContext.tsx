@@ -26,6 +26,12 @@ export interface SiteSettings {
   defaultMinTicket: number;
   maxInvestmentAmount: number;
   investorFeePercent: number;
+  autoInvestEnabled: boolean;
+  referralEnabled: boolean;
+  referralReferrerReward: number;
+  referralRefereeReward: number;
+  referralRefereeFeeDiscountPercent: number;
+  referralMinInvestment: number;
   projectCommissionPercent: number;
   projectSubmissionFee: number;
   paymentExpiryHours: number;
@@ -72,6 +78,12 @@ const defaultSettings: SiteSettings = {
   defaultMinTicket: 100000,
   maxInvestmentAmount: 0,
   investorFeePercent: 0,
+  autoInvestEnabled: false,
+  referralEnabled: false,
+  referralReferrerReward: 0,
+  referralRefereeReward: 0,
+  referralRefereeFeeDiscountPercent: 0,
+  referralMinInvestment: 0,
   projectCommissionPercent: 0,
   projectSubmissionFee: 0,
   paymentExpiryHours: 24,

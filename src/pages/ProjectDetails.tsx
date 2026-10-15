@@ -25,8 +25,13 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
   const [showInvestForm, setShowInvestForm] = useState(false);
   // Retour du test de profil investisseur (?investir=1) : la fenêtre d'investissement se rouvre.
   const [searchParams, setSearchParams] = useSearchParams();
+  // Proposition d'investissement automatique (?montant=) : fenêtre ouverte avec le montant prérempli.
+  const [prefillAmount, setPrefillAmount] = useState<number | undefined>(undefined);
   useEffect(() => {
-    if (searchParams.get('investir') !== '1' || isPreview) return;
+    const amount = Number(searchParams.get('montant'));
+    const reopen = searchParams.get('investir') === '1';
+    if ((!reopen && !(amount > 0)) || isPreview) return;
+    if (amount > 0) setPrefillAmount(Math.round(amount));
     if (isAuthenticated) setShowInvestForm(true);
     setSearchParams({}, { replace: true });
   }, [searchParams, setSearchParams, isAuthenticated, isPreview]);
@@ -322,9 +327,10 @@ const ProjectDetails = ({ isPreview = false, previewData = null }: any) => {
               </div>
             )}
 
-            {showInvestForm && !investSuccess && (
+            {showInvestForm && !investSuccess && deadlineOpen && (
               <InvestModal
                 project={project}
+                initialAmount={prefillAmount}
                 onClose={() => setShowInvestForm(false)}
                 onManualSuccess={(instructions) => { setShowInvestForm(false); setTransferInstructions(instructions); setInvestSuccess(true); }}
               />

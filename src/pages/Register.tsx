@@ -1,5 +1,7 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
+import { API_URL } from '../config/api';
+import { useSiteSettings } from '../context/SettingsContext';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { usePageMeta } from '../hooks/usePageMeta';
@@ -16,8 +18,29 @@ const Register = () => {
     email: '',
     phone: '',
     password: '',
-    intention: 'Investissement'
+    intention: 'Investissement',
+    referralCode: ''
   });
+  const { settings } = useSiteSettings();
+  const [searchParams] = useSearchParams();
+  const [referrer, setReferrer] = useState<{ valid: boolean; referrer?: string } | null>(null);
+
+  // Lien de parrainage (?parrain=CODE) : code prérempli puis vérifié.
+  useEffect(() => {
+    const code = searchParams.get('parrain');
+    if (code) setFormData((f) => ({ ...f, referralCode: code.toUpperCase().slice(0, 20) }));
+  }, [searchParams]);
+  useEffect(() => {
+    const code = formData.referralCode.trim();
+    if (!settings.referralEnabled || code.length < 4) { setReferrer(null); return; }
+    const timer = window.setTimeout(() => {
+      fetch(`${API_URL}/referrals/code/${encodeURIComponent(code)}`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then(setReferrer)
+        .catch(() => setReferrer(null));
+    }, 400);
+    return () => window.clearTimeout(timer);
+  }, [formData.referralCode, settings.referralEnabled]);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -41,7 +64,7 @@ const Register = () => {
       const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5050'}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, acceptedTerms: acceptedCGU })
+        body: JSON.stringify({ ...formData, referralCode: formData.referralCode.trim() || undefined, acceptedTerms: acceptedCGU })
       });
 
       if (!response.ok) {
@@ -125,6 +148,16 @@ const Register = () => {
               <option value="Autre">{t('register.intOther')}</option>
             </select>
           </div>
+
+          {settings.referralEnabled && (
+            <div>
+              <label htmlFor="register-referral" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', color: 'var(--color-neutral-800)' }}>{t('register.referralCode')}</label>
+              <input id="register-referral" type="text" name="referralCode" autoComplete="off" maxLength={20} value={formData.referralCode} onChange={(e) => setFormData({ ...formData, referralCode: e.target.value.toUpperCase() })} style={{ ...inputStyle, textTransform: 'uppercase', letterSpacing: '0.08em' }} aria-describedby="register-referral-status" />
+              <small id="register-referral-status" role="status" style={{ display: 'block', marginTop: '0.3rem', color: referrer?.valid ? '#166534' : referrer ? '#b45309' : 'var(--color-neutral-600)' }}>
+                {referrer?.valid ? t('register.referralValid', { name: referrer.referrer }) : referrer ? t('register.referralUnknown') : t('register.referralHint')}
+              </small>
+            </div>
+          )}
 
           <div style={{ marginBottom: '1.5rem', padding: '0.75rem', backgroundColor: '#f8fafc', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
               <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', cursor: 'pointer' }}>

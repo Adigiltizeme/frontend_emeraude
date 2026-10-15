@@ -72,7 +72,8 @@ const NotificationBell = ({ compact = false, onNavigate }: { compact?: boolean; 
   const text = (n: AppNotification) => {
     const data = n.data || {};
     const reason = n.type === 'PROJECT_STATUS' && data.reason ? ` ${t('notifications.reason', { reason: data.reason })}` : '';
-    return t(`notifications.types.${n.type}`, {
+    const key = n.type === 'REFERRAL_REWARD' && data.role === 'REFEREE' ? 'REFERRAL_REWARD_REFEREE' : n.type;
+    return t(`notifications.types.${key}`, {
       ...data,
       amount: typeof data.amount === 'number' ? formatMoney(data.amount, i18n.language) : '',
       status: data.status ? t(`admin.status.${data.status}`) : '',
@@ -123,6 +124,9 @@ const NotificationBell = ({ compact = false, onNavigate }: { compact?: boolean; 
                     <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: '50%', marginTop: '0.45rem', flexShrink: 0, backgroundColor: n.readAt ? 'transparent' : 'var(--color-primary-600)' }} />
                     <span>
                       <span style={{ display: 'block', fontSize: '0.9rem', color: 'var(--color-neutral-800)', lineHeight: 1.4 }}>{text(n)}</span>
+                      {n.type === 'ANNOUNCEMENT' && typeof n.data?.message === 'string' && (
+                        <span style={{ display: 'block', fontSize: '0.85rem', color: 'var(--color-neutral-600)', lineHeight: 1.5, marginTop: '0.3rem', whiteSpace: 'pre-wrap' }}>{n.data.message as string}</span>
+                      )}
                       <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--color-neutral-500)', marginTop: '0.2rem' }}>
                         {new Date(n.createdAt).toLocaleString(i18n.language, { dateStyle: 'medium', timeStyle: 'short' })}
                       </span>

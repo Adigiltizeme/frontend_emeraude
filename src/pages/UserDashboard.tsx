@@ -5,7 +5,9 @@ import { API_URL, authHeaders, formatMoney } from '../config/api';
 import { useLiveRefresh } from '../hooks/useLiveRefresh';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
-import { Building2, FileText, Settings, Lightbulb, Clock, CheckCircle, XCircle, Headset } from 'lucide-react';
+import { Building2, FileText, Settings, Lightbulb, Clock, CheckCircle, XCircle, Headset, Gift, Repeat } from 'lucide-react';
+import AutoInvestPanel from '../components/AutoInvestPanel';
+import ReferralPanel from '../components/ReferralPanel';
 import { UserSupport } from '../components/support/UserSupport';
 import { useSiteSettings } from '../context/SettingsContext';
 import OnboardingChecklist from '../components/OnboardingChecklist';
@@ -202,14 +204,16 @@ const UserDashboard = () => {
   // L'utilisateur démarre sur l'onglet correspondant à son intention initiale, mais peut basculer
   const [searchParams, setSearchParams] = useSearchParams();
   const requestedTab = searchParams.get('onglet');
-  const [activeTab, setActiveTab] = useState<'investments' | 'projects' | 'support'>(
-    requestedTab === 'support' ? 'support' : requestedTab === 'projets' ? 'projects' : user?.intention === 'Porteur de projet' ? 'projects' : 'investments'
+  const [activeTab, setActiveTab] = useState<'investments' | 'projects' | 'support' | 'referral' | 'auto'>(
+    requestedTab === 'support' ? 'support' : requestedTab === 'projets' ? 'projects' : requestedTab === 'parrainage' ? 'referral' : requestedTab === 'auto' ? 'auto' : user?.intention === 'Porteur de projet' ? 'projects' : 'investments'
   );
   // Lien d'une notification vers un autre onglet alors que l'espace est déjà ouvert.
   useEffect(() => {
     if (!requestedTab) return;
     if (requestedTab === 'support') setActiveTab('support');
     else if (requestedTab === 'projets') setActiveTab('projects');
+    else if (requestedTab === 'parrainage') setActiveTab('referral');
+    else if (requestedTab === 'auto') setActiveTab('auto');
     // Retiré de l'adresse : un nouveau lien vers le même onglet rebasculera après un changement manuel.
     setSearchParams({}, { replace: true });
   }, [requestedTab, setSearchParams]);
@@ -490,6 +494,44 @@ const UserDashboard = () => {
               <Lightbulb size={20} /> Vue Porteur de Projet
             </button>
           )}
+
+          {settings.autoInvestEnabled && showInvestorTab && (
+            <button
+              onClick={() => setActiveTab('auto')}
+              style={{
+                backgroundColor: 'transparent',
+                border: 'none',
+                borderBottom: activeTab === 'auto' ? '3px solid var(--color-primary-600)' : '3px solid transparent',
+                color: activeTab === 'auto' ? 'var(--color-primary-800)' : 'var(--color-neutral-500)',
+                fontWeight: activeTab === 'auto' ? 'bold' : 'normal',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                marginBottom: '-2px'
+              }}>
+              <Repeat size={20} /> {t('autoInvest.tab')}
+            </button>
+          )}
+
+          {settings.referralEnabled && (
+            <button
+              onClick={() => setActiveTab('referral')}
+              style={{
+                backgroundColor: 'transparent',
+                border: 'none',
+                borderBottom: activeTab === 'referral' ? '3px solid var(--color-primary-600)' : '3px solid transparent',
+                color: activeTab === 'referral' ? 'var(--color-primary-800)' : 'var(--color-neutral-500)',
+                fontWeight: activeTab === 'referral' ? 'bold' : 'normal',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                marginBottom: '-2px'
+              }}>
+              <Gift size={20} /> {t('referral.tab')}
+            </button>
+          )}
         </div>
       )}
 
@@ -500,6 +542,10 @@ const UserDashboard = () => {
 
           {activeTab === 'support' ? (
             <UserSupport />
+          ) : activeTab === 'referral' ? (
+            <ReferralPanel />
+          ) : activeTab === 'auto' ? (
+            <AutoInvestPanel />
           ) : activeTab === 'projects' ? (
             <>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>

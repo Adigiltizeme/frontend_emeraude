@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { AlertTriangle, ClipboardCheck, CreditCard, Landmark, Smartphone, Wallet } from 'lucide-react';
@@ -19,6 +19,8 @@ interface Props {
   onClose: () => void;
   /** Virement : instructions configurées dans le back-office (vide si non renseignées). */
   onManualSuccess: (instructions: string) => void;
+  /** Montant prérempli (proposition d'investissement automatique). */
+  initialAmount?: number;
 }
 
 const METHOD_ICONS: Record<string, JSX.Element> = {
@@ -28,12 +30,12 @@ const METHOD_ICONS: Record<string, JSX.Element> = {
   BANK_TRANSFER: <Landmark size={20} />,
 };
 
-const InvestModal = ({ project, onClose, onManualSuccess }: Props) => {
+const InvestModal = ({ project, onClose, onManualSuccess, initialAmount }: Props) => {
   const { t, i18n } = useTranslation();
   const { token } = useAuth();
   const { settings, refresh: refreshSettings } = useSiteSettings();
   const [options, setOptions] = useState<PaymentOptions | null>(null);
-  const [amount, setAmount] = useState<number | ''>('');
+  const [amount, setAmount] = useState<number | ''>(initialAmount && initialAmount > 0 ? initialAmount : '');
   const [method, setMethod] = useState<string>('');
   const [provider, setProvider] = useState<string>('');
   const [acceptedTerms, setAcceptedTerms] = useState(false);
@@ -51,7 +53,20 @@ const InvestModal = ({ project, onClose, onManualSuccess }: Props) => {
   const money = (value: number) => formatMoney(value, i18n.language, currency);
   // Frais d'entrée (paramètre du back-office) : calcul identique au serveur, affiché avant confirmation.
   const feePercent = settings.investorFeePercent;
-  const feeAmount = amount ? Math.round((amount * feePercent) / 100) : 0;
+  // Parrainage : réduction des frais sur le premier investissement d'un filleul (le serveur fait autorité).
+  const [feeDiscount, setFeeDiscount] = useState(0);
+  const [discountLoaded, setDiscountLoaded] = useState(false);
+  const loadDiscount = useCallback(() => {
+    if (!token || !settings.referralEnabled || !(feePercent > 0)) { setFeeDiscount(0); setDiscountLoaded(true); return; }
+    setDiscountLoaded(false);
+    fetch(`${API_URL}/referrals/me`, { headers: authHeaders(token) })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => setFeeDiscount(typeof data?.feeDiscountPercent === 'number' ? data.feeDiscountPercent : 0))
+      .catch(() => setFeeDiscount(0))
+      .finally(() => setDiscountLoaded(true));
+  }, [token, settings.referralEnabled, feePercent]);
+  useEffect(() => { loadDiscount(); }, [loadDiscount]);
+  const feeAmount = amount ? Math.round((amount * feePercent * (100 - feeDiscount)) / 10_000) : 0;
 
   // Les moyens disponibles dépendent du montant (contraintes propres à chaque prestataire) : rechargés après la saisie.
   useEffect(() => {
@@ -104,7 +119,7 @@ const InvestModal = ({ project, onClose, onManualSuccess }: Props) => {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        if (res.status === 409) refreshSettings();
+        if (res.status === 409) { refreshSettings(); loadDiscount(); }
         if (res.status === 403 && String(data?.message || '').startsWith('EMAIL_NOT_VERIFIED')) setError(t('payment.errors.emailNotVerified'));
         else if (res.status === 403 && String(data?.message || '').startsWith('INVESTOR_PROFILE_REQUIRED')) { refreshProfile(); setError(t('payment.errors.profile')); }
         else if (res.status === 400 && String(data?.message || '').startsWith('RISK_WARNING_REQUIRED')) { refreshProfile(); setError(t('payment.errors.riskWarning')); }
@@ -201,7 +216,7 @@ const InvestModal = ({ project, onClose, onManualSuccess }: Props) => {
         {feePercent > 0 && !!amount && (
           <div style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '6px', padding: '0.75rem', marginBottom: '1rem', fontSize: '0.9rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>{t('payment.amountLabel', { currency: currency === 'XOF' ? 'FCFA' : currency })}</span><span>{money(amount)}</span></div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>{t('payment.feeLine', { percent: feePercent })}</span><span>{money(feeAmount)}</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>{t('payment.feeLine', { percent: feePercent })}{feeDiscount > 0 && ` · ${t('payment.referralDiscount', { percent: feeDiscount })}`}</span><span>{money(feeAmount)}</span></div>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700, borderTop: '1px solid #e2e8f0', marginTop: '0.35rem', paddingTop: '0.35rem' }}><span>{t('payment.totalLine')}</span><span>{money(amount + feeAmount)}</span></div>
           </div>
         )}
@@ -240,7 +255,7 @@ const InvestModal = ({ project, onClose, onManualSuccess }: Props) => {
           <button onClick={onClose} className="btn btn-outline" style={{ flex: '1 1 140px', padding: '0.75rem' }} disabled={submitting}>
             {t('payment.cancel')}
           </button>
-          <button onClick={submit} className="btn btn-primary" style={{ flex: '1 1 140px', padding: '0.75rem' }} disabled={submitting || !options}>
+          <button onClick={submit} className="btn btn-primary" style={{ flex: '1 1 140px', padding: '0.75rem' }} disabled={submitting || !options || !discountLoaded}>
             {submitting ? t('payment.processing') : t('payment.confirm')}
           </button>
         </div>
